@@ -5,6 +5,7 @@
     "salesforcedx-vscode-core.show-cli-success-msg": false,
     "salesforcedx-vscode-core.enable-sobject-refresh-on-startup": true,
     "salesforcedx-vscode-core.telemetry.enabled": false,
+    "salesforcedx-vscode-core.clearOutputTab": true,
     "workbench.tree.indent": 16,
     "workbench.startupEditor": "none",
     "editor.multiCursorModifier": "ctrlCmd",
