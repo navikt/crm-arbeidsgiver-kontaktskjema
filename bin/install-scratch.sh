@@ -148,7 +148,7 @@ command -v jq >/dev/null 2>&1 || {
     exit 1
 }
 
-ORG_ALIAS="arbeidsgiver-dialog"
+ORG_ALIAS="arbeidsgiver-kontakt-oss"
 secret=$npm_config_package_key
 devHubAlias=$(sf config get target-dev-hub --json | jq -r '.result[0].value')
 
@@ -158,7 +158,7 @@ else
     org_alias=$ORG_ALIAS
 fi
 
-echo "Installing crm-arbeidsgiver-dialog scratch org ($org_alias)"
+echo "Installing crm-arbeidsgiver-kontakt-oss scratch org ($org_alias)"
 echo ""
 
 operations=(
