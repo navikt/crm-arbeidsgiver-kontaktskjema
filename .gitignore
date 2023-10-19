@@ -80,6 +80,9 @@ install.cmd
 # Salesforce cache
 .sfdx/
 .sf/
+.sfpowerscripts/
+.localdevserver/
+deploy-options.json
 
 # Logs
 logs
