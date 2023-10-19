@@ -82,7 +82,7 @@ deployingMetadata() {
 #    if [[ $npm_config_without_publish ]]; then
 #        echo "Skipping..."
 #    else
-#        sf community publish --name "arbeidsgiver-dialog" || { error $? '"sf community publish" command failed for community: "arbeidsgiver-dialog".'; }
+#        sf community publish --name "arbeidsgiver-kontakt-oss" || { error $? '"sf community publish" command failed for community: "arbeidsgiver-kontakt-oss".'; }
 #    fi
 #}
 
@@ -102,7 +102,7 @@ info() {
     echo "  --org-alias=<alias>         Alias for the scratch org"
     echo "  --org-duration=<days>       Duration of the scratch org"
     echo "  --without-deploy            Skip deploy"
-    #echo "  --without-publish           Skip publish of community: \"arbeidsgiver-dialog\""
+    #echo "  --without-publish           Skip publish of community: \"arbeidsgiver-kontakt-oss\""
     echo "  --open-in=<option>          Browser where the org opens."
     echo "                              <options: chrome|edge|firefox>"
     echo "  --start-step=<step-nummer>  Start from a specific step"
@@ -148,7 +148,7 @@ command -v jq >/dev/null 2>&1 || {
     exit 1
 }
 
-ORG_ALIAS="arbeidsgiver-dialog"
+ORG_ALIAS="arbeidsgiver-kontakt-oss"
 secret=$npm_config_package_key
 devHubAlias=$(sf config get target-dev-hub --json | jq -r '.result[0].value')
 
@@ -158,7 +158,7 @@ else
     org_alias=$ORG_ALIAS
 fi
 
-echo "Installing crm-arbeidsgiver-dialog scratch org ($org_alias)"
+echo "Installing crm-arbeidsgiver-kontakt-oss scratch org ($org_alias)"
 echo ""
 
 operations=(
@@ -181,7 +181,7 @@ operationNames=(
     #"Assigning permissions"
     #"Inserting test data"
     #"Running post install scripts"
-    #"Publishing arbeidsgiver-dialog site"
+    #"Publishing arbeidsgiver-kontakt-oss site"
     "Opening org"
 )
 
