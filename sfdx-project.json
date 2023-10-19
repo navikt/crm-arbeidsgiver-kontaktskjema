@@ -2,7 +2,11 @@
     "packageDirectories": [
         {
             "path": "force-app",
-            "default": true
+            "default": true,
+            "package": "crm-arbeidsgiver-kontakt-oss",
+            "versionName": "ver 0.1",
+            "versionNumber": "1.1.0.NEXT",
+            "dependencies": []
         }
     ],
     "namespace": "",
