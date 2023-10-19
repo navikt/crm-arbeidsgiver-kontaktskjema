@@ -78,13 +78,13 @@ deployingMetadata() {
 #    sf apex run --file ./scripts/apex/createTestData.cls || { error $? '"sf apex run" command failed for Apex class: "createTestData".'; }
 #}
 
-#publishCommunity() {
-#    if [[ $npm_config_without_publish ]]; then
-#        echo "Skipping..."
-#    else
-#        sf community publish --name "arbeidsgiver-kontakt-oss" || { error $? '"sf community publish" command failed for community: "arbeidsgiver-kontakt-oss".'; }
-#    fi
-#}
+publishCommunity() {
+    if [[ $npm_config_without_publish ]]; then
+        echo "Skipping..."
+    else
+        sf community publish --name "arbeidsgiver-kontakt-oss" || { error $? '"sf community publish" command failed for community: "arbeidsgiver-kontakt-oss".'; }
+    fi
+}
 
 openOrg() {
     if [[ -n $npm_config_open_in ]]; then
@@ -102,7 +102,7 @@ info() {
     echo "  --org-alias=<alias>         Alias for the scratch org"
     echo "  --org-duration=<days>       Duration of the scratch org"
     echo "  --without-deploy            Skip deploy"
-    #echo "  --without-publish           Skip publish of community: \"arbeidsgiver-kontakt-oss\""
+    echo "  --without-publish           Skip publish of community: \"arbeidsgiver-kontakt-oss\""
     echo "  --open-in=<option>          Browser where the org opens."
     echo "                              <options: chrome|edge|firefox>"
     echo "  --start-step=<step-nummer>  Start from a specific step"
@@ -169,7 +169,7 @@ operations=(
     #assignPermission
     #insertingTestData
     #runPostInstallScripts
-    #publishCommunity
+    publishCommunity
     openOrg
 )
 
@@ -181,7 +181,8 @@ operationNames=(
     #"Assigning permissions"
     #"Inserting test data"
     #"Running post install scripts"
-    #"Publishing arbeidsgiver-kontakt-oss site"
+    
+    "Publishing arbeidsgiver-kontakt-oss site"
     "Opening org"
 )
 
