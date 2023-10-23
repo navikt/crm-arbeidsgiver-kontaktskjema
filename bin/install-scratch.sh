@@ -58,19 +58,16 @@ deployingMetadata() {
     fi
 }
 
-#assignPermission() {
-#    sf org assign permset \
-#    --name Messaging_Read_and_Write_Messages_and_Threads \
-#    --name Arbeidsgiver_Dialog_Interne \
-#    --name Arbeidsgiver_base \
-#    --name Arbeidsgiver_contract \
-#    --name TAG_Arbeidsgiver_Dialog_Admin \
-#    || { error $? '"sf org assign permset" command failed.'; }
-#}
+assignPermission() {
+    sf org assign permset \
+    --name Arbeidsgiver_base \
+    --name Arbeidsgiver_opportunity \
+    || { error $? '"sf org assign permset" command failed.'; }
+}
 
-#insertingTestData() {
-#    sf data import tree --plan dummy-data/plan.json || { error $? '"sf data import tree" command failed.'; }
-#}
+insertingTestData() {
+    sf data import tree --plan dummy-data/plan.json || { error $? '"sf data import tree" command failed.'; }
+}
 
 #runPostInstallScripts() {
 #    sf apex run --file ./scripts/apex/activateMock.cls || { error $? '"sf apex run" command failed for Apex class: "activateMock".'; }
@@ -166,8 +163,8 @@ operations=(
     creatingScratchOrg
     installDependencies
     deployingMetadata
-    #assignPermission
-    #insertingTestData
+    assignPermission
+    insertingTestData
     #runPostInstallScripts
     publishCommunity
     openOrg
@@ -178,8 +175,8 @@ operationNames=(
     "Creating scratch org"
     "Installing dependencies"
     "Deploying/Pushing metadata"
-    #"Assigning permissions"
-    #"Inserting test data"
+    "Assigning permissions"
+    "Inserting test data"
     #"Running post install scripts"
     
     "Publishing arbeidsgiver-kontakt-oss site"
