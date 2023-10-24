@@ -1,0 +1,45 @@
+.banner {
+    height: 11rem;
+    background-color: #cce1f3;
+    border-bottom: 0.2rem solid #99c2e8;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    display: block;
+    min-width: 768px;
+}
+
+.banner-inside {
+    margin-top: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    max-width: 992px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.title-kontaktskjema {
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    min-width: 30em;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+    font-weight: 600;
+    box-sizing: border-box;
+    display: block;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    text-align: middle;
+}
+
+.title-picture {
+    min-width: 768px;
+    margin-bottom: -1px;
+    display: block;
+    align-self: flex-end;
+    height: 9rem;
+}
