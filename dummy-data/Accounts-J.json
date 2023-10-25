@@ -1,0 +1,14 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "Account",
+                "referenceId": "AccountRef15"
+            },
+            "Name": "SKI KOMMUNE",
+            "INT_Industry__c": "Generell offentlig administrasjon",
+            "INT_IndustryCode__c": "84.110",
+            "INT_OrganizationNumber__c": "960507878"
+        }
+    ]
+}
