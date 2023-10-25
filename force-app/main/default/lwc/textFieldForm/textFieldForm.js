@@ -1,7 +1,7 @@
 import { LightningElement, api, track } from 'lwc';
 
 export default class TextFieldForm extends LightningElement {
-    @api label = 'Har du noen tilbakemeldinger?';
+    @api label;
     @api description;
     @api error;
     @api size;
@@ -9,7 +9,7 @@ export default class TextFieldForm extends LightningElement {
     @api placeholder;
     @api htmlSize;
     @api readOnly;
-    @api type = 'text';
+    @api type;
 
     fieldId = 'text-field-id'; // You can generate a unique ID dynamically if needed
     inputDescriptionId = 'text-field-description-id'; // You can generate a unique ID dynamically if needed
