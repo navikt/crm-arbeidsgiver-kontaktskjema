@@ -69,17 +69,15 @@ insertingTestData() {
     sf data import tree --plan dummy-data/plan.json || { error $? '"sf data import tree" command failed.'; }
 }
 
-#runPostInstallScripts() {
-#    sf apex run --file ./scripts/apex/activateMock.cls || { error $? '"sf apex run" command failed for Apex class: "activateMock".'; }
-#    sf apex run --file ./scripts/apex/createPortalUser.cls || { error $? '"sf apex run" command failed for Apex class: "createPortalUser".'; }
-#    sf apex run --file ./scripts/apex/createTestData.cls || { error $? '"sf apex run" command failed for Apex class: "createTestData".'; }
-#}
+runPostInstallScripts() {
+    sf apex run --file ./scripts/assignRecordTypes.cls || { error $? '"sf apex run" command failed for Apex class: "assignRecordTypes".'; }
+}
 
 publishCommunity() {
     if [[ $npm_config_without_publish ]]; then
         echo "Skipping..."
     else
-        sf community publish --name "arbeidsgiver-kontakt-oss" || { error $? '"sf community publish" command failed for community: "arbeidsgiver-kontakt-oss".'; }
+        sf community publish --name "Kontaktskjema" || { error $? '"sf community publish" command failed for community: "Kontaktskjema".'; }
     fi
 }
 
@@ -99,13 +97,13 @@ info() {
     echo "  --org-alias=<alias>         Alias for the scratch org"
     echo "  --org-duration=<days>       Duration of the scratch org"
     echo "  --without-deploy            Skip deploy"
-    echo "  --without-publish           Skip publish of community: \"arbeidsgiver-kontakt-oss\""
+    echo "  --without-publish           Skip publish of community: \"Kontaktskjema\""
     echo "  --open-in=<option>          Browser where the org opens."
     echo "                              <options: chrome|edge|firefox>"
     echo "  --start-step=<step-nummer>  Start from a specific step"
     echo "  --step=<step-nummer>        Run a specific step"
     echo "                              <steps: clean=1|create=2|dependencies=3|deploy=4|open=5>"
-    #echo "                              <steps: clean=1|create=2|dependencies=3|deploy=4|permissions=5|test data=6|run scripts=7|publishing site=8|open=9>"
+    echo "                              <steps: clean=1|create=2|dependencies=3|deploy=4|permissions=5|test data=6|run scripts=7|publishing site=8|open=9>"
     echo "  --info                      Show this help"
     echo "  --info                      Show this help"
     echo ""
@@ -165,7 +163,7 @@ operations=(
     deployingMetadata
     assignPermission
     insertingTestData
-    #runPostInstallScripts
+    runPostInstallScripts
     publishCommunity
     openOrg
 )
@@ -177,9 +175,9 @@ operationNames=(
     "Deploying/Pushing metadata"
     "Assigning permissions"
     "Inserting test data"
-    #"Running post install scripts"
+    "Running post install scripts"
     
-    "Publishing arbeidsgiver-kontakt-oss site"
+    "Publishing Kontaktskjema site"
     "Opening org"
 )
 

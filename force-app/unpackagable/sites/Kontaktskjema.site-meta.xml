@@ -19,12 +19,12 @@
     <genericErrorPage>Exception</genericErrorPage>
     <inMaintenancePage>InMaintenance</inMaintenancePage>
     <indexPage>CommunitiesLanding</indexPage>
-    <masterLabel>Kontakt Oss</masterLabel>
+    <masterLabel>Kontaktskjema</masterLabel>
     <redirectToCustomDomain>false</redirectToCustomDomain>
     <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
     <siteAdmin>test-hmb4pxenxtqb@example.com</siteAdmin>
     <siteGuestRecordDefaultOwner>test-hmb4pxenxtqb@example.com</siteGuestRecordDefaultOwner>
     <siteType>ChatterNetwork</siteType>
-    <urlPathPrefix>KontaktOss</urlPathPrefix>
+    <urlPathPrefix>Kontaktskjema</urlPathPrefix>
 </CustomSite>
