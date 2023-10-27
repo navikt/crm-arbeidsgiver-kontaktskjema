@@ -1,13 +1,30 @@
 <template>
+    <div class="containerBreadcrumbs">
+        <svg width="1.5em" class="homeicon" height="1.5em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" role="img"><path fill-rule="evenodd" clip-rule="evenodd" d="M11.47 2.47a.75.75 0 0 1 1.06 0l7 7c.141.14.22.331.22.53v11a.75.75 0 0 1-.75.75h-5a.75.75 0 0 1-.75-.75v-4.25h-2.5V21a.75.75 0 0 1-.75.75H5a.75.75 0 0 1-.75-.75V10a.75.75 0 0 1 .22-.53l7-7Zm-5.72 7.84v9.94h3.5V16a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 .75.75v4.25h3.5v-9.94L12 4.06l-6.25 6.25Z" fill="currentColor"></path></svg>
+        <c-breadcrumbs url-list={breadcrumbs} num-pops="4"></c-breadcrumbs>
+    </div>
     <div class="banner">
         <div class="banner-inside">
             <h1 class="title-kontaktskjema">Kontaktskjema for arbeidsgivere</h1>
             <img class="title-picture" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/illustrasjon.919181b5.svg"/>
         </div>
     </div>
+    <div class="kontaktskjemaInside">
+        <p class="infoText">Alle felter må fylles ut.</p>
+        <div class="containerInfo">
+            <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
+            <p class="infoText">For andre temaer, <a href="tel:+4755553336" class="lenke">ring arbeidsgivertelefonen på 55&nbsp;55&nbsp;33&nbsp;36</a></p>
+        </div>
         <c-text-Field-Form label="Bedriftens navn" type="text"></c-text-Field-Form>
         <c-text-Field-Form label="Organisasjonsnummer" type="text"></c-text-Field-Form>
         <c-text-Field-Form label="Ditt navn" type="text"></c-text-Field-Form>
         <c-text-Field-Form label="E-post" type="text"></c-text-Field-Form>
         <c-text-Field-Form label="Telefonnummer" type="text"></c-text-Field-Form>
+
+        <div class="containerInfo">
+            <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
+            <p class="infoText">NAV bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi kan kontakte deg om rekruttere og inkludere i bedriften du representerer. Opplysningene blir ikke delt eller brukt til andre formål.</p>
+        </div>
+        <c-ds-Button variant="primary" size="medium" text="Send inn"></c-ds-Button>
+    </div>
 </template>
