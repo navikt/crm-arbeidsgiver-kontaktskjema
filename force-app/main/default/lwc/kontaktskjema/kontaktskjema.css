@@ -47,6 +47,7 @@
     padding: 3.5rem 1.25rem;
     background-color: #fff;
     min-height: 50rem;
+    max-width: 400rem;
 }
 
 .infoText {
@@ -85,4 +86,9 @@
     margin-bottom: -1px;
     height: 9rem;
     overflow: visible;
+}
+
+.input-fields {
+    max-width: 500px;
+    padding: 0.5rem;
 }
