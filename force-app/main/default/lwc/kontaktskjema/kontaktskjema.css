@@ -92,3 +92,23 @@
     max-width: 500px;
     padding: 0.5rem;
 }
+
+.info-popup {
+    border: 1px solid #5690a2;
+    background-color: #e0f5fb;
+    display: flex;
+    border-radius: 0.25rem;
+    margin: right 5px;
+}
+
+.navds-radio__label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 48px;
+    cursor: pointer;
+    padding: 10px; /* Add padding to create space around each option */
+    border: 1px solid #a0a0a0; /* Add a border around each option */
+    border-radius: 4px; /* Add rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
