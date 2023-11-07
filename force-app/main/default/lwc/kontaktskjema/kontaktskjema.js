@@ -5,6 +5,7 @@ import index from '@salesforce/resourceUrl/index';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
+    //PhoneNumber;
 
     @track selectedTheme = '';
     @track selectedContactedEmployeeRep = '';
@@ -91,6 +92,7 @@ export default class Kontaktskjema extends LightningElement {
 
     connectedCallback() {
         window.addEventListener('resize', this.handleResize.bind(this));
+       // this.PhoneNumber = this.template.querySelector('#PhoneNumber');
     }
 
   
@@ -99,4 +101,34 @@ export default class Kontaktskjema extends LightningElement {
         window.removeEventListener('resize', this.handleResize.bind(this));
     }
 
+    handleOrgNumberBlur(event) {
+        //const inputValue = event.target.value;
+        const inputField = event.target;
+        const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
+
+        if (!isOrgNumberValid) {
+            inputField.sendErrorMessage(this.errorText);
+        }
+        inputField.blur();
+
+    }
+
+    handlePhoneBlur(event) {
+        const inputFieldPhone = event.target;
+        const isPhoneValid = inputFieldPhone.validatePhoneLength(this.errorText);
+
+        if (!isPhoneValid) {
+            inputFieldPhone.sendErrorMessage(this.errorText);
+        }
+        inputFieldPhone.blur();
+
+    }
+/*
+    handleEmptyField(event) {
+        const inputVariousField = event.target.value;
+        console.log(toString(inputVariousField));
+        if (inputVariousField === '') {
+            inputVariousField.sendErrorMessage(this.errorText);
+        }
+    }*/
 }
