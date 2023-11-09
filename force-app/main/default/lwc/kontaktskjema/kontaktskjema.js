@@ -2,16 +2,15 @@ import { LightningElement, api, track } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
 import index from '@salesforce/resourceUrl/index';
-import createContactForm from '@salesforce/apex/ContactFormController.createContactForm';
+import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
-    //PhoneNumber;
 
     @track selectedTheme = '';
     @track selectedContactedEmployeeRep = '';
     @track checkedTheme = '';
-    @track checkedForebygge = false;
+    @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
     @track contactOrg = '';
     @track contactName = '';
@@ -56,19 +55,17 @@ export default class Kontaktskjema extends LightningElement {
     ];
 
     handleTheme(event) {
-        console.log('theme test: ');
         this.selectedTheme = event.detail;
 
         if (this.selectedTheme[0].checked === true) {
             this.checkedTheme = 'Rekruttere og inkludere';
         } else if (this.selectedTheme[1].checked === true) {
-            this.checkedTheme = 'Forebygge sykefravær';
-            this.checkedForebygge = true;
+            this.checkedTheme = 'Skal ansette';
+            this.checkedPreventSickLeave = true;
         }
     }
 
     handleContactedEmployeeRep(event) {
-        console.log('yes or no test: ');
         this.selectedContactedEmployeeRep = event.detail;
 
         if (selectedContactedEmployeeRep[0].checked === true) {
@@ -106,12 +103,12 @@ export default class Kontaktskjema extends LightningElement {
         createContactForm({ contactFormData })
         .then(result => {
             // Handle success
-            console.log('Contact created successfully:', result);
+            console.log('Contact form created successfully:', result);
             // You can add code to show a success message or navigate to a different page.
         })
         .catch(error => {
             // Handle error
-            console.error('Error creating contact:', error);
+            console.error('Error creating contact form:', error);
             // You can add code to show an error message.
         });
     }

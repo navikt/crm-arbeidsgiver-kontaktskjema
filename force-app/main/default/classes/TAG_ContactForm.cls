@@ -1,4 +1,4 @@
-public with sharing class ContactForm {
+public with sharing class TAG_ContactForm {
     public String organizationNumber { get; set; }
     public String municipalityCode { get; set; }
     public String organizationName { get; set; }
