@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
 import index from '@salesforce/resourceUrl/index';
+import createContactForm from '@salesforce/apex/ContactFormController.createContactForm';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
@@ -9,9 +10,13 @@ export default class Kontaktskjema extends LightningElement {
 
     @track selectedTheme = '';
     @track selectedContactedEmployeeRep = '';
-    @track checkedRekruttere = false;
+    @track checkedTheme = '';
     @track checkedForebygge = false;
     @track checkedYesOrNo = false;
+    @track contactOrg = '';
+    @track contactName = '';
+    @track contactEmail = '';
+    @track contactPhone = '';
 
     @track fieldValues = { 
         FullName: '',
@@ -55,14 +60,10 @@ export default class Kontaktskjema extends LightningElement {
         this.selectedTheme = event.detail;
 
         if (this.selectedTheme[0].checked === true) {
-            this.checkedRekruttere = true;
-            this.checkedForebygge = false;
+            this.checkedTheme = 'Rekruttere og inkludere';
         } else if (this.selectedTheme[1].checked === true) {
-            this.checkedRekruttere = false;
+            this.checkedTheme = 'Forebygge sykefravær';
             this.checkedForebygge = true;
-        } else {
-            this.checkedRekruttere = false;
-            this.checkedForebygge = false;
         }
     }
 
@@ -77,8 +78,42 @@ export default class Kontaktskjema extends LightningElement {
         }
     }
 
-    renderedCallback() {
-        loadStyle(this, index);
+    handleOrgChange(event) {
+        this.contactOrg = event.detail;
+    }
+
+    handleNameChange(event) {
+        this.contactName = event.detail;
+    }
+
+    handleEmailChange(event) {
+        this.contactEmail = event.detail;
+    }
+
+    handlePhoneChange(event) {
+        this.contactPhone = event.detail;
+    }
+
+    saveContactForm() {
+        const contactFormData = {
+            ContactOrg: this.contactOrg,
+            ContactName: this.contactName,
+            ContactEmail: this.contactEmail,
+            ContactPhone: this.contactPhone,
+            ThemeSelected: this.checkedTheme
+        };
+
+        createContactForm({ contactFormData })
+        .then(result => {
+            // Handle success
+            console.log('Contact created successfully:', result);
+            // You can add code to show a success message or navigate to a different page.
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error creating contact:', error);
+            // You can add code to show an error message.
+        });
     }
 
     handleResize() {
@@ -88,6 +123,10 @@ export default class Kontaktskjema extends LightningElement {
         } else {
             img.style.display = 'flex';
         }
+    }
+
+    renderedCallback() {
+        loadStyle(this, index);
     }
 
     connectedCallback() {
