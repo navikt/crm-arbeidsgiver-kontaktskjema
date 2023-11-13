@@ -5,7 +5,7 @@ public with sharing class TAG_ContactFormController {
 
     @AuraEnabled
     public static void createContactForm(Map<String, String> contactFormData) {
-        Map<String, Account> accountMap = getOrgNumberAccountMap(contactFormData.get('ContactOrg'));
+        Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
         List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
 
         TAG_ContactForm newContactForm = new TAG_ContactForm();
@@ -19,12 +19,33 @@ public with sharing class TAG_ContactFormController {
 
             newContactFormList.add(newContactForm);
 
+            System.debug(newContactFormList);
+
             Map<String, Contact> contactMap = getContactMap(newContactFormList, accountMap);
 
-            insertCustomOpportunity(newContactFormList, accountMap, contactMap);  
+            insertCustomOpportunity(newContactFormList, accountMap, contactMap);
     }
 
-    public static void insertCustomOpportunity(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
+    @AuraEnabled(cacheable=true)
+    public static String getAccountName(String orgNumber) {
+        String accountName = '';
+
+        try {
+            Account acc = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1];
+            if (acc != null) {
+                accountName = acc.Name;
+            } else {
+                throw new AuraHandledException('Dette organisasjonsnummeret eksisterer ikke');
+            }
+        } catch (Exception e) {
+            System.debug('An exception has occured: ' + e.getMessage());
+            throw new AuraHandledException('An error occurred while retrieving the Account Name.');
+        }
+        
+        return accountName;
+    }
+
+    private static void insertCustomOpportunity(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
         try {
             CustomOpportunity__c newCustomOpportunity = new CustomOpportunity__c();
                 newCustomOpportunity.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
@@ -46,7 +67,7 @@ public with sharing class TAG_ContactFormController {
         }
     }
 
-    private static Map<String, Account> getOrgNumberAccountMap(String contactOrgNr) {
+    private static Map<String, Account> getAccountMap(String contactOrgNr) {
         Map<String, Account> accountMap = new Map<String, Account>();
         List<Account> accounts = [
             SELECT Id, Name, INT_OrganizationNumber__c, INT_MunicipalityNumber__c

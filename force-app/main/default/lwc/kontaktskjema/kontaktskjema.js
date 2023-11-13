@@ -1,14 +1,14 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
+import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
 
-    @track selectedTheme = '';
-    @track selectedContactedEmployeeRep = '';
     @track checkedTheme = '';
     @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
@@ -16,13 +16,14 @@ export default class Kontaktskjema extends LightningElement {
     @track contactName = '';
     @track contactEmail = '';
     @track contactPhone = '';
+    @track accountName = '';
+    @track showError = false;
 
     @track fieldValues = { 
         FullName: '',
         OrganizationNumber: '',
         Email: '',
         Phone: ''
-
     }
 
     @track breadcrumbs = [
@@ -44,6 +45,18 @@ export default class Kontaktskjema extends LightningElement {
         }
     ];
 
+    @wire(getAccountName, {orgNumber: '$contactOrg' })
+    wiredAccountName({ data, error }) {
+        if (data) {
+            this.accountName = data;
+            this.showError = false;
+        } else if (error) {
+            this.accountName = '';
+            console.error('Error retrieving account name:', error);
+            this.showError = true;
+        }
+    }
+
     themeOptions = [
         { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
         { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
@@ -55,24 +68,20 @@ export default class Kontaktskjema extends LightningElement {
     ];
 
     handleTheme(event) {
-        this.selectedTheme = event.detail;
-
-        if (this.selectedTheme[0].checked === true) {
-            this.checkedTheme = 'Rekruttere og inkludere';
-        } else if (this.selectedTheme[1].checked === true) {
-            this.checkedTheme = 'Skal ansette';
-            this.checkedPreventSickLeave = true;
+            const selectedTheme = event.detail;
+            if (selectedTheme && selectedTheme.length > 0) {
+                this.checkedTheme = selectedTheme[0].checked ? 'Rekruttere og inkludere' : 'Skal ansette';
+                this.checkedPreventSickLeave = selectedTheme[1].checked;
+            }
+            console.log('Checked theme: ', this.checkedTheme, 'and ', this.checkedPreventSickLeave);
         }
-    }
-
+        
     handleContactedEmployeeRep(event) {
-        this.selectedContactedEmployeeRep = event.detail;
-
-        if (selectedContactedEmployeeRep[0].checked === true) {
-            this.checkedYesOrNo = true;
-        } else {
-            this.checkedYesOrNo = false;
+        const selectedContactedEmployeeRep = event.detail;
+        if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
+            this.checkedYesOrNo = selectedContactedEmployeeRep[0].checked ? true : false;
         }
+        console.log('Checked ', this.checkedYesOrNo);
     }
 
     handleOrgChange(event) {
@@ -102,14 +111,31 @@ export default class Kontaktskjema extends LightningElement {
 
         createContactForm({ contactFormData })
         .then(result => {
-            // Handle success
-            console.log('Contact form created successfully:', result);
-            // You can add code to show a success message or navigate to a different page.
+            const toastEvent = new ShowToastEvent({
+                title: 'Suksess',
+                message: 'Kontaktskjema har blitt sendt til NAV',
+                variant: 'success'
+            });
+            this.dispatchEvent(toastEvent);
+
+            // Clear input field values
+            this.contactOrg = '';
+            this.contactName = '';
+            this.contactEmail = '';
+            this.contactPhone = '';
+            this.checkedTheme = ''; 
+
+            // Force a re-render of the component
+            this.template.querySelector('c-input').value = '';
+            console.log('contactOrg: ', this.contactOrg);
         })
         .catch(error => {
-            // Handle error
-            console.error('Error creating contact form:', error);
-            // You can add code to show an error message.
+            const toastEvent = new ShowToastEvent({
+                title: 'Feilmelding',
+                message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
+                variant: 'error'
+            });
+            this.dispatchEvent(toastEvent);
         });
     }
 
@@ -139,14 +165,24 @@ export default class Kontaktskjema extends LightningElement {
 
     handleOrgNumberBlur(event) {
         //const inputValue = event.target.value;
-        const inputField = event.target;
-        const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
+        const inputFieldOrgNumber = event.target;
+        const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
         if (!isOrgNumberValid) {
-            inputField.sendErrorMessage(this.errorText);
+            inputFieldOrgNumber.sendErrorMessage(this.errorText);
+            this.showError = true;
+        } else {
+            getAccountName ({ inputFieldOrgNumber })
+            .then(result => {
+                this.accountName = result;
+                this.showError = false;
+            })
+            .catch(error => {
+                console.error('Error retrieving Account Name:', error);
+                this.showError = true;
+            });
         }
-        inputField.blur();
-
+        inputFieldOrgNumber.blur();
     }
 
     handlePhoneBlur(event) {
@@ -157,7 +193,6 @@ export default class Kontaktskjema extends LightningElement {
             inputFieldPhone.sendErrorMessage(this.errorText);
         }
         inputFieldPhone.blur();
-
     }
 /*
     handleEmptyField(event) {

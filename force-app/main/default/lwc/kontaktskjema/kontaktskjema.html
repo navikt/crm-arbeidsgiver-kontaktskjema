@@ -15,6 +15,7 @@
     </div>
     <div class="kontaktskjemaInside">
         <p class="infoText">Alle felter må fylles ut.</p>
+        <br>
         
         <!--============================Radio button - Theme=========================================-->
         
@@ -67,8 +68,8 @@
         <div class="input-fields">
             <c-input label="Organisasjonsnummer" type="text" value="" onchange={handleOrgChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur}></c-input>
             <br>
-          <!--  <c-input label="Bedriftens navn" type="text" value="" onchange="" show-error=true error-text="Du må fylle inn bedriftsnavn"></c-input>
-            <br> -->
+            <c-input label="Bedriftens navn" type="text" value={accountName} show-error=true error-text="Du må fylle inn bedriftsnavn" read-only=true></c-input>
+            <br>
             <c-input label="Ditt navn" type="text" value="" onchange={handleNameChange} error-text="Du må fylle inn navnet ditt"></c-input>
             <br>
             <c-input label="Epost" type="text" value="" onchange={handleEmailChange} error-text="Du må fylle inn e-post"></c-input>
