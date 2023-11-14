@@ -126,7 +126,7 @@ export default class Kontaktskjema extends LightningElement {
             this.checkedTheme = ''; 
 
             // Force a re-render of the component
-            this.template.querySelector('c-input').value = '';
+            this.template.querySelectorAll('c-input').value = '';
             console.log('contactOrg: ', this.contactOrg);
         })
         .catch(error => {

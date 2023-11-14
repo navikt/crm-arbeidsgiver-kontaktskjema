@@ -66,15 +66,15 @@
         <!--============================Input fields=========================================-->
 
         <div class="input-fields">
-            <c-input label="Organisasjonsnummer" type="text" value="" onchange={handleOrgChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur}></c-input>
+            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleOrgChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur}></c-input>
             <br>
             <c-input label="Bedriftens navn" type="text" value={accountName} show-error=true error-text="Du må fylle inn bedriftsnavn" read-only=true></c-input>
             <br>
-            <c-input label="Ditt navn" type="text" value="" onchange={handleNameChange} error-text="Du må fylle inn navnet ditt"></c-input>
+            <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt"></c-input>
             <br>
-            <c-input label="Epost" type="text" value="" onchange={handleEmailChange} error-text="Du må fylle inn e-post"></c-input>
+            <c-input label="Epost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn e-post"></c-input>
             <br>
-            <c-input label="Telefonnummer" type="text" value="" onchange={handlePhoneChange} error-text="Du må fylle inn riktig 8 siffer telefonnummer" onfocusout={handlePhoneBlur}></c-input>
+            <c-input label="Telefonnummer" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn riktig 8 siffer telefonnummer" onfocusout={handlePhoneBlur}></c-input>
         </div>
 
         <!--============================Info text and send button=========================================-->
