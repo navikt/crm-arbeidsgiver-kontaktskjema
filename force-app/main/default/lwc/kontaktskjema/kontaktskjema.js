@@ -67,6 +67,8 @@ export default class Kontaktskjema extends LightningElement {
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
 
+    static delegatesFocus = true;
+
     handleTheme(event) {
             const selectedTheme = event.detail;
             if (selectedTheme && selectedTheme.length > 0) {
@@ -165,6 +167,29 @@ export default class Kontaktskjema extends LightningElement {
 
     handleOrgNumberBlur(event) {
         //const inputValue = event.target.value;
+        //var nameField = this.template.querySelector('[data-id="nameField"]');
+        //nameField.focus();
+        //var currcounter = 0;
+        //currcounter = this.counter;
+            
+        //const inputField = event.target;
+        //const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
+        //event.preventDefault();
+        //event.stopPropagation();
+
+        /* if (!isOrgNumberValid) {
+            // inputField.sendErrorMessage(this.errorText);
+            //currcounter++;
+            //console.log("The current counter is:"+currcounter);
+            //this.counter = this.currcounter;
+            //console.log("The current counter is:"+this.counter);
+            //this.template.querySelector('name').focus();
+            //var nameField = this.template.querySelector('[data-id="nameField"]');
+            //nameField.focus();
+            } */
+        //this.inputField.focusOut();
+        
+
         const inputFieldOrgNumber = event.target;
         const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
@@ -194,12 +219,25 @@ export default class Kontaktskjema extends LightningElement {
         }
         inputFieldPhone.blur();
     }
-/*
+
     handleEmptyField(event) {
-        const inputVariousField = event.target.value;
-        console.log(toString(inputVariousField));
-        if (inputVariousField === '') {
-            inputVariousField.sendErrorMessage(this.errorText);
+        const inputVariousField = event.target;
+        console.log("Input is : "+inputVariousField.value);
+        if (inputVariousField.value == '' || inputVariousField.value == null || inputVariousField.value.length < 1) {
+            console.log("Send message is called");
+            console.log(inputVariousField.errorText);
+            inputVariousField.sendErrorMessage(inputVariousField.errorText);
         }
-    }*/
+    }
+
+    handleEmailField(event) {
+        const inputEmailField = event.target;
+        let regExp = RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+        let isValidEmail = regExp.test(inputEmailField.value) ? true : false;
+        if (!isValidEmail || inputEmailField.value == '' || inputEmailField.value == null || inputEmailField.value.length < 1) {
+            console.log("Send message is called");
+            console.log(inputEmailField.errorText);
+            inputEmailField.sendErrorMessage(inputEmailField.errorText);
+        }
+    }
 }
