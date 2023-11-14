@@ -55,13 +55,13 @@
         </div>
             </template>
         <div class="input-fields">
-            <c-input label="Organisasjonsnummer" type="text" value="" error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur}></c-input>
+            <c-input label="Organisasjonsnummer" type="text" value="" error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur} maxlength="9"></c-input>
             <br>
             <c-input label="Bedriftens navn" type="text" value="" show-error=true error-text="Du må fylle inn bedriftsnavn"></c-input>
             <br>
-            <c-input label="Ditt navn" type="text" value="" error-text="Du må fylle inn navnet ditt"></c-input>
+            <c-input label="Ditt navn" type="text" value="" error-text="Du må fylle inn navnet ditt" onfocusout={handleEmptyField}></c-input>
             <br>
-            <c-input label="Epost" type="text" value="" error-text="Du må fylle inn e-post"></c-input>
+            <c-input label="Epost" type="text" value="" error-text="Du må fylle inn riktig e-post" onfocusout={handleEmailField}></c-input>
             <br>
             <c-input label="Telefonnummer" type="text" value="" error-text="Du må fylle inn riktig 8 siffer telefonnummer" onfocusout={handlePhoneBlur}></c-input>
         </div>
