@@ -1,4 +1,27 @@
+/**
+ * @description This Contact Form Send Email class sends email receipts to users who submitted the kontaktskjema experience site.
+ *
+ * @author Andre Colle <andre.colle@nav.no>
+ * @since 2023-11-14 Created.
+ *
+ * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss/blob/main/LICENSE)
+ * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss)
+ * @see TAG_ContactFormController
+ * @see TAG_ContactFormSendEmail_Test
+ *
+ * @group TAG Contact Form
+ */
 public with sharing class TAG_ContactFormSendEmail {
+
+    /**
+     * @description The sendEmailReceipts method adds the email to the email queue
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     *
+     * @param opportunity The request/input parameter which is sent from the insertCustomOpportunity method in TAG_ContactFormController
+     * class.
+     */
     public static void sendEmailReceipts(CustomOpportunity__c opportunity) {
         List<EmailQueue__c> emails = new List<EmailQueue__c>();
         try {
@@ -14,6 +37,14 @@ public with sharing class TAG_ContactFormSendEmail {
         }
     }
 
+    /**
+     * @description The generateDraftEmailReceipt method generates the email
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     *
+     * @param opportunity The request/input parameter which is sent from the sendEmailReceipts method in this class.
+     */
     public static EmailQueue__c generateDraftEmailReceipt(CustomOpportunity__c opportunity) {
         String templateName = opportunity.InquiryCategory__c == 'Forebygge sykefravær'
             ? 'kontaktskjemaSykefravaerReceipt'

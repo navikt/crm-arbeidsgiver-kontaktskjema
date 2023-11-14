@@ -1,0 +1,30 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef1"
+            },
+            "Name": "Nav Alna",
+            "INT_UnitNumber__c": "0303",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Oslo",
+            "CRM_QueueId__c": "00G0E000004aoilUAA",
+            "INT_UnitType__c": "LOKAL",
+            "MarketRegion__c": "Øst"
+        },
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef2"
+            },
+            "Name": "Nav Kristiansand",
+            "INT_UnitNumber__c": "1987",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Agder",
+            "CRM_QueueId__c": "00G0E000004aoilUBB",
+            "INT_UnitType__c": "LOKAL",
+            "MarketRegion__c": "Sør"
+        }
+    ]
+}
