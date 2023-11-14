@@ -1,23 +1,29 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
 import index from '@salesforce/resourceUrl/index';
+import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
+import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
 
-    @track selectedTheme = '';
-    @track selectedContactedEmployeeRep = '';
-    @track checkedRekruttere = false;
-    @track checkedForebygge = false;
+    @track checkedTheme = '';
+    @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
+    @track contactOrg = '';
+    @track contactName = '';
+    @track contactEmail = '';
+    @track contactPhone = '';
+    @track accountName = '';
+    @track showError = false;
 
     @track fieldValues = { 
         FullName: '',
         OrganizationNumber: '',
         Email: '',
         Phone: ''
-
     }
 
     @track breadcrumbs = [
@@ -39,6 +45,18 @@ export default class Kontaktskjema extends LightningElement {
         }
     ];
 
+    @wire(getAccountName, {orgNumber: '$contactOrg' })
+    wiredAccountName({ data, error }) {
+        if (data) {
+            this.accountName = data;
+            this.showError = false;
+        } else if (error) {
+            this.accountName = '';
+            console.error('Error retrieving account name:', error);
+            this.showError = true;
+        }
+    }
+
     themeOptions = [
         { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
         { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
@@ -52,34 +70,75 @@ export default class Kontaktskjema extends LightningElement {
     static delegatesFocus = true;
 
     handleTheme(event) {
-        console.log('theme test: ');
-        this.selectedTheme = event.detail;
-
-        if (this.selectedTheme[0].checked === true) {
-            this.checkedRekruttere = true;
-            this.checkedForebygge = false;
-        } else if (this.selectedTheme[1].checked === true) {
-            this.checkedRekruttere = false;
-            this.checkedForebygge = true;
-        } else {
-            this.checkedRekruttere = false;
-            this.checkedForebygge = false;
+            const selectedTheme = event.detail;
+            if (selectedTheme && selectedTheme.length > 0) {
+                this.checkedTheme = selectedTheme[0].checked ? 'Rekruttere og inkludere' : 'Skal ansette';
+                this.checkedPreventSickLeave = selectedTheme[1].checked;
+            }
+            console.log('Checked theme: ', this.checkedTheme, 'and ', this.checkedPreventSickLeave);
         }
-    }
-
+        
     handleContactedEmployeeRep(event) {
-        console.log('yes or no test: ');
-        this.selectedContactedEmployeeRep = event.detail;
-
-        if (selectedContactedEmployeeRep[0].checked === true) {
-            this.checkedYesOrNo = true;
-        } else {
-            this.checkedYesOrNo = false;
+        const selectedContactedEmployeeRep = event.detail;
+        if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
+            this.checkedYesOrNo = selectedContactedEmployeeRep[0].checked ? true : false;
         }
+        console.log('Checked ', this.checkedYesOrNo);
     }
 
-    renderedCallback() {
-        loadStyle(this, index);
+    handleOrgChange(event) {
+        this.contactOrg = event.detail;
+    }
+
+    handleNameChange(event) {
+        this.contactName = event.detail;
+    }
+
+    handleEmailChange(event) {
+        this.contactEmail = event.detail;
+    }
+
+    handlePhoneChange(event) {
+        this.contactPhone = event.detail;
+    }
+
+    saveContactForm() {
+        const contactFormData = {
+            ContactOrg: this.contactOrg,
+            ContactName: this.contactName,
+            ContactEmail: this.contactEmail,
+            ContactPhone: this.contactPhone,
+            ThemeSelected: this.checkedTheme
+        };
+
+        createContactForm({ contactFormData })
+        .then(result => {
+            const toastEvent = new ShowToastEvent({
+                title: 'Suksess',
+                message: 'Kontaktskjema har blitt sendt til NAV',
+                variant: 'success'
+            });
+            this.dispatchEvent(toastEvent);
+
+            // Clear input field values
+            this.contactOrg = '';
+            this.contactName = '';
+            this.contactEmail = '';
+            this.contactPhone = '';
+            this.checkedTheme = ''; 
+
+            // Force a re-render of the component
+            this.template.querySelectorAll('c-input').value = '';
+            console.log('contactOrg: ', this.contactOrg);
+        })
+        .catch(error => {
+            const toastEvent = new ShowToastEvent({
+                title: 'Feilmelding',
+                message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
+                variant: 'error'
+            });
+            this.dispatchEvent(toastEvent);
+        });
     }
 
     handleResize() {
@@ -89,6 +148,10 @@ export default class Kontaktskjema extends LightningElement {
         } else {
             img.style.display = 'flex';
         }
+    }
+
+    renderedCallback() {
+        loadStyle(this, index);
     }
 
     connectedCallback() {
@@ -109,8 +172,8 @@ export default class Kontaktskjema extends LightningElement {
         //var currcounter = 0;
         //currcounter = this.counter;
             
-        const inputField = event.target;
-        const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
+        //const inputField = event.target;
+        //const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
         //event.preventDefault();
         //event.stopPropagation();
 
@@ -127,6 +190,24 @@ export default class Kontaktskjema extends LightningElement {
         //this.inputField.focusOut();
         
 
+        const inputFieldOrgNumber = event.target;
+        const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
+
+        if (!isOrgNumberValid) {
+            inputFieldOrgNumber.sendErrorMessage(this.errorText);
+            this.showError = true;
+        } else {
+            getAccountName ({ inputFieldOrgNumber })
+            .then(result => {
+                this.accountName = result;
+                this.showError = false;
+            })
+            .catch(error => {
+                console.error('Error retrieving Account Name:', error);
+                this.showError = true;
+            });
+        }
+        inputFieldOrgNumber.blur();
     }
 
     handlePhoneBlur(event) {
@@ -137,7 +218,6 @@ export default class Kontaktskjema extends LightningElement {
             inputFieldPhone.sendErrorMessage(this.errorText);
         }
         inputFieldPhone.blur();
-
     }
 
     handleEmptyField(event) {
