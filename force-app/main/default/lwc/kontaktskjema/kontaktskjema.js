@@ -67,8 +67,6 @@ export default class Kontaktskjema extends LightningElement {
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
 
-    static delegatesFocus = true;
-
     handleTheme(event) {
             const selectedTheme = event.detail;
             if (selectedTheme && selectedTheme.length > 0) {
@@ -84,10 +82,6 @@ export default class Kontaktskjema extends LightningElement {
             this.checkedYesOrNo = selectedContactedEmployeeRep[0].checked ? true : false;
         }
         console.log('Checked ', this.checkedYesOrNo);
-    }
-
-    handleOrgChange(event) {
-        this.contactOrg = event.detail;
     }
 
     handleNameChange(event) {
@@ -156,7 +150,6 @@ export default class Kontaktskjema extends LightningElement {
 
     connectedCallback() {
         window.addEventListener('resize', this.handleResize.bind(this));
-       // this.PhoneNumber = this.template.querySelector('#PhoneNumber');
     }
 
   
@@ -165,31 +158,8 @@ export default class Kontaktskjema extends LightningElement {
         window.removeEventListener('resize', this.handleResize.bind(this));
     }
 
-    handleOrgNumberBlur(event) {
-        //const inputValue = event.target.value;
-        //var nameField = this.template.querySelector('[data-id="nameField"]');
-        //nameField.focus();
-        //var currcounter = 0;
-        //currcounter = this.counter;
-            
-        //const inputField = event.target;
-        //const isOrgNumberValid = inputField.validateOrgNumber(this.errorText);
-        //event.preventDefault();
-        //event.stopPropagation();
-
-        /* if (!isOrgNumberValid) {
-            // inputField.sendErrorMessage(this.errorText);
-            //currcounter++;
-            //console.log("The current counter is:"+currcounter);
-            //this.counter = this.currcounter;
-            //console.log("The current counter is:"+this.counter);
-            //this.template.querySelector('name').focus();
-            //var nameField = this.template.querySelector('[data-id="nameField"]');
-            //nameField.focus();
-            } */
-        //this.inputField.focusOut();
-        
-
+    handleOrgNumberChange(event) {
+        this.contactOrg = event.detail;
         const inputFieldOrgNumber = event.target;
         const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
@@ -207,7 +177,6 @@ export default class Kontaktskjema extends LightningElement {
                 this.showError = true;
             });
         }
-        inputFieldOrgNumber.blur();
     }
 
     handlePhoneBlur(event) {
