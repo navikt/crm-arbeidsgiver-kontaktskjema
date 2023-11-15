@@ -65,9 +65,9 @@
         <!--============================Input fields=========================================-->
 
         <div class="input-fields">
-            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
+            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleOrgNumberChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
             <br>
-            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn" read-only="readonly"></c-input>
+            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn"></c-input>
             <br>
             <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" onfocusout={handleEmptyField}></c-input>
             <br>
