@@ -112,3 +112,15 @@
     border-radius: 4px; /* Add rounded corners */
     transition: background-color 0.3s; /* Smooth background color transition */
 }
+
+.navds-text-field__readonly:disabled,
+.navds-text-field__readonly:read-only,
+.navds-text-field__readonly {
+    background-color: lightgray;
+    border-color: #a0a0a0;
+    box-shadow: none;
+    color: #262626;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.8;
+}

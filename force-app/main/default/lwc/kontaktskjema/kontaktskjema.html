@@ -20,7 +20,7 @@
         <!--============================Radio button - Theme=========================================-->
         
         <div class="radio-buttons">
-        <c-radiobuttons
+            <c-radiobuttons
                 radiobuttons={themeOptions}
                 onradiobuttonsclick={handleTheme}
                 header="Hva gjelder det?"
@@ -41,16 +41,16 @@
 
             <template if:true={checkedPreventSickLeave}> 
                 <div class ="info-popup">
-                <div class="containerInfo">
-                    <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
-                    <p class="infoText">Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). NAV Arbeidslivssenter kan bistå i dette arbeidet.</p>
+                    <div class="containerInfo">
+                        <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
+                        <p class="infoText">Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). NAV Arbeidslivssenter kan bistå i dette arbeidet.</p>
+                    </div>
                 </div>
-            </div>
 
         <!--============================Radio button - Contacted employee representant=========================================-->
 
             <div class="radio-buttons">
-                <label class="inputPanel">
+                <label class="inputPanel"></label>
                 <c-radiobuttons
                 radiobuttons={contactedEmployeeRepOptions}
                 onradiobuttonsclick={handleContactedEmployeeRep}
@@ -58,17 +58,16 @@
                 group-name="radioGroup"
                 flex-direction="row"
                 type="radio"
-            ></c-radiobuttons>
-        </label>
-        </div>
+                ></c-radiobuttons>
+            </div>
             </template>
 
         <!--============================Input fields=========================================-->
 
         <div class="input-fields">
-            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleOrgChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" onfocusout={handleOrgNumberBlur} maxlength="9"></c-input>
+            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
             <br>
-            <c-input label="Bedriftens navn" type="text" value={accountName} show-error=true error-text="Du må fylle inn bedriftsnavn" read-only=true></c-input>
+            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn" read-only="readonly"></c-input>
             <br>
             <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" onfocusout={handleEmptyField}></c-input>
             <br>
