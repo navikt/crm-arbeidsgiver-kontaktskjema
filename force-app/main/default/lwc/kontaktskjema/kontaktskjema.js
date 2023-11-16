@@ -86,14 +86,17 @@ export default class Kontaktskjema extends LightningElement {
 
     handleNameChange(event) {
         this.contactName = event.detail;
+        this.handleEmptyField(event);
     }
 
     handleEmailChange(event) {
         this.contactEmail = event.detail;
+        this.handleEmailField(event);
     }
 
     handlePhoneChange(event) {
         this.contactPhone = event.detail;
+        this.handlePhoneField(event);
     }
 
     saveContactForm() {
@@ -179,14 +182,9 @@ export default class Kontaktskjema extends LightningElement {
         }
     }
 
-    handlePhoneBlur(event) {
+    handlePhoneField(event) {
         const inputFieldPhone = event.target;
         const isPhoneValid = inputFieldPhone.validatePhoneLength(this.errorText);
-
-        if (!isPhoneValid) {
-            inputFieldPhone.sendErrorMessage(this.errorText);
-        }
-        inputFieldPhone.blur();
     }
 
     handleEmptyField(event) {
