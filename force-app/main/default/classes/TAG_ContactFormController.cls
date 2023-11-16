@@ -36,6 +36,7 @@ public with sharing class TAG_ContactFormController {
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
+            newContactForm.regionCode = accountMap.get(contactFormData.get('ContactOrg')).INT_RegionNumber__c;
             newContactForm.fullName = contactFormData.get('ContactName');
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
@@ -95,12 +96,19 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
                 newCustomOpportunity.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
                 newCustomOpportunity.TAG_OrganizationNameFromForm__c = contactFormList[0].organizationName;
-                newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                 newCustomOpportunity.InquiryCategory__c = contactFormList[0].theme;
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
-                newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
+                //newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
+
+                if(contactFormList[0].theme == 'Rekruttere og inkludere') {
+                    newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                } else if (contactFormList[0].theme == 'Skal ansette') {
+                    newCustomOpportunity.INT_RegionNumber__c = contactFormList[0].regionCode;
+                }
+                
+                System.debug('insertCustomOpportunity metoden: ' + newCustomOpportunity.OwnerId);
 
             insert newCustomOpportunity;
             TAG_ContactFormSendEmail.sendEmailReceipts(newCustomOpportunity);
@@ -132,7 +140,7 @@ public with sharing class TAG_ContactFormController {
         ];
 
         for (Account a : accounts) {
-            accountMap.put(a.INT_OrganizationNumber__c, a);
+            accountMap.put(a.INT_OrganizationNumber__c, a); 
         }
         return accountMap;
     }
@@ -198,14 +206,16 @@ public with sharing class TAG_ContactFormController {
      *
      * @param navUnitId Contains the Nav Unit record Id
      * @return navUnitQueue Contains the Nav Unit queue Id
-     */
+     
     private static String getNavUnitQueue(Id navUnitId) {
         String navUnitQueue = [
             SELECT Id, CRM_QueueId__c
             FROM NAVUnit__c
-            WHERE INT_UnitNumber__c =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null
+            WHERE Id =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
         ].CRM_QueueId__c;
 
+        System.debug('getNavUnitQueue metoden: ' + navUnitQueue);
+
         return navUnitQueue;
-    }
+    }*/
 }
