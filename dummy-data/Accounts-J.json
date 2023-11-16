@@ -8,7 +8,8 @@
             "Name": "SKI KOMMUNE",
             "INT_Industry__c": "Generell offentlig administrasjon",
             "INT_IndustryCode__c": "84.110",
-            "INT_OrganizationNumber__c": "960507878"
+            "INT_OrganizationNumber__c": "960507878",
+            "CRM_AccountType__c": "J"
         }
     ]
 }

@@ -11,7 +11,8 @@
             "INT_OrganizationNumber__c": "960507879",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef11"
+            "ParentId": "@AccountRef11",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -24,7 +25,8 @@
             "INT_OrganizationNumber__c": "960507880",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef7"
+            "ParentId": "@AccountRef7",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -36,7 +38,8 @@
             "INT_OrganizationNumber__c": "960507881",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef7"
+            "ParentId": "@AccountRef7",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -48,7 +51,8 @@
             "INT_OrganizationNumber__c": "960507882",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef7"
+            "ParentId": "@AccountRef7",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -61,7 +65,8 @@
             "INT_OrganizationNumber__c": "960507883",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef15"
+            "ParentId": "@AccountRef15",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -79,7 +84,8 @@
             "ShippingPostalCode": "1424",
             "ShippingState": "SKI",
             "ShippingStreet": "Delerudbakken 7",
-            "ParentId": "@AccountRef7"
+            "ParentId": "@AccountRef7",
+            "CRM_AccountType__c": "B"
         },
         {
             "attributes": {
@@ -92,7 +98,8 @@
             "INT_OrganizationNumber__c": "960507885",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef9"
+            "ParentId": "@AccountRef9",
+            "CRM_AccountType__c": "B"
         }
     ]
 }

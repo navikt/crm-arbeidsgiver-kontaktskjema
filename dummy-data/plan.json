@@ -1,5 +1,11 @@
 [
     {
+        "sobject": "NavUnit__c",
+        "saveRefs": false,
+        "resolveRefs": true,
+        "files": ["NavUnits.json"]
+    },
+    {
         "sobject": "Account",
         "saveRefs": true,
         "resolveRefs": true,
