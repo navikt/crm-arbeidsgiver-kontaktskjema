@@ -13,12 +13,12 @@
  */
 
 public with sharing class TAG_ContactForm {
-    public String organizationNumber { get; set; }
-    public String municipalityCode { get; set; }
-    public String organizationName { get; set; }
-    public String phoneNumber { get; set; }
-    public String regionCode { get; set; }
-    public String fullName { get; set; }
-    public String email { get; set; }
-    public String theme { get; set; }
+    public String organizationNumber;
+    public String municipalityCode;
+    public String organizationName;
+    public String phoneNumber;
+    public String regionCode;
+    public String fullName;
+    public String email;
+    public String theme;
 }
