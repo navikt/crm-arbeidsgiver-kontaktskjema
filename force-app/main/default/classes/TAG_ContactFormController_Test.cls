@@ -18,9 +18,9 @@ public with sharing class TAG_ContactFormController_Test {
 
 @TestSetup
 static void makeData(){
-    Account acc1 = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631');
+    Account acc1 = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631', INT_RegionNumber__c = '30', INT_MunicipalityNumber__c = '3002');
         insert acc1;
-    Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632');
+    Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632', INT_RegionNumber__c = '46', INT_MunicipalityNumber__c = '3003');
         insert acc2;
 
     NavUnit__c navUnitAlna = new NavUnit__c(Name = 'Nav Alna', INT_UnitNumber__c = '0303', INT_Region__c = 'Oslo', 
@@ -45,7 +45,7 @@ static void makeData(){
         Test.stopTest();
 
         List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c
+            SELECT Id, Account__c, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
             FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Skal ansette' LIMIT 1
         ];
 
@@ -69,6 +69,8 @@ static void makeData(){
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
         System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
+        System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Region Number should be null');
+        System.assertEquals('3002', opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be 3002');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
@@ -86,7 +88,7 @@ static void makeData(){
         Test.stopTest();
 
         List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c
+            SELECT Id, Account__c, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
             FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Forebygge sykefravær' LIMIT 1
         ];
 
@@ -110,6 +112,8 @@ static void makeData(){
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
         System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
+        System.assertEquals('0200', opportunity[0].INT_RegionNumber__c, 'Region Number should be 0200');
+        System.assertEquals(null, opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be null');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 

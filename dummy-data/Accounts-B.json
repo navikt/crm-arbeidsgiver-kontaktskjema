@@ -12,7 +12,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef11",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -26,7 +27,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef7",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -39,7 +41,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef7",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -52,7 +55,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef7",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -66,7 +70,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -85,7 +90,8 @@
             "ShippingState": "SKI",
             "ShippingStreet": "Delerudbakken 7",
             "ParentId": "@AccountRef7",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         },
         {
             "attributes": {
@@ -99,7 +105,8 @@
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
             "ParentId": "@AccountRef9",
-            "CRM_AccountType__c": "B"
+            "CRM_AccountType__c": "B",
+            "INT_RegionNumber__c": "30"
         }
     ]
 }
