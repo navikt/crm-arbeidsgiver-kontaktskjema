@@ -62,20 +62,12 @@ public with sharing class TAG_ContactFormController {
      */
     @AuraEnabled(cacheable=true)
     public static String getAccountName(String orgNumber) {
-        String accountName = '';
-
         try {
-            Account acc = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1];
-            if (acc != null) {
-                accountName = acc.Name;
-            } else {
-                throw new AuraHandledException('Dette organisasjonsnummeret eksisterer ikke');
-            }
+            String accountName = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1].Name;
+            return accountName;
         } catch (Exception e) {
-            System.debug('An exception has occured: ' + e.getMessage());
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
-        return accountName;
     }
 
     /**
@@ -102,20 +94,17 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
                 //newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
 
-                if(contactFormList[0].theme == 'Rekruttere og inkludere') {
+                if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
-                } else if (contactFormList[0].theme == 'Skal ansette') {
+                } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
                     newCustomOpportunity.INT_RegionNumber__c = contactFormList[0].regionCode;
                 }
-                
-                System.debug('insertCustomOpportunity metoden: ' + newCustomOpportunity.OwnerId);
 
             insert newCustomOpportunity;
             TAG_ContactFormSendEmail.sendEmailReceipts(newCustomOpportunity);
         } catch (Exception e) {
-            System.debug('An exception has occured: ' + e.getMessage());
-            /*LoggerUtility logger = new LoggerUtility();
-            logger.logError('Failed to create custom opportunity' + e.getMessage() + '/n' + e.getStackTraceString());*/
+            System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
+            throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
         }
     }
 
@@ -133,15 +122,14 @@ public with sharing class TAG_ContactFormController {
      */
     private static Map<String, Account> getAccountMap(String contactOrgNr) {
         Map<String, Account> accountMap = new Map<String, Account>();
-        List<Account> accounts = [
-            SELECT Id, Name, INT_OrganizationNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
+        Account a = [
+            SELECT Id, Name, INT_OrganizationNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c, INT_RegionNumber__c
             FROM Account
-            WHERE INT_OrganizationNumber__c =:contactOrgNr AND IsPersonAccount = FALSE
+            WHERE INT_OrganizationNumber__c =:contactOrgNr AND IsPersonAccount = FALSE LIMIT 1
         ];
 
-        for (Account a : accounts) {
             accountMap.put(a.INT_OrganizationNumber__c, a); 
-        }
+
         return accountMap;
     }
 
@@ -173,6 +161,8 @@ public with sharing class TAG_ContactFormController {
             wrapper.source = 'Kontaktskjema';
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
+
+            System.debug('Phone: ' + wrapper.phone);
         }
 
         return SharedFunctions.fetchOrCreateContact(contactWrappers, accountMap);

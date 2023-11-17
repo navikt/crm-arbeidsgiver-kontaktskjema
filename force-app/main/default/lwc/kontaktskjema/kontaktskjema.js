@@ -155,8 +155,6 @@ export default class Kontaktskjema extends LightningElement {
         window.addEventListener('resize', this.handleResize.bind(this));
     }
 
-  
-
     disconnectedCallback() {
         window.removeEventListener('resize', this.handleResize.bind(this));
     }
