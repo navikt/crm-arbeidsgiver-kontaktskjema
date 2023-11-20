@@ -9,7 +9,7 @@
             "INT_UnitNumber__c": "0303",
             "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
             "INT_Region__c": "Oslo",
-            "CRM_QueueId__c": "00G0E000004aoilUAA",
+            "CRM_QueueId__c": "a0B5t000000I8r2EAC",
             "INT_UnitType__c": "LOKAL",
             "MarketRegion__c": "Øst"
         },
@@ -22,7 +22,7 @@
             "INT_UnitNumber__c": "1987",
             "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
             "INT_Region__c": "Agder",
-            "CRM_QueueId__c": "00G0E000004aoilUBB",
+            "CRM_QueueId__c": "a0B5t000000I8r2EYT",
             "INT_UnitType__c": "LOKAL",
             "MarketRegion__c": "Sør"
         }

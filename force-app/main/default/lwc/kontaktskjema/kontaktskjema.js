@@ -164,6 +164,8 @@ export default class Kontaktskjema extends LightningElement {
         const inputFieldOrgNumber = event.target;
         const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
+        console.log('isOrgNumberValid: ', isOrgNumberValid);
+
         if (!isOrgNumberValid) {
             inputFieldOrgNumber.sendErrorMessage(this.errorText);
             this.showError = true;

@@ -11,7 +11,8 @@
             "INT_OrganizationNumber__c": "960507886",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -24,7 +25,8 @@
             "INT_OrganizationNumber__c": "960507887",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -37,7 +39,8 @@
             "INT_OrganizationNumber__c": "960507888",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -50,7 +53,8 @@
             "INT_OrganizationNumber__c": "960507889",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -63,7 +67,8 @@
             "INT_OrganizationNumber__c": "960507890",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -76,7 +81,8 @@
             "INT_OrganizationNumber__c": "960507891",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -89,7 +95,8 @@
             "INT_OrganizationNumber__c": "960507892",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -102,7 +109,8 @@
             "INT_OrganizationNumber__c": "960507893",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         },
         {
             "attributes": {
@@ -115,7 +123,8 @@
             "INT_OrganizationNumber__c": "960507894",
             "INT_OrganizationalStructure__c": "BEDR",
             "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "O"
+            "CRM_AccountType__c": "O",
+            "INT_RegionNumber__c": "38"
         }
     ]
 }

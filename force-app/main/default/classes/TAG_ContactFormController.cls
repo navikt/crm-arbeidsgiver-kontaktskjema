@@ -97,7 +97,7 @@ public with sharing class TAG_ContactFormController {
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                 } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
-                    newCustomOpportunity.INT_RegionNumber__c = contactFormList[0].regionCode;
+                    newCustomOpportunity.INT_RegionNumber__c = getUnitRegionNumber(contactFormList[0].regionCode);
                 }
 
             insert newCustomOpportunity;
@@ -208,4 +208,46 @@ public with sharing class TAG_ContactFormController {
 
         return navUnitQueue;
     }*/
+
+    @testVisible
+    private static String getUnitRegionNumber(String countyNr) {
+        switch on countyNr {
+            when '30' {
+                return '0200';
+            }
+            when '03' {
+                return '0300';
+            }
+            when '34' {
+                return '0400';
+            }
+            when '38' {
+                return '0800';
+            }
+            when '42' {
+                return '1000';
+            }
+            when '11' {
+                return '1100';
+            }
+            when '46' {
+                return '1200';
+            }
+            when '15' {
+                return '1500';
+            }
+            when '18' {
+                return '1800';
+            }
+            when '54' {
+                return '1900';
+            }
+            when '50' {
+                return '5700';
+            }
+            when else {
+                return null;
+            }
+        }
+    }
 }
