@@ -22,8 +22,8 @@ static void makeData(){
         insert acc1;
     Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632', INT_RegionNumber__c = '03', INT_MunicipalityNumber__c = '3002');
         insert acc2;
-    Account accWrongRegionNr = new Account(Name = 'Test Employer 3', INT_OrganizationNumber__c = '973113633', INT_RegionNumber__c = '22', INT_MunicipalityNumber__c = '3003');
-        insert accWrongRegionNr;
+    Account accountWrongRegionNr = new Account(Name = 'Test Employer 3', INT_OrganizationNumber__c = '973113633', INT_RegionNumber__c = '22', INT_MunicipalityNumber__c = '3003');
+        insert accountWrongRegionNr;
 
     NavUnit__c navUnitAlna = new NavUnit__c(Name = 'Nav Alna', INT_UnitNumber__c = '0303', INT_Region__c = 'Oslo', 
             CRM_QueueId__c = '00G0E000004aoilUAA', INT_UnitType__c = 'LOKAL');
@@ -120,7 +120,7 @@ static void makeData(){
     }
 
     @IsTest
-    static void testProcessSingleContactFormPreventSickLeaveNegative() {
+    static void testProcessSingleContactFormPreventSickLeaveNull() {
         Map<String, String> contactFormMap = new Map<String, String>();
         contactFormMap.put('ContactOrg', '');
         contactFormMap.put('ContactName', '');
@@ -166,17 +166,24 @@ static void makeData(){
             TAG_ContactFormController.createContactForm(contactFormMap);
         } catch(Exception e) {
             Assert.isNotNull(e);
-            System.assertEquals('An error occurred while inserting Custom Opportunity to the database.', e.getMessage());
         }
         Test.stopTest();
+
+        List<CustomOpportunity__c> opportunity = [
+            SELECT Id, Account__c, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
+            FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Forebygge sykefravær' LIMIT 1
+        ];
+
+        System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Regionnr should be null');
     }
 
     @IsTest
     static void testGetAccountNamePositive() {
         String orgNr = '973113631';
+        String orgName = '';
 
         Test.startTest();
-        String orgName = TAG_ContactFormController.getAccountName(orgNr);
+        orgName = TAG_ContactFormController.getAccountName(orgNr);
         Test.stopTest();
 
         System.assertEquals('Test Employer 1', orgName, 'Org name should be Test Employer 1');
@@ -185,14 +192,38 @@ static void makeData(){
     @IsTest
     static void testGetAccountNameNegative() {
         String orgNr = '973113635';
+        String errorMessage = '';
+        String orgName = '';
 
         Test.startTest();
         try {
-            String orgName = TAG_ContactFormController.getAccountName(orgNr);
+            orgName = TAG_ContactFormController.getAccountName(orgNr);
         } catch(Exception e) {
             Assert.isNotNull(e);
+            errorMessage = e.getMessage();
         }
         Test.stopTest();
+
+        System.assertEquals('Script-thrown exception', errorMessage, 'Error message not matching');
+    }
+
+    @IsTest
+    static void testGetAccountNameNull() {
+        String orgNr = '';
+        String errorMessage = '';
+        String orgName = 'Test';
+
+        Test.startTest();
+        try {
+            orgName = TAG_ContactFormController.getAccountName(orgNr);
+        } catch(Exception e) {
+            Assert.isNotNull(e);
+            errorMessage = e.getMessage();
+        }
+        Test.stopTest();
+
+        System.assertEquals('', errorMessage, 'Error message should be empty');
+        System.assertEquals(null, orgName, 'Org name should be empty');
     }
 }
 
