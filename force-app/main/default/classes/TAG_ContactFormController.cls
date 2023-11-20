@@ -63,8 +63,12 @@ public with sharing class TAG_ContactFormController {
     @AuraEnabled(cacheable=true)
     public static String getAccountName(String orgNumber) {
         try {
-            String accountName = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1].Name;
-            return accountName;
+            if (String.isEmpty(orgNumber)){
+                return null;
+            } else {
+                String accountName = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1].Name;
+                return accountName;
+            }
         } catch (Exception e) {
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
