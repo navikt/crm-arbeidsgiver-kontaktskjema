@@ -209,6 +209,7 @@ public with sharing class TAG_ContactFormController {
         return navUnitQueue;
     }*/
 
+    @testVisible
     private static String getUnitRegionNumber(String countyNr) {
         switch on countyNr {
             when '30' {
