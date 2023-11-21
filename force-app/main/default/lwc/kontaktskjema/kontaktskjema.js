@@ -57,8 +57,10 @@ export default class Kontaktskjema extends LightningElement {
         }
     }
 
-    themeOptions = [
+    themeOption1 = [
         { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
+    ];
+    themeOption2 = [
         { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
     ];
 
@@ -69,9 +71,11 @@ export default class Kontaktskjema extends LightningElement {
 
     handleTheme(event) {
             const selectedTheme = event.detail;
+            console.log('Selected theme: ', this.selectedTheme);
+
             if (selectedTheme && selectedTheme.length > 0) {
-                this.checkedTheme = selectedTheme[0].checked ? 'Rekruttere og inkludere' : 'Skal ansette';
-                this.checkedPreventSickLeave = selectedTheme[1].checked;
+                this.checkedTheme = selectedTheme.checked ? 'Rekruttere og inkludere' : 'Skal ansette';
+                this.checkedPreventSickLeave = selectedTheme.checked ? 'Forebygge sykefravær' : 'Forebygge sykefravær';
             }
             console.log('Checked theme: ', this.checkedTheme, 'and ', this.checkedPreventSickLeave);
         }
