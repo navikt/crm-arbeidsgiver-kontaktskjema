@@ -12,7 +12,7 @@
  *
  * @group TAG Contact Form
  */
-public with sharing class TAG_ContactFormController {
+public without sharing class TAG_ContactFormController {
     private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
         .get('Inclusion')
         .getRecordTypeId();
@@ -36,7 +36,7 @@ public with sharing class TAG_ContactFormController {
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
-            newContactForm.regionCode = accountMap.get(contactFormData.get('ContactOrg')).INT_RegionNumber__c;
+            newContactForm.regionNumber = accountMap.get(contactFormData.get('ContactOrg')).INT_RegionNumber__c;
             newContactForm.fullName = contactFormData.get('ContactName');
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
@@ -101,7 +101,7 @@ public with sharing class TAG_ContactFormController {
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                 } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
-                    newCustomOpportunity.INT_RegionNumber__c = getUnitRegionNumber(contactFormList[0].regionCode);
+                    newCustomOpportunity.INT_RegionNumber__c = getUnitRegionNumber(contactFormList[0].regionNumber);
                 }
 
             insert newCustomOpportunity;
@@ -213,9 +213,18 @@ public with sharing class TAG_ContactFormController {
         return navUnitQueue;
     }*/
 
+    /**
+     * @description The getUnitRegionNumber method switches the national Region number to NAVs Unit region number
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-21 Created.
+     *
+     * @param regionNr Contains the national Region number (for countys in Norway)
+     * @return NAVs Unit region number, which is unique for each Region/county office
+     */
     @testVisible
-    private static String getUnitRegionNumber(String countyNr) {
-        switch on countyNr {
+    private static String getUnitRegionNumber(String regionNr) {
+        switch on regionNr {
             when '30' {
                 return '0200';
             }

@@ -140,15 +140,15 @@ static void makeData(){
 
     @IsTest
     static void testGetUnitRegionNumberPositive() {
-        List<String> countyNumbers = new List<String>{'30', '03', '34', '38', '42', '11', '46', '15', '18', '54', '50'};
+        List<String> regionNumbers = new List<String>{'30', '03', '34', '38', '42', '11', '46', '15', '18', '54', '50'};
         List<String> unitRegionNumbers = new List<String>{'0200', '0300', '0400', '0800', '1000', '1100', '1200', '1500', '1800', '1900', '5700'};
 
-        for (Integer i = 0; i < countyNumbers.size(); i++) {
-            String countyNumber = countyNumbers[i];
+        for (Integer i = 0; i < regionNumbers.size(); i++) {
+            String regionNumber = regionNumbers[i];
             String unitRegionNumber = unitRegionNumbers[i];
 
-            String result = TAG_ContactFormController.getUnitRegionNumber(countyNumber);
-            System.assertEquals(unitRegionNumber, result, 'Incorrect result for county number ' + countyNumber);
+            String result = TAG_ContactFormController.getUnitRegionNumber(regionNumber);
+            System.assertEquals(unitRegionNumber, result, 'Incorrect result for region number ' + regionNumber);
         }
     }
 

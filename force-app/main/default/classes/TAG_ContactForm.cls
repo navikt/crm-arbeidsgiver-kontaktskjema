@@ -12,12 +12,12 @@
  * @group TAG Contact Form
  */
 
-public with sharing class TAG_ContactForm {
+public without sharing class TAG_ContactForm {
     public String organizationNumber;
     public String municipalityCode;
     public String organizationName;
     public String phoneNumber;
-    public String regionCode;
+    public String regionNumber;
     public String fullName;
     public String email;
     public String theme;
