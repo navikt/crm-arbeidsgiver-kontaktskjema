@@ -11,7 +11,7 @@
  *
  * @group TAG Contact Form
  */
-public with sharing class TAG_ContactFormSendEmail {
+public without sharing class TAG_ContactFormSendEmail {
 
     /**
      * @description The sendEmailReceipts method adds the email to the email queue
@@ -30,7 +30,6 @@ public with sharing class TAG_ContactFormSendEmail {
                 }
             insert emails;
         } catch (Exception e) {
-            LoggerUtility logger = new LoggerUtility();
             System.debug('An exception has occured: ' + e.getMessage());
             /*LoggerUtility logger = new LoggerUtility();
             logger.logError('Failed to create custom opportunity' + e.getMessage() + '/n' + e.getStackTraceString());*/

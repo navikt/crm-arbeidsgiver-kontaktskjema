@@ -12,7 +12,7 @@
  *
  * @group TAG Contact Form
  */
-public with sharing class TAG_ContactFormController {
+public without sharing class TAG_ContactFormController {
     private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
         .get('Inclusion')
         .getRecordTypeId();
@@ -36,6 +36,7 @@ public with sharing class TAG_ContactFormController {
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
+            newContactForm.regionNumber = accountMap.get(contactFormData.get('ContactOrg')).INT_RegionNumber__c;
             newContactForm.fullName = contactFormData.get('ContactName');
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
@@ -61,20 +62,16 @@ public with sharing class TAG_ContactFormController {
      */
     @AuraEnabled(cacheable=true)
     public static String getAccountName(String orgNumber) {
-        String accountName = '';
-
         try {
-            Account acc = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1];
-            if (acc != null) {
-                accountName = acc.Name;
+            if (String.isEmpty(orgNumber)){
+                return null;
             } else {
-                throw new AuraHandledException('Dette organisasjonsnummeret eksisterer ikke');
+                String accountName = [SELECT Name FROM Account WHERE INT_OrganizationNumber__c = :orgNumber LIMIT 1].Name;
+                return accountName;
             }
         } catch (Exception e) {
-            System.debug('An exception has occured: ' + e.getMessage());
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
-        return accountName;
     }
 
     /**
@@ -95,19 +92,23 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
                 newCustomOpportunity.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
                 newCustomOpportunity.TAG_OrganizationNameFromForm__c = contactFormList[0].organizationName;
-                newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                 newCustomOpportunity.InquiryCategory__c = contactFormList[0].theme;
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
-                newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
+                //newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
+
+                if(contactFormList[0].theme == 'Skal ansette') {
+                    newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
+                    newCustomOpportunity.INT_RegionNumber__c = getUnitRegionNumber(contactFormList[0].regionNumber);
+                }
 
             insert newCustomOpportunity;
             TAG_ContactFormSendEmail.sendEmailReceipts(newCustomOpportunity);
         } catch (Exception e) {
-            System.debug('An exception has occured: ' + e.getMessage());
-            /*LoggerUtility logger = new LoggerUtility();
-            logger.logError('Failed to create custom opportunity' + e.getMessage() + '/n' + e.getStackTraceString());*/
+            System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
+            throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
         }
     }
 
@@ -125,15 +126,14 @@ public with sharing class TAG_ContactFormController {
      */
     private static Map<String, Account> getAccountMap(String contactOrgNr) {
         Map<String, Account> accountMap = new Map<String, Account>();
-        List<Account> accounts = [
-            SELECT Id, Name, INT_OrganizationNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
+        Account a = [
+            SELECT Id, Name, INT_OrganizationNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c, INT_RegionNumber__c
             FROM Account
-            WHERE INT_OrganizationNumber__c =:contactOrgNr AND IsPersonAccount = FALSE
+            WHERE INT_OrganizationNumber__c =:contactOrgNr AND IsPersonAccount = FALSE LIMIT 1
         ];
 
-        for (Account a : accounts) {
-            accountMap.put(a.INT_OrganizationNumber__c, a);
-        }
+            accountMap.put(a.INT_OrganizationNumber__c, a); 
+
         return accountMap;
     }
 
@@ -165,6 +165,8 @@ public with sharing class TAG_ContactFormController {
             wrapper.source = 'Kontaktskjema';
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
+
+            System.debug('Phone: ' + wrapper.phone);
         }
 
         return SharedFunctions.fetchOrCreateContact(contactWrappers, accountMap);
@@ -198,14 +200,67 @@ public with sharing class TAG_ContactFormController {
      *
      * @param navUnitId Contains the Nav Unit record Id
      * @return navUnitQueue Contains the Nav Unit queue Id
-     */
+     
     private static String getNavUnitQueue(Id navUnitId) {
         String navUnitQueue = [
             SELECT Id, CRM_QueueId__c
             FROM NAVUnit__c
-            WHERE INT_UnitNumber__c =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null
+            WHERE Id =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
         ].CRM_QueueId__c;
 
+        System.debug('getNavUnitQueue metoden: ' + navUnitQueue);
+
         return navUnitQueue;
+    }*/
+
+    /**
+     * @description The getUnitRegionNumber method switches the national Region number to NAVs Unit region number
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-21 Created.
+     *
+     * @param regionNr Contains the national Region number (for countys in Norway)
+     * @return NAVs Unit region number, which is unique for each Region/county office
+     */
+    @testVisible
+    private static String getUnitRegionNumber(String regionNr) {
+        switch on regionNr {
+            when '30' {
+                return '0200';
+            }
+            when '03' {
+                return '0300';
+            }
+            when '34' {
+                return '0400';
+            }
+            when '38' {
+                return '0800';
+            }
+            when '42' {
+                return '1000';
+            }
+            when '11' {
+                return '1100';
+            }
+            when '46' {
+                return '1200';
+            }
+            when '15' {
+                return '1500';
+            }
+            when '18' {
+                return '1800';
+            }
+            when '54' {
+                return '1900';
+            }
+            when '50' {
+                return '5700';
+            }
+            when else {
+                return null;
+            }
+        }
     }
 }
