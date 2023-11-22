@@ -10,6 +10,8 @@ export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
 
     @track checkedTheme = '';
+    @track classNameOption1 = 'radio-buttons';
+    @track classNameOption2 = 'radio-buttons';
     @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
     @track contactOrg = '';
@@ -74,17 +76,18 @@ export default class Kontaktskjema extends LightningElement {
 
         this.checkedTheme = selectedTheme1[0].checked ? 'Skal ansette' : '';
         this.checkedPreventSickLeave = false;
-        console.log(this.checkedTheme);
+        this.classNameOption1 = 'radio-buttons radio-buttons-checked';
+        this.classNameOption2 = 'radio-buttons';
     }
     handleThemeOption2(event) {
         const selectedTheme2 = event.detail;
 
         this.checkedTheme = selectedTheme2[0].checked ? 'Forebygge sykefravær' : '';
         this.checkedPreventSickLeave = true;
-        console.log(this.checkedTheme);
+        this.classNameOption1 = 'radio-buttons';
+        this.classNameOption2 = 'radio-buttons radio-buttons-checked';
     }
     
-        
     handleContactedEmployeeRep(event) {
         const selectedContactedEmployeeRep = event.detail;
         if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
@@ -172,11 +175,9 @@ export default class Kontaktskjema extends LightningElement {
     handleOrgNumberChange(event) {
         this.contactOrg = event.detail;
         const inputFieldOrgNumber = event.target;
-        const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
+        const isNotOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
-        console.log('isOrgNumberValid: ', isOrgNumberValid);
-
-        if (!isOrgNumberValid) {
+        if (!isNotOrgNumberValid) {
             inputFieldOrgNumber.sendErrorMessage(this.errorText);
             this.showError = true;
         } else {
@@ -194,7 +195,7 @@ export default class Kontaktskjema extends LightningElement {
 
     handlePhoneField(event) {
         const inputFieldPhone = event.target;
-        const isPhoneValid = inputFieldPhone.validatePhoneLength(this.errorText);
+        inputFieldPhone.validatePhoneLength(this.errorText);
     }
 
     handleEmptyField(event) {
