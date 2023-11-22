@@ -93,7 +93,6 @@ export default class Kontaktskjema extends LightningElement {
         if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
             this.checkedYesOrNo = selectedContactedEmployeeRep[0].checked ? true : false;
         }
-        console.log('Checked ', this.checkedYesOrNo);
     }
 
     handleNameChange(event) {
@@ -139,7 +138,6 @@ export default class Kontaktskjema extends LightningElement {
 
             // Force a re-render of the component
             this.template.querySelectorAll('c-input').value = '';
-            console.log('contactOrg: ', this.contactOrg);
         })
         .catch(error => {
             const toastEvent = new ShowToastEvent({
