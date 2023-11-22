@@ -10,6 +10,7 @@ export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
 
     @track checkedTheme = '';
+    @track themeChecked = true;
     @track classNameOption1 = 'radio-buttons';
     @track classNameOption2 = 'radio-buttons';
     @track checkedPreventSickLeave = false;
@@ -20,6 +21,10 @@ export default class Kontaktskjema extends LightningElement {
     @track contactPhone = '';
     @track accountName = '';
     @track showError = false;
+    isOrgValid = false;
+    isNameValid = false;
+    isEpostValid = false;
+    isPhoneValid = false;
 
     @track fieldValues = { 
         FullName: '',
@@ -73,7 +78,7 @@ export default class Kontaktskjema extends LightningElement {
 
     handleThemeOption1(event) {
         const selectedTheme1 = event.detail;
-
+        this.themeChecked = true;
         this.checkedTheme = selectedTheme1[0].checked ? 'Skal ansette' : '';
         this.checkedPreventSickLeave = false;
         this.classNameOption1 = 'radio-buttons radio-buttons-checked';
@@ -81,7 +86,7 @@ export default class Kontaktskjema extends LightningElement {
     }
     handleThemeOption2(event) {
         const selectedTheme2 = event.detail;
-
+        this.themeChecked = true;
         this.checkedTheme = selectedTheme2[0].checked ? 'Forebygge sykefravær' : '';
         this.checkedPreventSickLeave = true;
         this.classNameOption1 = 'radio-buttons';
@@ -110,44 +115,82 @@ export default class Kontaktskjema extends LightningElement {
         this.handlePhoneField(event);
     }
 
-    saveContactForm() {
-        const contactFormData = {
-            ContactOrg: this.contactOrg,
-            ContactName: this.contactName,
-            ContactEmail: this.contactEmail,
-            ContactPhone: this.contactPhone,
-            ThemeSelected: this.checkedTheme
-        };
+    validateSendForm() {
+        if (this.isPhoneValid === false) {
+            let inputPhoneField = this.template.querySelector('[data-id="inputPhone"]');
+            inputPhoneField.validatePhoneLength(inputPhoneField.errorText);
+            inputPhoneField.focus();
+        }
 
-        createContactForm({ contactFormData })
-        .then(result => {
-            const toastEvent = new ShowToastEvent({
-                title: 'Suksess',
-                message: 'Kontaktskjema har blitt sendt til NAV',
-                variant: 'success'
-            });
-            this.dispatchEvent(toastEvent);
+        if (this.isEpostValid === false) {
+            let inputEpostField = this.template.querySelector('[data-id="inputEpost"]');
+            inputEpostField.sendErrorMessage(inputEpostField.errorText);
+            inputEpostField.focus();
+        }
 
-            // Clear input field values
-            this.contactOrg = '';
-            this.contactName = '';
-            this.contactEmail = '';
-            this.contactPhone = '';
-            this.checkedTheme = '';
-            this.accountName = '';
+        if (this.isNameValid === false) {
+            let inputNameField = this.template.querySelector('[data-id="inputName"]');
+            inputNameField.sendErrorMessage(inputNameField.errorText);
+            inputNameField.focus();
+        }
 
-            // Force a re-render of the component
-            this.template.querySelectorAll('c-input').value = '';
-        })
-        .catch(error => {
-            const toastEvent = new ShowToastEvent({
-                title: 'Feilmelding',
-                message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
-                variant: 'error'
-            });
-            this.dispatchEvent(toastEvent);
-        });
+        if (this.isOrgValid === false) {
+            let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
+            inputOrgField.validateOrgNumber(this.errorText);
+            inputOrgField.focus();
+        }
+
+        if (this.checkedTheme == '') {
+            this.themeChecked = false;
+            let radioTheme = this.template.querySelector('[data-id="radioTheme"]');
+            radioTheme.focus();
+            //radioTheme.style.border = '1px solid #ba3a26';
+        }
     }
+
+    saveContactForm() {
+        this.validateSendForm();
+
+        if(this.themeChecked === true && this.isOrgValid === true && this.isNameValid === true) {
+            const contactFormData = {
+                ContactOrg: this.contactOrg,
+                ContactName: this.contactName,
+                ContactEmail: this.contactEmail,
+                ContactPhone: this.contactPhone,
+                ThemeSelected: this.checkedTheme
+            };
+    
+            createContactForm({ contactFormData })
+            .then(result => {
+                const toastEvent = new ShowToastEvent({
+                    title: 'Suksess',
+                    message: 'Kontaktskjema har blitt sendt til NAV',
+                    variant: 'success'
+                });
+                this.dispatchEvent(toastEvent);
+    
+                // Clear input field values
+                this.contactOrg = '';
+                this.contactName = '';
+                this.contactEmail = '';
+                this.contactPhone = '';
+                this.checkedTheme = '';
+                this.accountName = '';
+    
+                // Force a re-render of the component
+                this.template.querySelectorAll('c-input').value = '';
+            })
+            .catch(error => {
+                const toastEvent = new ShowToastEvent({
+                    title: 'Feilmelding',
+                    message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
+                    variant: 'error'
+                });
+                this.dispatchEvent(toastEvent);
+            });
+    
+        }
+            }
 
     handleResize() {
         const img = this.template.querySelector('[data-id="imageBanner"]');
@@ -173,12 +216,14 @@ export default class Kontaktskjema extends LightningElement {
     handleOrgNumberChange(event) {
         this.contactOrg = event.detail;
         const inputFieldOrgNumber = event.target;
-        const isNotOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
+        const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
 
-        if (!isNotOrgNumberValid) {
-            inputFieldOrgNumber.sendErrorMessage(this.errorText);
-            this.showError = true;
+        if (!isOrgNumberValid) {
+            //inputFieldOrgNumber.sendErrorMessage(this.errorText);
+            //this.showError = true;
+            this.isOrgNumberValid = false;
         } else {
+            this.isOrgNumberValid = true;
             getAccountName ({ inputFieldOrgNumber })
             .then(result => {
                 this.accountName = result;
@@ -193,16 +238,25 @@ export default class Kontaktskjema extends LightningElement {
 
     handlePhoneField(event) {
         const inputFieldPhone = event.target;
-        inputFieldPhone.validatePhoneLength(this.errorText);
+        const isPhoneInputValid = inputFieldPhone.validatePhoneLength(this.errorText);
+        if (!isPhoneInputValid) {
+            this.isPhoneValid = false;
+        }
+        else {
+            this.isPhoneValid = true;
+        }
     }
 
     handleEmptyField(event) {
         const inputVariousField = event.target;
-        console.log("Input is : "+inputVariousField.value);
         if (inputVariousField.value == '' || inputVariousField.value == null || inputVariousField.value.length < 1) {
             console.log("Send message is called");
             console.log(inputVariousField.errorText);
             inputVariousField.sendErrorMessage(inputVariousField.errorText);
+            this.isNameValid = false;
+        }
+        else {
+            this.isNameValid = true;
         }
     }
 
@@ -214,6 +268,10 @@ export default class Kontaktskjema extends LightningElement {
             console.log("Send message is called");
             console.log(inputEmailField.errorText);
             inputEmailField.sendErrorMessage(inputEmailField.errorText);
+            this.isEpostValid = false;
+        }
+        else {
+            this.isEpostValid = true;
         }
     }
 }

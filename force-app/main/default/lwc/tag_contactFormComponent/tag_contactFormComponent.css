@@ -13,6 +13,22 @@
     margin: 10px;    
 }
 
+.errorText {
+    display: block;
+    color: #ba3a26;
+    margin: 0;
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.375rem;
+    font-weight: 600;
+    margin-top: 8px;
+    gap: 0.5rem;
+}
+
+.errorText:before {
+    content: "• ";
+}
+
 .containerBreadcrumbs {
     display: flex;
     align-items: center;

@@ -25,6 +25,8 @@
                 group-name="radioGroupTheme"
                 flex-direction="column"
                 type="radio"
+                tabindex="0"
+                data-id="radioTheme"
             ></c-radiobuttons>
         </div>
         <br>
@@ -35,7 +37,11 @@
                 group-name="radioGroupTheme"
                 flex-direction="column"
                 type="radio"
+                tabindex="0"
             ></c-radiobuttons>
+        </div>
+        <div if:false={themeChecked}>
+            <p class="errorText">Du må velge et tema</p>
         </div>
 
         <!--============================Info text - Other themes=========================================-->
@@ -74,15 +80,15 @@
         <!--============================Input fields=========================================-->
 
         <div class="input-fields">
-            <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleOrgNumberChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
+            <c-input label="Organisasjonsnummer" data-id="inputOrgNumber" type="text" value={contactOrg} onchange={handleOrgNumberChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
             <br>
             <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn (hentes automatisk)" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn"></c-input>
             <br>
-            <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" maxlength="80"></c-input>
+            <c-input label="Ditt navn" data-id="inputName" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" maxlength="80"></c-input>
             <br>
-            <c-input label="Epost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn riktig e-post"></c-input>
+            <c-input label="Epost" data-id="inputEpost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn riktig e-post"></c-input>
             <br>
-            <c-input label="Telefonnummer" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn riktig 8 siffer telefonnummer"></c-input>
+            <c-input label="Telefonnummer" data-id="inputPhone" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn riktig 8 siffer telefonnummer"></c-input>
         </div>
 
         <!--============================Info text and send button=========================================-->
