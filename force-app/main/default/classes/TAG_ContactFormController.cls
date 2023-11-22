@@ -186,8 +186,8 @@ public without sharing class TAG_ContactFormController {
             List<String> fullName = model.fullName.split(' ');
             String lastNameSplitted = fullName[fullName.size() - 1];
             String firstNameSplitted = model.fullName.removeEnd(' ' + lastNameSplitted);
-            wrapper.firstName = firstNameSplitted;
-            wrapper.lastName = lastNameSplitted;
+            wrapper.firstName = firstNameSplitted.left(40);
+            wrapper.lastName = lastNameSplitted.left(80);
         }
     }
 

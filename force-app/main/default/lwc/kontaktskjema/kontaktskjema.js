@@ -57,8 +57,10 @@ export default class Kontaktskjema extends LightningElement {
         }
     }
 
-    themeOptions = [
+    themeOption1 = [
         { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
+    ];
+    themeOption2 = [
         { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
     ];
 
@@ -67,14 +69,21 @@ export default class Kontaktskjema extends LightningElement {
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
 
-    handleTheme(event) {
-            const selectedTheme = event.detail;
-            if (selectedTheme && selectedTheme.length > 0) {
-                this.checkedTheme = selectedTheme[0].checked ? 'Rekruttere og inkludere' : 'Skal ansette';
-                this.checkedPreventSickLeave = selectedTheme[1].checked;
-            }
-            console.log('Checked theme: ', this.checkedTheme, 'and ', this.checkedPreventSickLeave);
-        }
+    handleThemeOption1(event) {
+        const selectedTheme1 = event.detail;
+
+        this.checkedTheme = selectedTheme1[0].checked ? 'Skal ansette' : '';
+        this.checkedPreventSickLeave = false;
+        console.log(this.checkedTheme);
+    }
+    handleThemeOption2(event) {
+        const selectedTheme2 = event.detail;
+
+        this.checkedTheme = selectedTheme2[0].checked ? 'Forebygge sykefravær' : '';
+        this.checkedPreventSickLeave = true;
+        console.log(this.checkedTheme);
+    }
+    
         
     handleContactedEmployeeRep(event) {
         const selectedContactedEmployeeRep = event.detail;
@@ -122,7 +131,8 @@ export default class Kontaktskjema extends LightningElement {
             this.contactName = '';
             this.contactEmail = '';
             this.contactPhone = '';
-            this.checkedTheme = ''; 
+            this.checkedTheme = '';
+            this.accountName = '';
 
             // Force a re-render of the component
             this.template.querySelectorAll('c-input').value = '';

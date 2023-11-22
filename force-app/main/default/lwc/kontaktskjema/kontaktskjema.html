@@ -14,16 +14,24 @@
         </div>
     </div>
     <div class="kontaktskjemaInside">
-        <p class="infoText">Alle felter må fylles ut.</p>
-        <br>
+        <p class="infoTextStandard">Alle felter må fylles ut.</p>
         
         <!--============================Radio button - Theme=========================================-->
-        
+        <p class="radioText">Hva gjelder det?</p>
         <div class="radio-buttons">
             <c-radiobuttons
-                radiobuttons={themeOptions}
-                onradiobuttonsclick={handleTheme}
-                header="Hva gjelder det?"
+                radiobuttons={themeOption1}
+                onradiobuttonsclick={handleThemeOption1}
+                group-name="radioGroupTheme"
+                flex-direction="column"
+                type="radio"
+            ></c-radiobuttons>
+        </div>
+        <br>
+        <div class="radio-buttons">
+                <c-radiobuttons
+                radiobuttons={themeOption2}
+                onradiobuttonsclick={handleThemeOption2}
                 group-name="radioGroupTheme"
                 flex-direction="column"
                 type="radio"
@@ -34,7 +42,7 @@
 
         <div class="containerInfo">
             <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
-            <p class="infoText">For andre temaer, <a href="tel:+4755553336" class="lenke">ring arbeidsgivertelefonen på 55&nbsp;55&nbsp;33&nbsp;36</a></p>
+            <p class="infoTextStandard">For andre temaer, <a href="tel:+4755553336" class="lenke">ring arbeidsgivertelefonen på 55&nbsp;55&nbsp;33&nbsp;36</a></p>
         </div>
         
         <!--============================Info box - Prevent sick leave=========================================-->
@@ -43,14 +51,14 @@
                 <div class ="info-popup">
                     <div class="containerInfo">
                         <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
-                        <p class="infoText">Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). NAV Arbeidslivssenter kan bistå i dette arbeidet.</p>
+                        <p class="infoTextStandard">Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). NAV Arbeidslivssenter kan bistå i dette arbeidet.</p>
                     </div>
                 </div>
                 <br>
 
         <!--============================Radio button - Contacted employee representant=========================================-->
 
-            <div class="radio-buttons">
+            <div>
                 <label class="inputPanel"></label>
                 <c-radiobuttons
                 radiobuttons={contactedEmployeeRepOptions}
@@ -68,9 +76,9 @@
         <div class="input-fields">
             <c-input label="Organisasjonsnummer" type="text" value={contactOrg} onchange={handleOrgNumberChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
             <br>
-            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn"></c-input>
+            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn (hentes automatisk)" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn"></c-input>
             <br>
-            <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt"></c-input>
+            <c-input label="Ditt navn" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" maxlength="80"></c-input>
             <br>
             <c-input label="Epost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn riktig e-post"></c-input>
             <br>
@@ -81,7 +89,7 @@
 
         <div class="containerInfo">
             <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
-            <p class="infoText">NAV bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi kan kontakte deg om rekruttere og inkludere i bedriften du representerer. Opplysningene blir ikke delt eller brukt til andre formål.</p>
+            <p class="infoTextStandard">NAV bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi kan kontakte deg om rekruttere og inkludere i bedriften du representerer. Opplysningene blir ikke delt eller brukt til andre formål.</p>
         </div>
         <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
     </div>
