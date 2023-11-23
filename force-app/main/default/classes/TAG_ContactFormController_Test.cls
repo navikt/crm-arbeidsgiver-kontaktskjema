@@ -33,6 +33,14 @@ static void makeData(){
         insert navUnitKristiansand;
     }
 
+    /**
+     * @description Testing the `createContactForm` method with correct values.
+     * Testing with value: `contactFormMap` with theme = Skal ansette
+     * Expected result: A new record in the CustomOpportunity__c object
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testProcessSingleContactFormRecruiteAndIncludePositive() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -76,6 +84,14 @@ static void makeData(){
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
+    /**
+     * @description Testing the `createContactForm` method with correct values.
+     * Testing with value: `contactFormMap` with theme = Forebygge sykefravær
+     * Expected result: A new record in the CustomOpportunity__c object
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testProcessSingleContactFormPreventSickLeavePositive() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -119,6 +135,14 @@ static void makeData(){
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
+    /**
+     * @description Testing the `createContactForm` method with null values.
+     * Testing with value: `contactFormMap`
+     * Expected result: Error message
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testProcessSingleContactFormPreventSickLeaveNull() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -138,6 +162,14 @@ static void makeData(){
         Test.stopTest();
     }
 
+    /**
+     * @description Testing the `getUnitRegionNumber` method with correct values.
+     * Testing with value: `regionNumbers`
+     * Expected result: result should return the same values as unitRegionNumbers list
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testGetUnitRegionNumberPositive() {
         List<String> regionNumbers = new List<String>{'30', '03', '34', '38', '42', '11', '46', '15', '18', '54', '50'};
@@ -152,6 +184,14 @@ static void makeData(){
         }
     }
 
+    /**
+     * @description Testing the `getUnitRegionNumber` method with wrong values.
+     * Testing with value: `contactFormMap`
+     * Expected result: Error message
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testGetUnitRegionNumberNegative() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -177,6 +217,14 @@ static void makeData(){
         System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Regionnr should be null');
     }
 
+    /**
+     * @description Testing the `getAccountName` method with wrong values.
+     * Testing with value: `orgNr`
+     * Expected result: Name of the organization
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testGetAccountNamePositive() {
         String orgNr = '973113631';
@@ -189,6 +237,14 @@ static void makeData(){
         System.assertEquals('Test Employer 1', orgName, 'Org name should be Test Employer 1');
     }
 
+    /**
+     * @description Testing the `getAccountName` method with wrong values.
+     * Testing with value: `orgNr`
+     * Expected result: error message
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testGetAccountNameNegative() {
         String orgNr = '973113635';
@@ -207,6 +263,14 @@ static void makeData(){
         System.assertEquals('Script-thrown exception', errorMessage, 'Error message not matching');
     }
 
+    /**
+     * @description Testing the `getAccountName` method with wrong values.
+     * Testing with value: `orgNr`
+     * Expected result: null
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testGetAccountNameNull() {
         String orgNr = '';
