@@ -11,7 +11,7 @@
  *
  * @group TAG Contact Form
  */
-public without sharing class TAG_ContactFormSendEmail {
+public with sharing class TAG_ContactFormSendEmail {
 
     /**
      * @description The sendEmailReceipts method adds the email to the email queue

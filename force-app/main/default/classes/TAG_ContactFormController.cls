@@ -12,7 +12,7 @@
  *
  * @group TAG Contact Form
  */
-public without sharing class TAG_ContactFormController {
+public with sharing class TAG_ContactFormController {
     private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
         .get('Inclusion')
         .getRecordTypeId();
