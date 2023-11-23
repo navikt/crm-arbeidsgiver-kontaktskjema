@@ -62,6 +62,7 @@ assignPermission() {
     sf org assign permset \
     --name Arbeidsgiver_base \
     --name Arbeidsgiver_opportunity \
+    --name Arbeidsgiver_NavApp \
     || { error $? '"sf org assign permset" command failed.'; }
 }
 
@@ -144,7 +145,7 @@ command -v jq >/dev/null 2>&1 || {
     exit 1
 }
 
-ORG_ALIAS="arbeidsgiver-kontakt-oss"
+ORG_ALIAS="arbeidsgiver-kontaktskjema"
 secret=$npm_config_package_key
 devHubAlias=$(sf config get target-dev-hub --json | jq -r '.result[0].value')
 
@@ -154,7 +155,7 @@ else
     org_alias=$ORG_ALIAS
 fi
 
-echo "Installing crm-arbeidsgiver-kontakt-oss scratch org ($org_alias)"
+echo "Installing crm-arbeidsgiver-kontaktskjema scratch org ($org_alias)"
 echo ""
 
 operations=(

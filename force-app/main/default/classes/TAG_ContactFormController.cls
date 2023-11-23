@@ -5,14 +5,14 @@
  * @author Andre Colle <andre.colle@nav.no>
  * @since 2023-11-14 Created.
  *
- * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss/blob/main/LICENSE)
- * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss)
+ * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema/blob/main/LICENSE)
+ * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema)
  * @see TAG_ContactFormSendEmail
  * @see TAG_ContactFormController_Test
  *
  * @group TAG Contact Form
  */
-public without sharing class TAG_ContactFormController {
+public with sharing class TAG_ContactFormController {
     private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
         .get('Inclusion')
         .getRecordTypeId();
