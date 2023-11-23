@@ -3,7 +3,7 @@
         {
             "path": "force-app",
             "default": true,
-            "package": "crm-arbeidsgiver-kontakt-oss",
+            "package": "crm-arbeidsgiver-kontaktskjema",
             "versionName": "ver 0.1",
             "versionNumber": "1.2.0.NEXT",
             "dependencies": [
@@ -73,7 +73,7 @@
         "crm-journal-utilities": "0Ho2o000000fxXkCAI",
         "crm-thread-view": "0Ho7U000000000zSAA",
         "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
-        "crm-arbeidsgiver-kontakt-oss": "0Ho7U0000004CAkSAM",
+        "crm-arbeidsgiver-kontaktskjema": "0Ho7U0000004CAkSAM",
         "crm-community-base": "0Ho2o0000008OSzCAM"
     }
 }

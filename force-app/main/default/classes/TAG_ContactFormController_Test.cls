@@ -4,8 +4,8 @@
  * @author Andre Colle <andre.colle@nav.no>
  * @since 2023-11-14 Created.
  *
- * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss/blob/main/LICENSE)
- * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss)
+ * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema/blob/main/LICENSE)
+ * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema)
  * @see TAG_ContactFormController
  *
  * @group TAG Contact Form
