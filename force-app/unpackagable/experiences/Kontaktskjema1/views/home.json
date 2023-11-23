@@ -20,6 +20,14 @@
     "regionName" : "header",
     "type" : "region"
   }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:tag_contactFormComponent",
+      "id" : "6cdc9c1a-c0f5-40dd-8318-03b1ba6fb5ec",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
     "id" : "03141169-dd6e-4784-aac7-70756629a017",
     "regionName" : "content",
     "type" : "region"
