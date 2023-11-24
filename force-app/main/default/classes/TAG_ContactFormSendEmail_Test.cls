@@ -30,6 +30,14 @@ static void makeData() {
         insert co;
     }
 
+    /**
+     * @description Testing the `sendEmailReceipts` method with correct value.
+     * Testing with value: `CustomOpportunity__c opportunity`
+     * Expected result: A new record in the EmailQueue__c object with status = Queued
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2023-11-14 Created.
+     */
     @IsTest
     static void testProcessEmailPositive() {
 
