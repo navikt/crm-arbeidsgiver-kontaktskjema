@@ -33,25 +33,6 @@ export default class Kontaktskjema extends LightningElement {
         Phone: ''
     }
 
-    @track breadcrumbs = [
-        {
-            label: 'nav.no',
-            href: ''
-        },
-        {
-            label: 'Arbeidsgiver',
-            href: 'mine-samtaler'
-        },
-        {
-            label: 'Kontakt NAV',
-            href: 'detail'
-        },
-        {
-            label: 'Kontaktskjema',
-            href: 'detail'
-        }
-    ];
-
     @wire(getAccountName, {orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
         if (data) {
@@ -181,23 +162,6 @@ export default class Kontaktskjema extends LightningElement {
                 this.isNameValid = false;
                 this.isEpostValid = false;
                 this.isPhoneValid = false;
-                //this.selectedTheme1[0].checked = false;
-                //this.template.querySelectorAll('c-radiobuttons').style.display = 'none';
-                //this.template.querySelectorAll('c-radiobuttons').style.display = 'block';
-                /*this.themeOption1.forEach(option => {
-                    option.checked = false;
-                });
-                console.log("option"+this.themeOption1.option.checked);
-                this.themeOption2.forEach(option => {
-                    option.checked = false;
-                });*/
-
-                //this.selectedTheme1[0] = '';
-                //this.selectedTheme2[0] = '';
-    
-                // Force a re-render of the component
-                //this.template.querySelectorAll('c-input').value = '';
-                //this.dispatchEvent(new RefreshEvent());
             })
             .catch(error => {
                 const toastEvent = new ShowToastEvent({
