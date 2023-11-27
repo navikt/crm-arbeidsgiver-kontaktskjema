@@ -4,14 +4,14 @@
  * @author Andre Colle <andre.colle@nav.no>
  * @since 2023-11-14 Created.
  *
- * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss/blob/main/LICENSE)
- * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontakt-oss)
+ * @see [License](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema/blob/main/LICENSE)
+ * @see [Github](https://github.com/navikt/crm-arbeidsgiver-kontaktskjema)
  * @see TAG_ContactFormController
  * @see TAG_ContactFormSendEmail_Test
  *
  * @group TAG Contact Form
  */
-public without sharing class TAG_ContactFormSendEmail {
+public with sharing class TAG_ContactFormSendEmail {
 
     /**
      * @description The sendEmailReceipts method adds the email to the email queue
