@@ -33,25 +33,6 @@ export default class Kontaktskjema extends LightningElement {
         Phone: ''
     }
 
-    @track breadcrumbs = [
-        {
-            label: 'nav.no',
-            href: ''
-        },
-        {
-            label: 'Arbeidsgiver',
-            href: 'mine-samtaler'
-        },
-        {
-            label: 'Kontakt NAV',
-            href: 'detail'
-        },
-        {
-            label: 'Kontaktskjema',
-            href: 'detail'
-        }
-    ];
-
     @wire(getAccountName, {orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
         if (data) {
