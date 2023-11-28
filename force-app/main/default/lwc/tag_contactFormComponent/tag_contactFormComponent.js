@@ -26,13 +26,6 @@ export default class Kontaktskjema extends LightningElement {
     isEpostValid = false;
     isPhoneValid = false;
 
-    @track fieldValues = { 
-        FullName: '',
-        OrganizationNumber: '',
-        Email: '',
-        Phone: ''
-    }
-
     @wire(getAccountName, {orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
         if (data) {
@@ -42,8 +35,10 @@ export default class Kontaktskjema extends LightningElement {
         } else if (error) {
             this.accountName = '';
             console.error('Error retrieving account name:', error);
-            this.showError = true;
             this.isOrgValid = false;
+            let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
+            inputOrgField.sendErrorMessage(inputOrgField.errorText);
+            inputOrgField.focus();
         }
     }
 
@@ -101,7 +96,7 @@ export default class Kontaktskjema extends LightningElement {
     validateSendForm() {
         if (this.isPhoneValid === false) {
             let inputPhoneField = this.template.querySelector('[data-id="inputPhone"]');
-            inputPhoneField.validatePhoneLength(inputPhoneField.errorText);
+            inputPhoneField.sendErrorMessage(inputPhoneField.errorText);
             inputPhoneField.focus();
         }
 
@@ -202,17 +197,6 @@ export default class Kontaktskjema extends LightningElement {
         const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
     }
 
-    handlePhoneField(event) {
-        const inputFieldPhone = event.target;
-        const isPhoneInputValid = inputFieldPhone.validatePhoneLength(this.errorText);
-        if (inputFieldPhone.showError === true) {
-            this.isPhoneValid = false;
-        }
-        else {
-            this.isPhoneValid = true;
-        }
-    }
-
     handleEmptyField(event) {
         const inputVariousField = event.target;
         if (inputVariousField.value == '' || inputVariousField.value == null || inputVariousField.value.length < 1) {
@@ -236,6 +220,19 @@ export default class Kontaktskjema extends LightningElement {
         }
         else {
             this.isEpostValid = true;
+        }
+    }
+
+    handlePhoneField(event) {
+        const inputPhoneField = event.target;
+        let regExp = RegExp(/^\d{8,14}$/);
+        let isValidPhoneNr = regExp.test(inputPhoneField.value) ? true : false;
+        if (!isValidPhoneNr || inputPhoneField.value == '' || inputPhoneField.value == null || inputPhoneField.value.length < 1) {
+            inputPhoneField.sendErrorMessage(inputPhoneField.errorText);
+            this.isPhoneValid = false;
+        }
+        else {
+            this.isPhoneValid = true;
         }
     }
 }

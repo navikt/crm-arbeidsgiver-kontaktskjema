@@ -39,6 +39,7 @@
     </div>
     <div class="kontaktskjemaInside">
         <p class="infoTextStandard">Alle felter må fylles ut.</p>
+        <br>
         
         <!--============================Radio button - Theme=========================================-->
         <p class="radioText">Hva gjelder det?</p>
@@ -106,13 +107,13 @@
         <div class="input-fields">
             <c-input label="Organisasjonsnummer" data-id="inputOrgNumber" type="text" value={contactOrg} onchange={handleOrgNumberChange} error-text="Du må fylle inn et gyldig organisasjonsnummer" maxlength="9"></c-input>
             <br>
-            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn (vises automatisk)" type="text" value={accountName} error-text="Du må fylle inn bedriftsnavn"></c-input>
+            <c-input class="navds-text-field__readonly" tabindex=-1 label="Bedriftens navn (vises automatisk)" type="text" value={accountName}></c-input>
             <br>
             <c-input label="Ditt navn" data-id="inputName" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" maxlength="80"></c-input>
             <br>
-            <c-input label="Epost" data-id="inputEpost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn riktig e-post"></c-input>
+            <c-input label="Epost" data-id="inputEpost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn gyldig e-post" maxlength="80"></c-input>
             <br>
-            <c-input label="Telefonnummer" data-id="inputPhone" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn riktig 8 siffer telefonnummer"></c-input>
+            <c-input label="Telefonnummer (kun tall)" data-id="inputPhone" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn gyldig telefonnummer" maxlength="14"></c-input>
         </div>
 
         <!--============================Info text and send button=========================================-->
