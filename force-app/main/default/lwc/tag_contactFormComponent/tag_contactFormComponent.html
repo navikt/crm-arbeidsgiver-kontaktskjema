@@ -111,17 +111,18 @@
             <br>
             <c-input label="Ditt navn" data-id="inputName" type="text" value={contactName} onchange={handleNameChange} error-text="Du må fylle inn navnet ditt" maxlength="80"></c-input>
             <br>
-            <c-input label="Epost" data-id="inputEpost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn gyldig e-post" maxlength="80"></c-input>
+            <c-input label="Epost" data-id="inputEpost" type="text" value={contactEmail} onchange={handleEmailChange} error-text="Du må fylle inn en gyldig e-post adresse" maxlength="80"></c-input>
             <br>
-            <c-input label="Telefonnummer (kun tall)" data-id="inputPhone" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn gyldig telefonnummer" maxlength="14"></c-input>
+            <c-input label="Telefonnummer (kun tall)" data-id="inputPhone" type="text" value={contactPhone} onchange={handlePhoneChange} error-text="Du må fylle inn et gyldig telefonnummer" maxlength="14"></c-input>
         </div>
 
         <!--============================Info text and send button=========================================-->
 
         <div class="containerInfo">
             <img class="infoIcon" src="https://arbeidsgiver.nav.no/kontakt-oss/static/media/info-sirkel-fyll.99b53a0f.svg" alt="informasjonsikon"/>
-            <p class="infoTextStandard">NAV bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi kan kontakte deg om rekruttere og inkludere i bedriften du representerer. Opplysningene blir ikke delt eller brukt til andre formål.</p>
+            <p class="infoTextStandard">NAV bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi kan kontakte deg angående temaet du valger i dette skjemaet. Opplysningene blir ikke delt eller brukt til andre formål.</p>
         </div>
         <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
+        <!--<c-Button button-styling="primary" button-label="Send inn" onbuttonclick={saveContactForm}></c-Button>-->
     </div>
 </template>
