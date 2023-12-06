@@ -32,6 +32,11 @@ export default class Kontaktskjema extends LightningElement {
             this.accountName = data;
             this.showError = false;
             this.isOrgValid = true;
+            let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
+            setTimeout(function(){
+                accountNameRead.style.display = "block";
+                accountNameRead.focus();
+           },500); //delay is in milliseconds 
         } else if (error) {
             this.accountName = '';
             console.error('Error retrieving account name:', error);
@@ -39,6 +44,8 @@ export default class Kontaktskjema extends LightningElement {
             let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
             inputOrgField.sendErrorMessage(inputOrgField.errorText);
             inputOrgField.focus();
+            let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
+            accountNameRead.style.display = "none";
         }
     }
 
@@ -53,6 +60,13 @@ export default class Kontaktskjema extends LightningElement {
         { label: 'Ja', value: 'Ja', name: 'contactedEmpRep', checked: false },
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
+
+    /*handleFocusReadOnlyField(event) {
+        let inputOrgFieldDiv = this.template.querySelector('[data-id="inputOrgNumberDiv"]');
+        setTimeout(function(){
+            inputOrgFieldDiv.focus();
+       },1000); //delay is in milliseconds 
+    }*/
 
     handleThemeOption1(event) {
         const selectedTheme1 = event.detail;

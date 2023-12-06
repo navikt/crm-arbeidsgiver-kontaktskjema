@@ -200,6 +200,15 @@
     background-color: rgba(0, 52, 125, 1);
     box-shadow: 0 0 0 2px rgba(0, 52, 125, 1);
 }
+.pBedrift {
+    display: none;
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    max-width: 600px;
+    padding: 0.5rem;
+}
 
 span {
     font-family: 'Source Sans Pro', Arial, sans-serif;
