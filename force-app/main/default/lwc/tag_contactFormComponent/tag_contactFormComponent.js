@@ -5,6 +5,7 @@ import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
+import navStyling from '@salesforce/resourceUrl/navStyling';
 
 export default class Kontaktskjema extends LightningElement {
     bildeKontaktskjema = kontaktsjemaBilde;
@@ -181,6 +182,7 @@ export default class Kontaktskjema extends LightningElement {
 
     renderedCallback() {
         loadStyle(this, index);
+        loadStyle(this,navStyling);
     }
 
     connectedCallback() {
