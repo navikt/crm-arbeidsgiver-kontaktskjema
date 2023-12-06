@@ -104,4 +104,8 @@
         <recordType>CustomOpportunity__c.Inclusion</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewPrivateStaticResources</name>
+    </userPermissions>
 </PermissionSet>
