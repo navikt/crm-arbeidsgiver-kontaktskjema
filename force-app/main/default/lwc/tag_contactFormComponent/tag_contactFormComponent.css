@@ -34,13 +34,13 @@
     align-items: center;
 }
 
-.containerInfo {
+.breadcrumb {
+    flex-direction: row;
     display: flex;
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    flex-wrap: wrap;
 }
 
-.containerInfo2 {
+.containerInfo {
     display: flex;
     margin-top: 3rem;
     margin-bottom: 3rem;
@@ -65,16 +65,6 @@
     background-color: #fff;
     min-height: 50rem;
     max-width: 400rem;
-}
-
-.infoText {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    font-family: "Source Sans Pro",Arial,sans-serif;
-    font-weight: 400;
-    font-size: 1rem;
-    line-height: 1.375rem;
-    max-width: 600px;
 }
 
 .infoTextStandard {
@@ -180,12 +170,6 @@
     opacity: 0.8;
 }
 
-.breadcrumb {
-    flex-direction: row;
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .listElement {
     font-family: 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.125rem;
@@ -200,7 +184,7 @@
     background-color: rgba(0, 52, 125, 1);
     box-shadow: 0 0 0 2px rgba(0, 52, 125, 1);
 }
-.pBedrift {
+.pAccount {
     display: none;
     font-family: "Source Sans Pro",Arial,sans-serif;
     font-weight: 400;
