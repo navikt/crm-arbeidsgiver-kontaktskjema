@@ -1,0 +1,137 @@
+.banner {
+    height: 11rem;
+    margin-top: 1em;
+    background-color: #cce1f3;
+    border-bottom: 0.2rem solid #99c2e8;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    display: block;
+    min-width: 768px;
+}
+
+.homeicon {
+    margin: 10px;    
+}
+
+.errorText {
+    display: block;
+    color: #ba3a26;
+    margin: 0;
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.375rem;
+    font-weight: 600;
+    margin-top: 8px;
+    gap: 0.5rem;
+}
+
+.errorText:before {
+    content: "• ";
+}
+
+.containerBreadcrumbs {
+    display: flex;
+    align-items: center;
+}
+
+.banner-inside {
+    max-width: 992px;
+    height: 100%;
+    display: flex; /* Use flexbox to enable flexible layout */
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+}
+
+.title-kontaktskjema {
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    /*min-width: 30em;*/
+    min-width: 10em;
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+    font-weight: 600;
+    margin-right: 10px;
+    vertical-align: bottom;
+    overflow: visible;
+}
+
+.title-picture {
+    min-width: 768px;
+    margin-bottom: -1px;
+    height: 9rem;
+    overflow: visible;
+}
+
+.breadcrumb {
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.listElement {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.333;
+    color: #0067c5;
+}
+
+.listElement:focus {
+    outline: none;
+    color: rgba(255, 255, 255, 1);
+    text-decoration: none;
+    background-color: rgba(0, 52, 125, 1);
+    box-shadow: 0 0 0 2px rgba(0, 52, 125, 1);
+}
+.pBedrift {
+    display: none;
+    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    max-width: 600px;
+    padding: 0.5rem;
+}
+
+span {
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.333;
+    color: #262626;
+}
+
+.navds-form-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.confirmation-area {
+    text-align: center;
+}
+
+.inquiry-flow-images {
+    display: flex;
+    flex-direction: row;
+}
+
+.inquiry-flow-image {
+    max-width: 10rem;
+    text-align: center;
+    position: relative;
+}
+
+.inquiry-flow-image::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -1px; /* Half of the line height to center the arrow vertically */
+    border-style: solid;
+    border-width: 0.1rem; /* Adjust the thickness of the arrow as needed */
+    border-color: lightblue; /* Set the color of the arrow */
+}

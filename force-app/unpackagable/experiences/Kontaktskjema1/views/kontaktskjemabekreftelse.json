@@ -1,0 +1,46 @@
+{
+  "appPageId" : "c188b213-ed7e-4aa8-adc5-2a6d37a8e90e",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "306f9920-83f6-4c7f-a126-2a2a0920c3b4",
+  "label" : "Kontaktskjemabekreftelse",
+  "regions" : [ {
+    "id" : "9a9770c3-dfe8-4c1f-a0d3-ebef05d0201c",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:tag_contactFormConfirmation",
+      "id" : "d4e581a1-ec44-4221-a37c-e419cf32edd4",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "69234fe1-c380-4267-bcf7-b54656f19091",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "3daf82f2-7619-4be6-99bf-c4e58e52d0a3",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Kontaktskjemabekreftelse"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "8a6dcf51-c2bd-4dbc-bba4-c6b0e47f1a63",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "b81e88c9-8c17-4a94-b617-7306124355cb",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-kontaktskjemabekreftelse"
+}
