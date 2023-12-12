@@ -62,13 +62,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
 
-    /*handleFocusReadOnlyField(event) {
-        let inputOrgFieldDiv = this.template.querySelector('[data-id="inputOrgNumberDiv"]');
-        setTimeout(function(){
-            inputOrgFieldDiv.focus();
-       },1000); //delay is in milliseconds 
-    }*/
-
     handleThemeOption1(event) {
         const selectedTheme1 = event.detail;
         this.themeChecked = true;
