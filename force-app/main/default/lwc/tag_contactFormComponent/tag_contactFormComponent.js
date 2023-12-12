@@ -1,14 +1,15 @@
 import { LightningElement, track, wire } from 'lwc';
 import { loadStyle } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import kontaktsjemaBilde from '@salesforce/resourceUrl/KontaktskjemaLogo';
+import { NavigationMixin } from 'lightning/navigation';
+import logoImage from '@salesforce/resourceUrl/ContactFormLogo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 
-export default class Kontaktskjema extends LightningElement {
-    bildeKontaktskjema = kontaktsjemaBilde;
+export default class Kontaktskjema extends NavigationMixin(LightningElement) {
+    logoImage = logoImage;
 
     @track checkedTheme = '';
     @track themeChecked = true;
@@ -40,7 +41,6 @@ export default class Kontaktskjema extends LightningElement {
            },500); //delay is in milliseconds 
         } else if (error) {
             this.accountName = '';
-            console.error('Error retrieving account name:', error);
             this.isOrgValid = false;
             let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
             inputOrgField.sendErrorMessage(inputOrgField.errorText);
@@ -135,7 +135,6 @@ export default class Kontaktskjema extends LightningElement {
 
     saveContactForm() {
         this.validateSendForm();
-        console.log("themeChecked "+this.themeChecked+", isOrgValid "+this.isOrgValid+", isNameValid "+this.isNameValid+", isPhoneValid "+this.isPhoneValid);
         if(this.themeChecked === true && this.isOrgValid === true && this.isNameValid === true && this.isPhoneValid === true && this.isEpostValid === true) {
             const contactFormData = {
                 ContactOrg: this.contactOrg,
@@ -147,12 +146,8 @@ export default class Kontaktskjema extends LightningElement {
     
             createContactForm({ contactFormData })
             .then(result => {
-                const toastEvent = new ShowToastEvent({
-                    title: 'Suksess',
-                    message: 'Kontaktskjema har blitt sendt til NAV',
-                    variant: 'success'
-                });
-                this.dispatchEvent(toastEvent);
+                const currentUrl = window.location.href;
+                const newUrl = currentUrl + 'kontaktskjemabekreftelse';
     
                 // Clear input field values
                 this.contactOrg = '';
@@ -165,6 +160,13 @@ export default class Kontaktskjema extends LightningElement {
                 this.isNameValid = false;
                 this.isEpostValid = false;
                 this.isPhoneValid = false;
+
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {
+                        url: newUrl
+                    }
+                });
             })
             .catch(error => {
                 const toastEvent = new ShowToastEvent({
@@ -173,6 +175,7 @@ export default class Kontaktskjema extends LightningElement {
                     variant: 'error'
                 });
                 this.dispatchEvent(toastEvent);
+                console.error('Navigation error:', error);
             });
     
         }
@@ -209,8 +212,6 @@ export default class Kontaktskjema extends LightningElement {
     handleEmptyField(event) {
         const inputVariousField = event.target;
         if (inputVariousField.value == '' || inputVariousField.value == null || inputVariousField.value.length < 1) {
-            console.log("Send message is called");
-            console.log(inputVariousField.errorText);
             inputVariousField.sendErrorMessage(inputVariousField.errorText);
             this.isNameValid = false;
         }
