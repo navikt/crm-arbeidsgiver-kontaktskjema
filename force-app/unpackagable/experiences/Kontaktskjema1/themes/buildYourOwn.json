@@ -32,7 +32,7 @@
   }, {
     "componentAttributes" : {
       "fixedPageWidth" : 1440,
-      "isPageWidthFixed" : true
+      "isPageWidthFixed" : false
     },
     "componentName" : "siteforce:starterBody",
     "id" : "84f0a9a7-88af-46e8-bf91-44a123dbfc43",

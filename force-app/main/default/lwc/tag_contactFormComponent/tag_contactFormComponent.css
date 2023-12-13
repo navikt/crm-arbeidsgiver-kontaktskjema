@@ -60,11 +60,21 @@
     cursor: pointer;
 }
 
-.kontaktskjemaInside {
+.contactform-inside {
     padding: 1.5rem 1.25rem;
     background-color: #fff;
     min-height: 50rem;
     max-width: 400rem;
+}
+
+@media (min-width: 768px) {
+    .contactform-inside {
+        margin-top: 0;
+        margin-right: auto;
+        margin-bottom: 0;
+        margin-left: auto;
+        width: 768px;
+    }
 }
 
 .infoTextStandard {
@@ -92,6 +102,8 @@
     box-sizing: border-box;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .radio-buttons {
@@ -111,7 +123,7 @@
     box-shadow: 0 0 0 2px #00347d;
 }
 
-.title-kontaktskjema {
+.title-contactform {
     font-family: "Source Sans Pro",Arial,sans-serif;
     /*min-width: 30em;*/
     min-width: 10em;
