@@ -43,9 +43,11 @@
     box-sizing: border-box;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
-.title-kontaktskjema {
+.title-contactform {
     font-family: "Source Sans Pro",Arial,sans-serif;
     /*min-width: 30em;*/
     min-width: 10em;
