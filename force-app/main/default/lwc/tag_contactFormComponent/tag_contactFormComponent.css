@@ -34,6 +34,17 @@
     align-items: center;
 }
 
+@media (min-width: 768px) {
+    .containerBreadcrumbs {
+        margin-top: 0;
+        margin-right: auto;
+        margin-bottom: 0;
+        margin-left: auto;
+        width: 768px;
+        margin-inline-start: 100px;
+    }
+}
+
 .breadcrumb {
     flex-direction: row;
     display: flex;
