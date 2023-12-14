@@ -3,6 +3,7 @@ import { loadStyle } from 'lightning/platformResourceLoader';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
 import logoImage from '@salesforce/resourceUrl/ContactFormLogo';
+import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
@@ -10,6 +11,7 @@ import navStyling from '@salesforce/resourceUrl/navStyling';
 
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     logoImage = logoImage;
+    infoImage = infoImage;
 
     @track checkedTheme = '';
     @track themeChecked = true;
