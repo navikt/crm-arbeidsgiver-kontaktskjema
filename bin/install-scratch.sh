@@ -73,6 +73,7 @@ insertingTestData() {
 runPostInstallScripts() {
     sf apex run --file ./scripts/assignRecordTypes.cls || { error $? '"sf apex run" command failed for Apex class: "assignRecordTypes".'; }
     sf apex run --file ./scripts/relateNavUnitToAccount.cls || { error $? '"sf apex run" command failed for Apex class: "relateNavUnitToAccount".'; }
+    sf apex run --file ./scripts/setQueueIdOnNavUnit.cls || { error $? '"sf apex run" command failed for Apex class: "relateNavUnitToAccount".'; }
 }
 
 publishCommunity() {

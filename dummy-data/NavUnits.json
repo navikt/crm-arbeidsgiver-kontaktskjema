@@ -5,11 +5,10 @@
                 "type": "NavUnit__c",
                 "referenceId": "NavUnit__cRef1"
             },
-            "Name": "Nav Alna",
+            "Name": "NAV Alna",
             "INT_UnitNumber__c": "0303",
             "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
             "INT_Region__c": "Oslo",
-            "CRM_QueueId__c": "a0B5t000000I8r2EAC",
             "INT_UnitType__c": "LOKAL",
             "MarketRegion__c": "Øst"
         },
@@ -18,13 +17,36 @@
                 "type": "NavUnit__c",
                 "referenceId": "NavUnit__cRef2"
             },
-            "Name": "Nav Kristiansand",
+            "Name": "NAV Kristiansand",
             "INT_UnitNumber__c": "1987",
             "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
             "INT_Region__c": "Agder",
-            "CRM_QueueId__c": "a0B5t000000I8r2EYT",
             "INT_UnitType__c": "LOKAL",
             "MarketRegion__c": "Sør"
+        },
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef3"
+            },
+            "Name": "NAV Bærum",
+            "INT_UnitNumber__c": "0219",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Vest-Viken",
+            "INT_UnitType__c": "LOKAL",
+            "MarketRegion__c": "Viken"
+        },
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef4"
+            },
+            "Name": "NAV Arbeidslivssenter Vest-Viken",
+            "INT_UnitNumber__c": "0691",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Vest-Viken",
+            "INT_UnitType__c": "LOKAL",
+            "MarketRegion__c": "Viken"
         }
     ]
 }
