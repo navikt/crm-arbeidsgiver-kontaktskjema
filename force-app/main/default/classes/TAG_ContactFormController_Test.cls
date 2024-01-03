@@ -18,29 +18,50 @@ public with sharing class TAG_ContactFormController_Test {
 
 @TestSetup
 static void makeData(){
-    Id queueAlna = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Alna'].Id;
-    Id queueBarum = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Bærum'].Id;
-    Id queueVestViken = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Arbeidslivssenter Vest-Viken'].Id;
+    Group groupAlna = new Group(Name='NAV Test Alna', Type='Queue');
+        insert groupAlna;
+    Group groupBarum = new Group(Name='NAV Test Bærum', Type='Queue');
+        insert groupBarum;
+    Group groupVestViken = new Group(Name='NAV Test Arbeidslivssenter Vest-Viken', Type='Queue');
+        insert groupVestViken;
 
-    NavUnit__c navUnitAlna = new NavUnit__c(Name = 'Nav Alna', INT_UnitNumber__c = '4444', INT_Region__c = 'Oslo', 
+    QueuesObject qoAlna = new QueueSObject(QueueID = groupAlna.id, SObjectType = 'CustomOpportunity__c');
+        insert qoAlna;
+    QueuesObject qoBarum = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'CustomOpportunity__c');
+        insert qoBarum;
+    QueuesObject qoVestViken = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'CustomOpportunity__c');
+        insert qoVestViken;
+    
+    createDataAsync();
+    }
+    
+    //Future method createDataAsync is needed to avoid the below error after QueueSObject is created
+    //Error: MIXED_DML_OPERATION, DML operation on setup object is not permitted after you have updated a non-setup object 
+    @future
+    static void createDataAsync() {
+        Id queueAlna = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Alna'].Id;
+        Id queueBarum = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Bærum'].Id;
+        Id queueVestViken = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Arbeidslivssenter Vest-Viken'].Id;
+    
+        NavUnit__c navUnitAlna = new NavUnit__c(Name = 'Nav Alna', INT_UnitNumber__c = '4444', INT_Region__c = 'Oslo', 
         CRM_QueueId__c = queueAlna, INT_UnitType__c = 'LOKAL');
-        insert navUnitAlna;
-
-    NavUnit__c navUnitBarum = new NavUnit__c(Name = 'NAV Bærum', INT_UnitNumber__c = '4445', INT_Region__c = 'Vest-Viken', 
-        CRM_QueueId__c = queueBarum, INT_UnitType__c = 'LOKAL');
-        insert navUnitBarum;
-
-    NavUnit__c navUnitVestViken = new NavUnit__c(Name = 'NAV Arbeidslivssenter Vest-Viken', INT_UnitNumber__c = '4446', INT_Region__c = 'Vest-Viken', 
-        CRM_QueueId__c = queueVestViken, INT_UnitType__c = 'LOKAL');
-        insert navUnitVestViken;
-
-    Id idAlna = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Alna'].Id;
-    Id idBarum = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Bærum'].Id;
-
-    Account acc1 = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631', INT_RegionNumber__c = '30', INT_MunicipalityNumber__c = '3001', TAG_NavUnit__c = idAlna);
-        insert acc1;
-    Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632', INT_RegionNumber__c = '03', INT_MunicipalityNumber__c = '3002', TAG_NavUnit__c = idBarum);
-        insert acc2;
+            insert navUnitAlna;
+    
+        NavUnit__c navUnitBarum = new NavUnit__c(Name = 'NAV Bærum', INT_UnitNumber__c = '4445', INT_Region__c = 'Vest-Viken', 
+            CRM_QueueId__c = queueBarum, INT_UnitType__c = 'LOKAL');
+            insert navUnitBarum;
+    
+        NavUnit__c navUnitVestViken = new NavUnit__c(Name = 'NAV Arbeidslivssenter Vest-Viken', INT_UnitNumber__c = '4446', INT_Region__c = 'Vest-Viken', 
+            CRM_QueueId__c = queueVestViken, INT_UnitType__c = 'LOKAL');
+            insert navUnitVestViken;
+    
+        Id idAlna = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Alna'].Id;
+        Id idBarum = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Bærum'].Id;
+    
+        Account acc1 = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631', INT_RegionNumber__c = '30', INT_MunicipalityNumber__c = '3001', TAG_NavUnit__c = idAlna);
+            insert acc1;
+        Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632', INT_RegionNumber__c = '03', INT_MunicipalityNumber__c = '3002', TAG_NavUnit__c = idBarum);
+            insert acc2;
     }
 
     /**
@@ -59,12 +80,6 @@ static void makeData(){
         contactFormMap.put('ContactEmail', 'test.testersen@email.com');
         contactFormMap.put('ContactPhone', '90909090');
         contactFormMap.put('ThemeSelected', 'Skal ansette');
-
-        //List<NavUnit__c> navUnitAlna = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Test Alna'].Id;
-        //List<NavUnit__c> navUnitBarum = [SELECT Id, CRM_QueueId__c FROM NavUnit__c WHERE Name = 'NAV Bærum'];
-
-        //System.assertEquals(1, navUnitAlna.size(), 'Should be one Nav Unit called Alna');
-        //System.assertEquals(1, navUnitBarum.size(), 'Should be one Nav Unit called Bærum');
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
