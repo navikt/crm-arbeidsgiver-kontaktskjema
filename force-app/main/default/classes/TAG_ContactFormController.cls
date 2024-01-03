@@ -96,12 +96,13 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
-                //newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
-
+                
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                    newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
                 } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
-                    newCustomOpportunity.INT_RegionNumber__c = getUnitRegionNumber(contactFormList[0].regionNumber);
+                    String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
+                    newCustomOpportunity.OwnerId = getNavUnitQueue(null, getUnitName(region));
                 }
 
             insert newCustomOpportunity;
@@ -165,8 +166,6 @@ public with sharing class TAG_ContactFormController {
             wrapper.source = 'Kontaktskjema';
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
-
-            System.debug('Phone: ' + wrapper.phone);
         }
 
         return SharedFunctions.fetchOrCreateContact(contactWrappers, accountMap);
@@ -192,7 +191,7 @@ public with sharing class TAG_ContactFormController {
     }
 
     /**
-     * @description The getNavUnitQueue method is called by the insertCustomOpportunity method. It takes in the Nav Unit Id of the nav unit 
+     * @description The getNavUnitQueue method is called by the insertCustomOpportunity method. It takes the Nav Unit Id of the nav unit 
      * which the company/account is related to. Then return the queue id of the nav unit
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -200,63 +199,102 @@ public with sharing class TAG_ContactFormController {
      *
      * @param navUnitId Contains the Nav Unit record Id
      * @return navUnitQueue Contains the Nav Unit queue Id
-     
-    private static String getNavUnitQueue(Id navUnitId) {
-        String navUnitQueue = [
-            SELECT Id, CRM_QueueId__c
-            FROM NAVUnit__c
-            WHERE Id =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
-        ].CRM_QueueId__c;
+     */
+    private static String getNavUnitQueue(Id navUnitId, String navUnitName) {
+        String navUnitQueueId = '';
 
-        System.debug('getNavUnitQueue metoden: ' + navUnitQueue);
+        if (navUnitId != null) {
+            navUnitQueueId = [
+                SELECT Id, CRM_QueueId__c
+                FROM NAVUnit__c
+                WHERE Id =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
+            ].CRM_QueueId__c;
+        } else {
+            navUnitQueueId = [
+                SELECT Id, CRM_QueueId__c
+                FROM NAVUnit__c
+                WHERE Name =:navUnitName AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
+            ].CRM_QueueId__c;
+        }
 
-        return navUnitQueue;
-    }*/
+        return navUnitQueueId;
+    }
 
     /**
-     * @description The getUnitRegionNumber method switches the national Region number to NAVs Unit region number
+     * @description The getNavUnitRegion method finds the region which a NAV unit belongs to
+     *
+     * @author Andre Colle <andre.colle@nav.no>
+     * @since 2024-01-02 Created.
+     *
+     * @param navUnitId Contains the id of the NAV unit
+     * @return NAVs Unit region.
+     */
+    private static String getNavUnitRegion(Id navUnitId) {
+        String navUnitRegion = [
+                SELECT Id, INT_Region__c
+                FROM NAVUnit__c
+                WHERE Id =:navUnitId AND IsDeleted = FALSE LIMIT 1
+            ].INT_Region__c;
+
+            //Remove dash from regions, so that it will not make issues in the switch in getUnitName method
+            if (navUnitRegion == 'Øst-Viken') {
+                navUnitRegion = 'ØstViken';
+            }
+            if (navUnitRegion == 'Vest-Viken') {
+                navUnitRegion = 'VestViken';
+            }
+
+        return navUnitRegion;
+    }
+
+    /**
+     * @description The getUnitName method switches the national Region number to NAVs Unit Name. This is for
+     * Arbeidslissentrene in Nav
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-21 Created.
      *
      * @param regionNr Contains the national Region number (for countys in Norway)
-     * @return NAVs Unit region number, which is unique for each Region/county office
+     * @return NAVs Unit name.
      */
     @testVisible
-    private static String getUnitRegionNumber(String regionNr) {
-        switch on regionNr {
-            when '30' {
-                return '0200';
+    private static String getUnitName(String regionName) {
+        switch on regionName {
+            when 'ØstViken' {
+                return 'NAV Arbeidslivssenter Øst-Viken';
             }
-            when '03' {
-                return '0300';
+            when 'Oslo' {
+                return 'NAV Arbeidslivssenter Oslo';
             }
-            when '34' {
-                return '0400';
+            when 'Innlandet' {
+                return 'NAV Arbeidslivssenter Innlandet';
             }
-            when '38' {
-                return '0800';
+            when 'VestViken' {
+                return 'NAV Arbeidslivssenter Vest-Viken';
             }
-            when '42' {
-                return '1000';
+            when 'Vestfold og Telemark' {
+                return 'NAV Arbeid og helse Vestfold og Telemark';
             }
-            when '11' {
-                return '1100';
+            when 'Agder' {
+                return 'NAV Arbeidslivssenter Agder';
             }
-            when '46' {
-                return '1200';
+            when 'Rogaland' {
+                return 'NAV Arbeidslivssenter Rogaland';
             }
-            when '15' {
-                return '1500';
+            when 'Vestland' {
+                return 'NAV Arbeidslivssenter Vestland';
             }
-            when '18' {
-                return '1800';
+            when 'Møre og Romsdal' {
+                return 'NAV Arbeidslivssenter Møre og Romsdal';
             }
-            when '54' {
-                return '1900';
+            when 'Nordland' {
+                return 'NAV Arbeidslivssenter Nordland';
             }
-            when '50' {
-                return '5700';
+            when 'Troms og Finnmark' {
+                return 'NAV Arbeidslivssenter Troms og Finnmark';
+            }
+            when 'Trøndelag' {
+                return 'NAV Arbeidslivssenter Trøndelag';
             }
             when else {
                 return null;
