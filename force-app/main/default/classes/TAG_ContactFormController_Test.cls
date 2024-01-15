@@ -86,7 +86,7 @@ static void makeData(){
         Test.stopTest();
 
         List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
+            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
             FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Skal ansette' LIMIT 1
         ];
 
@@ -118,6 +118,7 @@ static void makeData(){
         System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Region Number should be null');
         System.assertEquals('3001', opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be 3001');
         System.assertEquals(navUnitAlna[0].CRM_QueueId__c, opportunity[0].OwnerId, 'OwnerId should match QueueId');
+        System.assertEquals(navUnitAlna[0].Id, opportunity[0].TAG_NavUnit__c, 'Nav Unit is not matching');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
@@ -143,7 +144,7 @@ static void makeData(){
         Test.stopTest();
 
         List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c
+            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
             FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Forebygge sykefravær' LIMIT 1
         ];
 
@@ -175,6 +176,7 @@ static void makeData(){
         System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Region Number should be null');
         System.assertEquals(null, opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be null');
         System.assertEquals(navUnitVestViken[0].CRM_QueueId__c, opportunity[0].OwnerId, 'OwnerId should match QueueId');
+        System.assertEquals(navUnitVestViken[0].Id, opportunity[0].TAG_NavUnit__c, 'Nav Unit is not matching');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
