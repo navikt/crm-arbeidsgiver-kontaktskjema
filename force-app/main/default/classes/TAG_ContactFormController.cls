@@ -96,14 +96,17 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
-                newCustomOpportunity.TAG_NavUnit__c = accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c;
                 
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
-                    newCustomOpportunity.OwnerId = getNavUnitQueue(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
+                    List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
+                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
                 } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
                     String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
-                    newCustomOpportunity.OwnerId = getNavUnitQueue(null, getUnitName(region));
+                    List<NavUnit__c> navUnit = getNavUnitQueueAndId(null, getUnitName(region));
+                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
                 }
 
             insert newCustomOpportunity;
@@ -192,33 +195,37 @@ public with sharing class TAG_ContactFormController {
     }
 
     /**
-     * @description The getNavUnitQueue method is called by the insertCustomOpportunity method. It takes the Nav Unit Id of the nav unit 
-     * which the company/account is related to. Then return the queue id of the nav unit
+     * @description The getNavUnitQueueAndId method is called by the insertCustomOpportunity method. It receives the Nav Unit Id (or Nav Unit name) of the nav unit 
+     * which the company/account is related to. Then return the queueId and id of the nav unit
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
      *
      * @param navUnitId Contains the Nav Unit record Id
+     * @param navUnitName Contains the Nav Unit name. This is only not null if the custom opportunity is regarding Forebygge Sykefravær.
+     * Because then we need to return the Id of the Nav Unit Arbeidslivssenter.
      * @return navUnitQueue Contains the Nav Unit queue Id
      */
-    private static String getNavUnitQueue(Id navUnitId, String navUnitName) {
-        String navUnitQueueId = '';
+    private static List<NavUnit__c> getNavUnitQueueAndId(Id navUnitId, String navUnitName) {
+        List<NavUnit__c> navUnit = new List<NavUnit__c>();
 
         if (navUnitId != null) {
-            navUnitQueueId = [
+            NavUnit__c navUnitQueueId = [
                 SELECT Id, CRM_QueueId__c
                 FROM NAVUnit__c
                 WHERE Id =:navUnitId AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
-            ].CRM_QueueId__c;
+            ];
+            navUnit.add(navUnitQueueId);
         } else {
-            navUnitQueueId = [
+            NavUnit__c navUnitQueueId = [
                 SELECT Id, CRM_QueueId__c
                 FROM NAVUnit__c
                 WHERE Name =:navUnitName AND IsDeleted = FALSE AND CRM_QueueId__c != null LIMIT 1
-            ].CRM_QueueId__c;
+            ];
+            navUnit.add(navUnitQueueId);
         }
 
-        return navUnitQueueId;
+        return navUnit;
     }
 
     /**
