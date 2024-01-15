@@ -96,6 +96,7 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
+                newCustomOpportunity.TAG_NavUnit__c = accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c;
                 
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
