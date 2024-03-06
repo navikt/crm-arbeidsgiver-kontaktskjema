@@ -41,6 +41,7 @@ public with sharing class TAG_ContactFormController {
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
             newContactForm.theme = contactFormData.get('ThemeSelected');
+            newContactForm.comesFromArticle = contactFormData.get('IsFromArticle');
 
             newContactFormList.add(newContactForm);
 
@@ -96,6 +97,9 @@ public with sharing class TAG_ContactFormController {
                 newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
                 newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
                 newCustomOpportunity.Source__c = 'Kontaktskjema';
+                if(contactFormList[0].comesFromArticle == 'True') {
+                    newCustomOpportunity.TAG_IsFromArticle__c = true;
+                }
                 
                 if(contactFormList[0].theme == 'Skal ansette') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;

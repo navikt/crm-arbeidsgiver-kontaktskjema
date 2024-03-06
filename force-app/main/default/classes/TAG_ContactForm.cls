@@ -21,4 +21,5 @@ public with sharing class TAG_ContactForm {
     public String fullName;
     public String email;
     public String theme;
+    public String comesFromArticle;
 }

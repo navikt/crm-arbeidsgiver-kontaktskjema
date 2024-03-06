@@ -25,6 +25,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     @track contactPhone = '';
     @track accountName = '';
     @track showError = false;
+    @track comesFromArticle = false;
     isOrgValid = false;
     isNameValid = false;
     isEpostValid = false;
@@ -143,13 +144,14 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 ContactName: this.contactName,
                 ContactEmail: this.contactEmail,
                 ContactPhone: this.contactPhone,
-                ThemeSelected: this.checkedTheme
+                ThemeSelected: this.checkedTheme,
+                IsFromArticle: this.comesFromArticle
             };
     
             createContactForm({ contactFormData })
             .then(result => {
                 const currentUrl = window.location.href;
-                const newUrl = currentUrl + 'kontaktskjemabekreftelse';
+                const newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse';
     
                 // Clear input field values
                 this.contactOrg = '';
@@ -199,6 +201,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     connectedCallback() {
         window.addEventListener('resize', this.handleResize.bind(this));
+        const docURL = document.URL;
+        if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#s')) {
+            // Perform actions based on the referrer URL
+            // For example, create a record in Salesforce
+            this.comesFromArticle = true;
+        }
     }
 
     disconnectedCallback() {
