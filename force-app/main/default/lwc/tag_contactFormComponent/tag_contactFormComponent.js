@@ -7,6 +7,7 @@ import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
+import countNextVisitor from '@salesforce/apex/TAG_ContactFormController.countNextVisitor';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
@@ -203,9 +204,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         window.addEventListener('resize', this.handleResize.bind(this));
         const docURL = document.URL;
         if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#s')) {
-            // Perform actions based on the referrer URL
-            // For example, create a record in Salesforce
             this.comesFromArticle = true;
+            countNextVisitor();
         }
     }
 
