@@ -72,6 +72,16 @@
         <field>CustomOpportunity__c.TAG_OrganizationNameFromForm__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Event.Ansvarlig__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Task.Ansvarlig__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Arbeidsgiver - Kontaktskjema(Eksterne)</label>
     <objectPermissions>
@@ -107,6 +117,10 @@
     </recordTypeVisibilities>
     <recordTypeVisibilities>
         <recordType>CustomOpportunity__c.Inclusion</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <recordType>Task.ArbeidsgiverTask</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <userPermissions>
