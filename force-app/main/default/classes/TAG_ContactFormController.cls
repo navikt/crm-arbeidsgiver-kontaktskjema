@@ -313,19 +313,4 @@ public with sharing class TAG_ContactFormController {
             }
         }
     }
-    @AuraEnabled
-    public static void countNextVisitor() {
-        List<Task> task = new List<Task>();
-
-        task = [
-                SELECT Id, CallDisposition, Ansvarlig__c
-                FROM Task
-                WHERE Account.Name = 'Kontakter uten konto' AND Ansvarlig__c = 'Piotr Szostak' AND CallDisposition != null LIMIT 1
-            ];
-        if(task.size() > 0) {
-            Integer counter = Integer.valueOf(task[0].CallDisposition) + 1;
-            task[0].CallDisposition = String.valueOf(counter);
-            update task[0];
-        }
-    }
 }
