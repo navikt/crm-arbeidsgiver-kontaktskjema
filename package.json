@@ -13,7 +13,8 @@
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "postinstall": "node bin/check-version.js",
-        "mac:build": "bash bin/install-scratch.sh"
+        "mac:build": "bash bin/install-scratch.sh",
+        "mac:build:pool": "bash bin/pool-scratch.sh"
     },
     "engines": {
         "node": ">= 16.0.0",
