@@ -8,6 +8,7 @@ import logoImage from '@salesforce/resourceUrl/ContactFormLogo';
 import employeeImage from '@salesforce/resourceUrl/ContactFormEmployee';
 import signImage from '@salesforce/resourceUrl/ContactFormSign';
 import navStyling from '@salesforce/resourceUrl/navStyling';
+import showFeedbackEmbed from 'c/tag_contactFormComponent';
 
 export default class Tag_contactFormConfirmation extends LightningElement {
     arrowImage = arrowImage;
@@ -37,6 +38,9 @@ export default class Tag_contactFormConfirmation extends LightningElement {
 
     disconnectedCallback() {
         window.removeEventListener('resize', this.handleResize.bind(this));
+    }
+    get willShowFeedback() {
+        return showFeedbackEmbed;
     }
 
 }

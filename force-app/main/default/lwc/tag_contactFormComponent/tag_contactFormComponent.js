@@ -8,11 +8,11 @@ import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 import navStyling from '@salesforce/resourceUrl/navStyling';
-
+export var {showFeedbackEmbed} = '';
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     logoImage = logoImage;
     infoImage = infoImage;
-
+   
     @track checkedTheme = '';
     @track themeChecked = true;
     @track classNameOption1 = 'radio-buttons';
@@ -30,6 +30,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     isNameValid = false;
     isEpostValid = false;
     isPhoneValid = false;
+    
 
     @wire(getAccountName, {orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
@@ -72,6 +73,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.checkedPreventSickLeave = false;
         this.classNameOption1 = 'radio-buttons radio-buttons-checked';
         this.classNameOption2 = 'radio-buttons';
+        this.showFeedbackEmbed = true;
     }
     handleThemeOption2(event) {
         const selectedTheme2 = event.detail;
@@ -80,6 +82,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.checkedPreventSickLeave = true;
         this.classNameOption1 = 'radio-buttons';
         this.classNameOption2 = 'radio-buttons radio-buttons-checked';
+        this.showFeedbackEmbed = false;
     }
     
     handleContactedEmployeeRep(event) {
