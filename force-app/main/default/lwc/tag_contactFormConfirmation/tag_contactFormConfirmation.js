@@ -67,7 +67,6 @@ messageContext;
         { scope: APPLICATION_SCOPE },
       );
       console.log("Subscription established:", this.subscription);
-      console.log("messagecontext" + this.messageContext);
     }
   } 
 
