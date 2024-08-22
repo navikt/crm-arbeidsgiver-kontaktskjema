@@ -37,8 +37,8 @@
         </div>
     </div>
     <br>
-
-        <!--============================Text Area Confmation=========================================-->
+ 
+        <!--============================Text Area Confirmation=========================================-->
 
     <div class="navds-form-field navds-form-field--medium">
         <div class="confirmation-area">
@@ -51,11 +51,10 @@
         <br>
         <br>
         <!--============================Text Area UX-Signals=========================================-->
-
-        <div if:true={willShowFeedback}> <!-- if showFeedbackEmbed is true, show, else not show.-->
-         <iframe data-uxsignals-embed="panel-zlwac6q9cp" style="max-width: 620px" src="https://app.uxsignals.com/dialog/panel-zlwac6q9cp"></iframe>
-       </div>
-    
+        <div if:true={isTrue}>
+         <iframe data-uxsignals-embed="panel-zlwac6q9cp" style="max-width: 620px" src="https://app.uxsignals.com/dialog/panel-zlwac6q9cp"></iframe> 
+         </div>
+        <div>{isTrue} er denne true?</div>
         <!--============================Text Area Inquiry Flow=========================================-->
 
         <div class="inquiry-flow-area">

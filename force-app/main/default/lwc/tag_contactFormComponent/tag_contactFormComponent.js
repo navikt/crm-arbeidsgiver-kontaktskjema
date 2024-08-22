@@ -8,8 +8,18 @@ import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 import navStyling from '@salesforce/resourceUrl/navStyling';
-export var {showFeedbackEmbed} = '';
+
+// tilhører uxsignals
+import { publish, MessageContext } from "lightning/messageService";
+import TAG_CONTACT_FORM_CHANNEL from "@salesforce/messageChannel/tag_contactFormChannel__c";
+
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
+
+// tilhører uxsignals
+    @wire(MessageContext)
+    messageContext;
+
+
     logoImage = logoImage;
     infoImage = infoImage;
    
@@ -30,8 +40,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     isNameValid = false;
     isEpostValid = false;
     isPhoneValid = false;
-    
 
+
+    // tilhører uxsignals
+    @track uxSignals = false;
+
+    
     @wire(getAccountName, {orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
         if (data) {
@@ -73,8 +87,16 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.checkedPreventSickLeave = false;
         this.classNameOption1 = 'radio-buttons radio-buttons-checked';
         this.classNameOption2 = 'radio-buttons';
-        this.showFeedbackEmbed = true;
+
+    // tilhører uxsignals
+        this.uxSignals = true;
+        console.log( "rekruttere og inkludere");
+        console.log(this.uxSignals + " skal være true");
+        this.handleUxWidget(this.uxSignals);
+ 
     }
+
+
     handleThemeOption2(event) {
         const selectedTheme2 = event.detail;
         this.themeChecked = true;
@@ -82,8 +104,25 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.checkedPreventSickLeave = true;
         this.classNameOption1 = 'radio-buttons';
         this.classNameOption2 = 'radio-buttons radio-buttons-checked';
-        this.showFeedbackEmbed = false;
+
+        // tilhører uxsignals
+        this.uxSignals = false;
+        console.log( "forebygge sykefravær");
+        console.log(this.uxSignals + " skal være false");
+        this.handleUxWidget(this.uxSignals);
+        
+ 
     }
+
+    // tilhører uxsignals
+    handleUxWidget(event) {
+        const isChecked = event.target; 
+        const payload = { isChecked };
+        publish(this.messageContext, TAG_CONTACT_FORM_CHANNEL, payload);
+        console.log("Published message:", message);
+      }
+
+      
     
     handleContactedEmployeeRep(event) {
         const selectedContactedEmployeeRep = event.detail;
