@@ -26,6 +26,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     @track accountName = '';
     @track showError = false;
     @track comesFromArticle = false;
+    @track urlRoute = '';
     isOrgValid = false;
     isNameValid = false;
     isEpostValid = false;
@@ -65,22 +66,29 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
     ];
 
-    handleThemeOption1(event) {
-        const selectedTheme1 = event.detail;
+    handleThemeOption(event) {
+        const selectedTheme = event.detail;
         this.themeChecked = true;
-        this.checkedTheme = selectedTheme1[0].checked ? 'Skal ansette' : '';
-        this.checkedPreventSickLeave = false;
-        this.classNameOption1 = 'radio-buttons radio-buttons-checked';
-        this.classNameOption2 = 'radio-buttons';
+    
+        if(selectedTheme[0].checked === true){
+        if (selectedTheme[0].value == 'Rekruttere og inkludere') {
+            console.log("rekruttere og inkludere");
+
+           this.checkedTheme = 'Skal ansette';
+            this.checkedPreventSickLeave = false;
+            this.classNameOption1 = 'radio-buttons radio-buttons-checked';
+            this.urlRoute = 'kontaktskjemabekreftelse2';
+        } else if(selectedTheme[0].value == 'Forebygge sykefravær'){
+            console.log("forebygge sykefravær");
+           this.checkedTheme = 'Forebygge sykefravær';
+            this.checkedPreventSickLeave = true;
+            this.classNameOption2 = 'radio-buttons radio-buttons-checked';
+            this.urlRoute = 'kontaktskjemabekreftelse';
+            
+        }
     }
-    handleThemeOption2(event) {
-        const selectedTheme2 = event.detail;
-        this.themeChecked = true;
-        this.checkedTheme = selectedTheme2[0].checked ? 'Forebygge sykefravær' : '';
-        this.checkedPreventSickLeave = true;
-        this.classNameOption1 = 'radio-buttons';
-        this.classNameOption2 = 'radio-buttons radio-buttons-checked';
     }
+    
     
     handleContactedEmployeeRep(event) {
         const selectedContactedEmployeeRep = event.detail;
@@ -147,11 +155,16 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 ThemeSelected: this.checkedTheme,
                 IsFromArticle: this.comesFromArticle
             };
-    
+           
+            console.log(  window.location.href + " må ha med #s er det her?");
+
             createContactForm({ contactFormData })
             .then(result => {
                 const currentUrl = window.location.href;
-                const newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse';
+                //let newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse2'; 
+                //let newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse'; Denne funker ikke
+                let newUrl = currentUrl.replace("#s","") + urlRoute; 
+               
     
                 // Clear input field values
                 this.contactOrg = '';
