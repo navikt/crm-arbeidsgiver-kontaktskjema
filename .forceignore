@@ -127,3 +127,7 @@
 **/audience
 
 **/force-app/main/default/permissionsets/sfdcInternalInt__sfdc_scrt2.permissionset-meta.xml
+
+**/tsconfig.json
+
+**/*.ts
