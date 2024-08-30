@@ -7,5 +7,18 @@
   "mainAppPageId" : "c188b213-ed7e-4aa8-adc5-2a6d37a8e90e",
   "preferredDomain" : "none",
   "selfRegistrationRouteId" : "080673c3-1c05-4e67-b91f-43c48a100922",
+  "trustedSitesForScript" : [ {
+    "id" : "b1e9f653-7649-4676-a6a8-72f465eb56bd",
+    "isActive" : true,
+    "trustedSiteName" : "img-src",
+    "trustedSiteUrl" : "https://uxsignals-frontend.uxsignals.app.iterate.no",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "6fd5945f-cab0-4f9d-b2d0-2dcb82cbee2f",
+    "isActive" : true,
+    "trustedSiteName" : "connect-src",
+    "trustedSiteUrl" : "https://api.uxsignals.com",
+    "type" : "trustedSitesForScripts"
+  } ],
   "type" : "site"
 }

@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "d1dfe3ca-6811-4f0c-9ca9-ef2b48b7ccc9",
+  "appPageId" : "c188b213-ed7e-4aa8-adc5-2a6d37a8e90e",
+  "configurationTags" : [ ],
+  "id" : "1340c5b0-87b8-48b6-9272-05afce588fe7",
+  "label" : "kontaktskjemabekreftelse2",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-kontaktskjembekreftelserekrutterinklud",
+  "type" : "route",
+  "urlPrefix" : "kontaktskjemabekreftelse2"
+}

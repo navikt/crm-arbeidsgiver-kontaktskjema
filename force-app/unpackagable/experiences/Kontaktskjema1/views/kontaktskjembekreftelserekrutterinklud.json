@@ -1,0 +1,68 @@
+{
+  "appPageId" : "c188b213-ed7e-4aa8-adc5-2a6d37a8e90e",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "d1dfe3ca-6811-4f0c-9ca9-ef2b48b7ccc9",
+  "label" : "kontaktskjembekreftelserekrutterinklud",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "d30a0de2-88ac-443c-bd24-d0063e3f07ac",
+          "columns" : [ {
+            "UUID" : "4737fd23-2bb7-4ae9-89d8-618fb1a950bd",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "d30a0de2-88ac-443c-bd24-d0063e3f07ac",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:tag_contactFormConfirmationRecruitAndInclude",
+          "id" : "875b8bcf-4a76-47f3-aadb-20a77c516110",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "4737fd23-2bb7-4ae9-89d8-618fb1a950bd",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "82cfbda7-a464-4870-a50b-e2241a30d611",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "kontaktskjembekreftelse2"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "db01e0ae-87cc-4dc9-91b6-7ebaea732c32",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "36088fc9-b911-40e1-890b-270693f75734",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-kontaktskjembekreftelserekrutterinklud"
+}
