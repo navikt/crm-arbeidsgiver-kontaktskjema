@@ -163,7 +163,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 const currentUrl = window.location.href;
                 //let newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse2'; 
                 //let newUrl = currentUrl.replace("#s","") + 'kontaktskjemabekreftelse'; Denne funker ikke
-                let newUrl = currentUrl.replace("#s","") + urlRoute; 
+                let newUrl = currentUrl.replace("#s","") + this.urlRoute; 
                
     
                 // Clear input field values
