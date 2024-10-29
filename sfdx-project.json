@@ -28,6 +28,10 @@
                     "versionNumber": "0.2.0.LATEST"
                 },
                 {
+                    "package": "crm-platform-reporting",
+                    "versionNumber": "0.35.0.LATEST"
+                },
+                {
                     "package": "crm-shared-timeline",
                     "versionNumber": "1.23.0.LATEST"
                 },
@@ -74,6 +78,7 @@
         "crm-thread-view": "0Ho7U000000000zSAA",
         "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
         "crm-arbeidsgiver-kontaktskjema": "0Ho7U0000004CAkSAM",
-        "crm-community-base": "0Ho2o0000008OSzCAM"
+        "crm-community-base": "0Ho2o0000008OSzCAM",
+        "crm-platform-reporting": "0Ho2o0000008OSfCAM"
     }
 }
