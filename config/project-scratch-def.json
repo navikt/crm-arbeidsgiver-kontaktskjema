@@ -22,7 +22,8 @@
         "FieldService:5",
         "FieldServiceDispatcherUser:5",
         "FieldServiceMobileUser:5",
-        "FieldServiceSchedulingUser:5"
+        "FieldServiceSchedulingUser:5",
+        "LiveMessage"
     ],
     "country": "NO",
     "language": "en_US",
@@ -75,6 +76,9 @@
         "accountSettings": {
             "enableAccountHistoryTracking": true,
             "enableAccountTeams": true
+        },
+        "liveMessageSettings": {
+            "enableLiveMessage": true
         }
     }
 }
