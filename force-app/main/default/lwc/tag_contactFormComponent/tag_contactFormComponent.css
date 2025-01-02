@@ -10,14 +10,14 @@
 }
 
 .homeicon {
-    margin: 10px;    
+    margin: 10px;
 }
 
 .errorText {
     display: block;
     color: #ba3a26;
     margin: 0;
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.125rem;
     line-height: 1.375rem;
     font-weight: 600;
@@ -26,7 +26,7 @@
 }
 
 .errorText:before {
-    content: "• ";
+    content: '• ';
 }
 
 .containerBreadcrumbs {
@@ -88,7 +88,7 @@
 }
 
 .infoTextStandard {
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-weight: 400;
     font-size: 1rem;
     line-height: 1.375rem;
@@ -109,7 +109,7 @@
 }
 
 .title-contactform {
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     /*min-width: 30em;*/
     min-width: 10em;
     font-size: 2.5rem;
@@ -180,7 +180,7 @@
 }
 .pAccount {
     display: none;
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-weight: 400;
     font-size: 0.75rem;
     line-height: 1rem;
