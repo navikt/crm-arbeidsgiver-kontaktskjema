@@ -15,8 +15,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     @track checkedTheme = '';
     @track themeChecked = true;
-    @track classNameOption1 = 'radio-buttons';
-    @track classNameOption2 = 'radio-buttons';
     @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
     @track contactOrg = '';
@@ -54,11 +52,9 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         }
     }
 
-    themeOption1 = [
-        { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
-    ];
-    themeOption2 = [
-        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
+    themeOptions = [
+        { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false },
+        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false }
     ];
 
     contactedEmployeeRepOptions = [
@@ -69,19 +65,14 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     handleThemeOption(event) {
         const selectedTheme = event.detail;
         this.themeChecked = true;
-    
-        if(selectedTheme[0].checked === true){
-            if (selectedTheme[0].value == 'Rekruttere og inkludere') {          
-                this.checkedTheme = 'Skal ansette';
-                this.checkedPreventSickLeave = false;
-                this.classNameOption1 = 'radio-buttons radio-buttons-checked';
-                this.urlRoute = 'kontaktskjemabekreftelse2';
-            } else if(selectedTheme[0].value == 'Forebygge sykefravær'){
-                this.checkedTheme = 'Forebygge sykefravær';
-                this.checkedPreventSickLeave = true;
-                this.classNameOption2 = 'radio-buttons radio-buttons-checked';
-                this.urlRoute = 'kontaktskjemabekreftelse';
-            }
+        if (selectedTheme[0]?.checked === true) {
+            this.checkedTheme = 'Skal ansette';
+            this.checkedPreventSickLeave = false;
+            this.urlRoute = 'kontaktskjemabekreftelse2';
+        } else if (selectedTheme[1]?.checked === true) {
+            this.checkedTheme = 'Forebygge sykefravær';
+            this.checkedPreventSickLeave = true;
+            this.urlRoute = 'kontaktskjemabekreftelse';
         }
     }
     
