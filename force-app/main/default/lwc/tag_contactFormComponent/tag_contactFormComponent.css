@@ -10,14 +10,14 @@
 }
 
 .homeicon {
-    margin: 10px;    
+    margin: 10px;
 }
 
 .errorText {
     display: block;
     color: #ba3a26;
     margin: 0;
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-size: 1.125rem;
     line-height: 1.375rem;
     font-weight: 600;
@@ -26,7 +26,7 @@
 }
 
 .errorText:before {
-    content: "• ";
+    content: '• ';
 }
 
 .containerBreadcrumbs {
@@ -53,12 +53,11 @@
 
 .containerInfo {
     display: flex;
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     margin-bottom: 3rem;
 }
 
 .infoIcon {
-    margin-left: 1rem;
     margin-right: 1rem;
     width: 24px;
     height: 24px;
@@ -89,19 +88,11 @@
 }
 
 .infoTextStandard {
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-weight: 400;
     font-size: 1rem;
     line-height: 1.375rem;
     max-width: 600px;
-}
-
-.radioText {
-    font-family: "Source Sans Pro",Arial,sans-serif;
-    font-size: 1rem;
-    line-height: 1.375rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
 }
 
 .banner-inside {
@@ -117,25 +108,8 @@
     margin-left: auto;
 }
 
-.radio-buttons {
-    border: 1px solid #78706a;
-    border-radius: 0.25rem;
-    max-width: 250px;
-    padding-inline-start: 1rem;
-}
-
-.radio-buttons:hover {
-    background-color: #cce1f3;
-    box-shadow: 4px 4px 0 0 lightgray;
-}
-
-.radio-buttons-checked {
-    background-color: #cce1f3;
-    box-shadow: 0 0 0 2px #00347d;
-}
-
 .title-contactform {
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     /*min-width: 30em;*/
     min-width: 10em;
     font-size: 2.5rem;
@@ -161,12 +135,9 @@
 .info-popup {
     border: 1px solid #5690a2;
     background-color: #e0f5fb;
-    display: flex;
     border-radius: 0.25rem;
-    margin: right 5px;
-    margin-bottom: 1rem;
     max-width: 700px;
-    padding: 5px;
+    padding: 7px;
 }
 
 .navds-radio__label {
@@ -209,7 +180,7 @@
 }
 .pAccount {
     display: none;
-    font-family: "Source Sans Pro",Arial,sans-serif;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
     font-weight: 400;
     font-size: 0.75rem;
     line-height: 1rem;

@@ -15,8 +15,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     @track checkedTheme = '';
     @track themeChecked = true;
-    @track classNameOption1 = 'radio-buttons';
-    @track classNameOption2 = 'radio-buttons';
     @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
     @track contactOrg = '';
@@ -32,17 +30,17 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     isEpostValid = false;
     isPhoneValid = false;
 
-    @wire(getAccountName, {orgNumber: '$contactOrg' })
+    @wire(getAccountName, { orgNumber: '$contactOrg' })
     wiredAccountName({ data, error }) {
         if (data) {
             this.accountName = data;
             this.showError = false;
             this.isOrgValid = true;
             let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-            setTimeout(function(){
-                accountNameRead.style.display = "block";
+            setTimeout(function () {
+                accountNameRead.style.display = 'block';
                 accountNameRead.focus();
-           },500); //delay is in milliseconds 
+            }, 500); //delay is in milliseconds
         } else if (error) {
             this.accountName = '';
             this.isOrgValid = false;
@@ -50,15 +48,13 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             inputOrgField.sendErrorMessage(inputOrgField.errorText);
             inputOrgField.focus();
             let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-            accountNameRead.style.display = "none";
+            accountNameRead.style.display = 'none';
         }
     }
 
-    themeOption1 = [
-        { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false},
-    ];
-    themeOption2 = [
-        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false}
+    themeOptions = [
+        { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false },
+        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false }
     ];
 
     contactedEmployeeRepOptions = [
@@ -69,23 +65,17 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     handleThemeOption(event) {
         const selectedTheme = event.detail;
         this.themeChecked = true;
-    
-        if(selectedTheme[0].checked === true){
-            if (selectedTheme[0].value == 'Rekruttere og inkludere') {          
-                this.checkedTheme = 'Skal ansette';
-                this.checkedPreventSickLeave = false;
-                this.classNameOption1 = 'radio-buttons radio-buttons-checked';
-                this.urlRoute = 'kontaktskjemabekreftelse2';
-            } else if(selectedTheme[0].value == 'Forebygge sykefravær'){
-                this.checkedTheme = 'Forebygge sykefravær';
-                this.checkedPreventSickLeave = true;
-                this.classNameOption2 = 'radio-buttons radio-buttons-checked';
-                this.urlRoute = 'kontaktskjemabekreftelse';
-            }
+        if (selectedTheme[0]?.checked === true) {
+            this.checkedTheme = 'Skal ansette';
+            this.checkedPreventSickLeave = false;
+            this.urlRoute = 'kontaktskjemabekreftelse2';
+        } else if (selectedTheme[1]?.checked === true) {
+            this.checkedTheme = 'Forebygge sykefravær';
+            this.checkedPreventSickLeave = true;
+            this.urlRoute = 'kontaktskjemabekreftelse';
         }
     }
-    
-    
+
     handleContactedEmployeeRep(event) {
         const selectedContactedEmployeeRep = event.detail;
         if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
@@ -142,7 +132,13 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     saveContactForm() {
         this.validateSendForm();
-        if(this.themeChecked === true && this.isOrgValid === true && this.isNameValid === true && this.isPhoneValid === true && this.isEpostValid === true) {
+        if (
+            this.themeChecked === true &&
+            this.isOrgValid === true &&
+            this.isNameValid === true &&
+            this.isPhoneValid === true &&
+            this.isEpostValid === true
+        ) {
             const contactFormData = {
                 ContactOrg: this.contactOrg,
                 ContactName: this.contactName,
@@ -151,42 +147,40 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 ThemeSelected: this.checkedTheme,
                 IsFromArticle: this.comesFromArticle
             };
-            
-            createContactForm({ contactFormData })
-            .then(result => {
-                const currentUrl = window.location.href;
-                let newUrl = currentUrl.replace("#s","") + this.urlRoute; 
-               
-    
-                // Clear input field values
-                this.contactOrg = '';
-                this.contactName = '';
-                this.contactEmail = '';
-                this.contactPhone = '';
-                this.checkedTheme = '';
-                this.accountName = '';
-                this.isOrgValid = false;
-                this.isNameValid = false;
-                this.isEpostValid = false;
-                this.isPhoneValid = false;
 
-                this[NavigationMixin.Navigate]({
-                    type: 'standard__webPage',
-                    attributes: {
-                        url: newUrl
-                    }
+            createContactForm({ contactFormData })
+                .then((result) => {
+                    const currentUrl = window.location.href;
+                    let newUrl = currentUrl.replace('#s', '') + this.urlRoute;
+
+                    // Clear input field values
+                    this.contactOrg = '';
+                    this.contactName = '';
+                    this.contactEmail = '';
+                    this.contactPhone = '';
+                    this.checkedTheme = '';
+                    this.accountName = '';
+                    this.isOrgValid = false;
+                    this.isNameValid = false;
+                    this.isEpostValid = false;
+                    this.isPhoneValid = false;
+
+                    this[NavigationMixin.Navigate]({
+                        type: 'standard__webPage',
+                        attributes: {
+                            url: newUrl
+                        }
+                    });
+                })
+                .catch((error) => {
+                    const toastEvent = new ShowToastEvent({
+                        title: 'Feilmelding',
+                        message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
+                        variant: 'error'
+                    });
+                    this.dispatchEvent(toastEvent);
+                    console.error('Navigation error:', error);
                 });
-            })
-            .catch(error => {
-                const toastEvent = new ShowToastEvent({
-                    title: 'Feilmelding',
-                    message: 'Noe gikk galt ved opprettelse av kontaktskjema. Prøv igjen.',
-                    variant: 'error'
-                });
-                this.dispatchEvent(toastEvent);
-                console.error('Navigation error:', error);
-            });
-    
         }
     }
 
@@ -201,7 +195,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     renderedCallback() {
         loadStyle(this, index);
-        loadStyle(this,navStyling);
+        loadStyle(this, navStyling);
     }
 
     connectedCallback() {
@@ -229,21 +223,26 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         if (inputVariousField.value == '' || inputVariousField.value == null || inputVariousField.value.length < 1) {
             inputVariousField.sendErrorMessage(inputVariousField.errorText);
             this.isNameValid = false;
-        }
-        else {
+        } else {
             this.isNameValid = true;
         }
     }
 
     handleEmailField(event) {
         const inputEmailField = event.target;
-        let regExp = RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+        let regExp = RegExp(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
         let isValidEmail = regExp.test(inputEmailField.value) ? true : false;
-        if (!isValidEmail || inputEmailField.value == '' || inputEmailField.value == null || inputEmailField.value.length < 1) {
+        if (
+            !isValidEmail ||
+            inputEmailField.value == '' ||
+            inputEmailField.value == null ||
+            inputEmailField.value.length < 1
+        ) {
             inputEmailField.sendErrorMessage(inputEmailField.errorText);
             this.isEpostValid = false;
-        }
-        else {
+        } else {
             this.isEpostValid = true;
         }
     }
@@ -252,11 +251,15 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         const inputPhoneField = event.target;
         let regExp = RegExp(/^\d{8,14}$/);
         let isValidPhoneNr = regExp.test(inputPhoneField.value) ? true : false;
-        if (!isValidPhoneNr || inputPhoneField.value == '' || inputPhoneField.value == null || inputPhoneField.value.length < 1) {
+        if (
+            !isValidPhoneNr ||
+            inputPhoneField.value == '' ||
+            inputPhoneField.value == null ||
+            inputPhoneField.value.length < 1
+        ) {
             inputPhoneField.sendErrorMessage(inputPhoneField.errorText);
             this.isPhoneValid = false;
-        }
-        else {
+        } else {
             this.isPhoneValid = true;
         }
     }
