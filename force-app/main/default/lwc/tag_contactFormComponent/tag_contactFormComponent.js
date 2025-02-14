@@ -202,9 +202,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         window.addEventListener('resize', this.handleResize.bind(this));
         const docURL = document.URL;
         if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#s')) {
-            // Perform actions based on the referrer URL
-            // For example, create a record in Salesforce
             this.comesFromArticle = true;
+            console.log('Comes from article:', this.comesFromArticle);
         }
     }
 
