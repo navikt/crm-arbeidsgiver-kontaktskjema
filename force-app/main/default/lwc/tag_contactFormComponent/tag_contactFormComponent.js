@@ -151,7 +151,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             createContactForm({ contactFormData })
                 .then((result) => {
                     const currentUrl = window.location.href;
-                    let newUrl = currentUrl.replace('#s', '') + this.urlRoute;
+                    let newUrl = currentUrl.replace('#k', '') + this.urlRoute;
 
                     // Clear input field values
                     this.contactOrg = '';
@@ -201,7 +201,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     connectedCallback() {
         window.addEventListener('resize', this.handleResize.bind(this));
         const docURL = document.URL;
-        if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#s')) {
+        if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#k')) {
             this.comesFromArticle = true;
             console.log('Comes from article:', this.comesFromArticle);
         }
