@@ -101,7 +101,7 @@ public with sharing class TAG_ContactFormController {
                     newCustomOpportunity.TAG_IsFromArticle__c = true;
                 }
                 
-                if(contactFormList[0].theme == 'Skal ansette') {
+                if(contactFormList[0].theme == 'Skal ansette' || contactFormList[0].theme == 'Ungdomsløftet') {
                     newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
                     newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
