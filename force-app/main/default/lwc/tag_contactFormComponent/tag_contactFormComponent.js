@@ -24,7 +24,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     @track accountName = '';
     @track showError = false;
     @track comesFromArticle = false;
-    @track urlRoute = '';
+    @track urlRoute = 'kontaktskjemabekreftelse';
     isOrgValid = false;
     isNameValid = false;
     isEpostValid = false;
@@ -51,10 +51,11 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             accountNameRead.style.display = 'none';
         }
     }
-
+    // Skal ansette = Rekruttere og inkludere
     themeOptions = [
-        { label: 'Rekruttere og inkludere', value: 'Rekruttere og inkludere', name: 'theme', checked: false },
-        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false }
+        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false },
+        { label: 'Rekruttere og inkludere', value: 'Skal ansette', name: 'theme', checked: false },
+        { label: 'Ungdomsløftet', value: 'Ungdomsløftet', name: 'theme', checked: false }
     ];
 
     contactedEmployeeRepOptions = [
@@ -65,14 +66,17 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     handleThemeOption(event) {
         const selectedTheme = event.detail;
         this.themeChecked = true;
-        if (selectedTheme[0]?.checked === true) {
-            this.checkedTheme = 'Skal ansette';
-            this.checkedPreventSickLeave = false;
-            this.urlRoute = 'kontaktskjemabekreftelse2';
-        } else if (selectedTheme[1]?.checked === true) {
-            this.checkedTheme = 'Forebygge sykefravær';
-            this.checkedPreventSickLeave = true;
-            this.urlRoute = 'kontaktskjemabekreftelse';
+
+        const selectedOption = selectedTheme.find((option) => option.checked === true);
+
+        if (selectedOption) {
+            this.checkedTheme = selectedOption.value;
+
+            if (selectedOption.value === 'Forebygge sykefravær') {
+                this.checkedPreventSickLeave = true;
+            } else {
+                this.checkedPreventSickLeave = false;
+            }
         }
     }
 
