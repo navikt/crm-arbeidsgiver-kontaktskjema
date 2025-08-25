@@ -1,6 +1,6 @@
 Template repository for CRM packages. Necessary steps after using template:
 
-1. Familiarize yourself with how to setup repositories at NAV https://github.com/navikt/offentlig
+1. Familiarize yourself with how to setup repositories at Nav https://github.com/navikt/offentlig
 2. Check the `package.json` versions and update before running `npm install` and add `package-lock.json` to git.
 3. Add secrets (see [description](https://github.com/navikt/crm-workflows-base))
     - DEV_SFDX_URL `[OPTIONAL]`
@@ -76,6 +76,6 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 Eller:
 Spørsmål knyttet til koden eller prosjektet kan stilles til teamalias@nav.no
 
-## For NAV-ansatte
+## For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen `#teamkanal`.
