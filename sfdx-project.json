@@ -105,5 +105,11 @@
         "crm-community-base": "0Ho2o0000008OSzCAM",
         "crm-platform-reporting": "0Ho2o0000008OSfCAM",
         "crm-henvendelse-base": "0Ho7U000000000kSAA"
+    },
+    "packageKeyConfig": {
+        "platform-data-model": false,
+        "custom-metadata-dao": false,
+        "custom-permission-helper": false,
+        "feature-toggle": false
     }
 }
