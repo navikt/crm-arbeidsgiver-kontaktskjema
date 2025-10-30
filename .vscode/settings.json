@@ -30,5 +30,6 @@
         "**/.sfdx": true,
         "**/.vscode": true,
         "**/.idea": true
-    }
+    },
+    "xml.preferences.showSchemaDocumentationType": "none"
 }
