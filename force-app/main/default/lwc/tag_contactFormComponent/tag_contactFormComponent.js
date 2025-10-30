@@ -51,9 +51,10 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             accountNameRead.style.display = 'none';
         }
     }
-    // Skal ansette = Rekruttere og inkludere
+    // "Skal ansette" er label og API value i SF. "Rekruttere og inkludere" er begrepet vi bruker utad
+    // "Forebygge og redusere fravær" er label i SF, og "Forebygge sykefravær" er API value i SF
     themeOptions = [
-        { label: 'Forebygge sykefravær', value: 'Forebygge sykefravær', name: 'theme', checked: false },
+        { label: 'Forebygge og redusere fravær', value: 'Forebygge sykefravær', name: 'theme', checked: false },
         { label: 'Rekruttere og inkludere', value: 'Skal ansette', name: 'theme', checked: false },
         { label: 'Ungdomsløftet', value: 'Ungdomsløftet', name: 'theme', checked: false }
     ];
