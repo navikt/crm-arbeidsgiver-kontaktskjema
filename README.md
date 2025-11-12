@@ -68,6 +68,26 @@ sfdx force:source:push
 sfdx force:org:open
 ```
 
+## Sjekkliste for utviklers test 🧪 
+Filosofi: Alt trenger testing, men det er viktig å tilpasse test etter risiko.
+
+1. **Funksjonell testing**
+    - [ ] Funksjonen er testet i henhold til akseptansekriterier
+    - [ ] Testet med ulike record types
+    - [ ] Testet med ulike typer input
+    - [ ] Testet med riktige rettigheter/testbrukere i preprod
+    - [ ] Testet på mobil dersom relevant
+2. **Teknisk testing**
+    - [ ] Kompleks logikk er dekket av unit tester
+    - [ ] Negativ testing er utført (enten unit tester eller manuelle tester)
+3. **Kvalitetssikring**
+    - [ ] Review eller test fra annen utvikler er innhentet dersom nødvendig
+    - [ ] UU-krav er verifisert dersom relevant
+4. **Dokumentasjon og kommunikasjon**
+    - [ ] Jobbsporet og arbeidsgivertelefonen er varslet om endring dersom relevant
+    - [ ] Testcaser og testdata er dokumentert for teamet dersom nødvendig
+
+
 # Henvendelser
 
 Enten:
