@@ -12,6 +12,9 @@
  */
 @IsTest
 public with sharing class TAG_ContactFormSendEmail_Test {
+ private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
+     private static final String THEME_REKRUTTERE_OG_INKLUDERE = 'Skal ansette';
+     private static final String THEME_UNGDOMSLOFTET = 'Ungdomsløftet';
 
 @TestSetup
 static void makeData() {
@@ -21,18 +24,18 @@ static void makeData() {
     Contact con = new Contact(FirstName = 'Test', LastName = 'Testersen', Email = 'test.testersen@email.com', Phone = '90909090');
         insert con;
 
-    CustomOpportunity__c co = new CustomOpportunity__c();
-        co.InquiryCategory__c = 'Rekruttere og inkludere';
+    TAG_Inquiry__c co = new TAG_Inquiry__c();
+        co.WebFormTheme__c = THEME_REKRUTTERE_OG_INKLUDERE;
         co.Account__c = [SELECT Id FROM Account WHERE INT_OrganizationNumber__c = '973113631'].Id;
         co.Contact__c = [SELECT Id FROM Contact WHERE Email = 'test.testersen@email.com'].Id;
-        co.InclusionStage__c = 'Ny henvendelse';
+        co.Stage__c = 'Ny henvendelse';
         co.Source__c = 'Kontaktskjema';
         insert co;
     }
 
     /**
      * @description Testing the `sendEmailReceipts` method with correct value.
-     * Testing with value: `CustomOpportunity__c opportunity`
+     * Testing with value: `TAG_Inquiry__c inquiry`
      * Expected result: A new record in the EmailQueue__c object with status = Queued
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -41,13 +44,13 @@ static void makeData() {
     @IsTest
     static void testProcessEmailPositive() {
 
-        CustomOpportunity__c opportunity = [
-            SELECT Id, Name, Account__c, Contact__c, InclusionStage__c, Source__c, InquiryCategory__c
-            FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Rekruttere og inkludere' LIMIT 1
+        TAG_Inquiry__c inquiry = [
+            SELECT Id, Name, Account__c, Contact__c, Stage__c, Source__c, WebFormTheme__c
+            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :THEME_REKRUTTERE_OG_INKLUDERE LIMIT 1
         ];
 
         Test.startTest();
-        TAG_ContactFormSendEmail.sendEmailReceipts(opportunity);
+        TAG_ContactFormSendEmail.sendEmailReceipts(inquiry);
         Test.stopTest();
 
         List<EmailQueue__c> queuedEmail = [
@@ -63,6 +66,6 @@ static void makeData() {
         System.assertEquals('kontaktskjemaRekrutteringReceipt', queuedEmail[0].TemplateName__c, 'Template name should be Rekruttere og inkludere');
         System.assertEquals(contact[0].Id, queuedEmail[0].TargetObjectId__c, 'Contact Id not matching TargetObjectId__c');
         System.assertEquals('Queued', queuedEmail[0].Status__c, 'Status should have value Queued');
-        System.assertEquals(opportunity.Id, queuedEmail[0].WhatId__c, 'Custom Opportunity Id not matching the WhatId__c');
+        System.assertEquals(inquiry.Id, queuedEmail[0].WhatId__c, 'Inquiry Id not matching the WhatId__c');
     }
 }

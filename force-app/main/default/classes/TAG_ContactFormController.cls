@@ -13,13 +13,19 @@
  * @group TAG Contact Form
  */
 public with sharing class TAG_ContactFormController {
-    private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
-        .get('Inclusion')
+private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c.getRecordTypeInfosByDeveloperName()
+        .get('Employer')
         .getRecordTypeId();
 
+     
+     // label: 'Forebygge og redusere fravær', value: 'Forebygge sykefravær'
+     // label: 'Rekruttere og inkludere', value: 'Skal ansette',
+     private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
+     private static final String THEME_REKRUTTERE_OG_INKLUDERE = 'Skal ansette';
+     private static final String THEME_UNGDOMSLOFTET = 'Ungdomsløftet';
     /**
-     * @description The createContactForm method creates a Contact Form record and sends the record to the insertCustomOpportunity method
-     * which creates a new Custom Opportunity record
+     * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
+     * which creates a new TAG Inquiry record
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
@@ -47,7 +53,7 @@ public with sharing class TAG_ContactFormController {
 
             Map<String, Contact> contactMap = getContactMap(newContactFormList, accountMap);
 
-            insertCustomOpportunity(newContactFormList, accountMap, contactMap);
+            insertInquiry(newContactFormList, accountMap, contactMap);
     }
 
      /**
@@ -76,7 +82,7 @@ public with sharing class TAG_ContactFormController {
     }
 
     /**
-     * @description The insertCustomOpportunity method creates a new Custom Opportunity record and inserts it to the database. 
+     * @description The insertInquiry method creates a new TAG Inquiry record and inserts it to the database. 
      * It then calls the TAG_ContactFormSendEmail.sendEmailReceipts method so an email receipt can be sent to the user
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -87,38 +93,39 @@ public with sharing class TAG_ContactFormController {
      * which the user represents
      * @param contactMap The request/input parameter sent from createContactForm method, containing the contact record of the user
      */
-    private static void insertCustomOpportunity(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
+    private static void insertInquiry(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
         try {
-            CustomOpportunity__c newCustomOpportunity = new CustomOpportunity__c();
-                newCustomOpportunity.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
-                newCustomOpportunity.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
-                newCustomOpportunity.TAG_OrganizationNameFromForm__c = contactFormList[0].organizationName;
-                newCustomOpportunity.InquiryCategory__c = contactFormList[0].theme;
-                newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
-                newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
-                newCustomOpportunity.Source__c = 'Kontaktskjema';
+            TAG_Inquiry__c newInquiry = new TAG_Inquiry__c();
+                newInquiry.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
+                newInquiry.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
+                newInquiry.OrganizationNameFromForm__c = contactFormList[0].organizationName;
+                newInquiry.WebFormTheme__c = contactFormList[0].theme;
+                newInquiry.RecordTypeId = EMPLOYER_RECORD_TYPE;
+                newInquiry.Stage__c = 'Ny henvendelse';
+                newInquiry.Source__c = 'Kontaktskjema';
+                newInquiry.Name = 'Kontaktskjema: ' + newInquiry.WebFormTheme__c;
                 if(contactFormList[0].comesFromArticle == 'True') {
-                    newCustomOpportunity.TAG_IsFromArticle__c = true;
+                    newInquiry.IsFromArticle__c = true;
                 }
                 
-                if(contactFormList[0].theme == 'Skal ansette' || contactFormList[0].theme == 'Ungdomsløftet') {
-                    newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                if(contactFormList[0].theme == THEME_REKRUTTERE_OG_INKLUDERE || contactFormList[0].theme == THEME_UNGDOMSLOFTET) {
+                    newInquiry.MunicipalityNumber__c = contactFormList[0].municipalityCode;
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
-                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
-                } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
+                    newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newInquiry.NavUnit__c = navUnit[0].Id;
+                } else if (contactFormList[0].theme == THEME_FOREBYGGE_SYKEFRAVAER) {
                     String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(null, getUnitName(region));
-                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
+                    newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newInquiry.NavUnit__c = navUnit[0].Id;
                 }
 
-            insert newCustomOpportunity;
-            TAG_ContactFormSendEmail.sendEmailReceipts(newCustomOpportunity);
+            insert newInquiry;
+            TAG_ContactFormSendEmail.sendEmailReceipts(newInquiry);
         } catch (Exception e) {
-            System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
-            throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
-        }
+           System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
+           throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
+       }
     }
 
     /**
@@ -199,7 +206,7 @@ public with sharing class TAG_ContactFormController {
     }
 
     /**
-     * @description The getNavUnitQueueAndId method is called by the insertCustomOpportunity method. It receives the Nav Unit Id (or Nav Unit name) of the nav unit 
+     * @description The getNavUnitQueueAndId method is called by the insertInquiry method. It receives the Nav Unit Id (or Nav Unit name) of the nav unit 
      * which the company/account is related to. Then return the queueId and id of the nav unit
      *
      * @author Andre Colle <andre.colle@nav.no>
