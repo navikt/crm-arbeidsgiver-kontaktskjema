@@ -9,7 +9,7 @@
             "dependencies": [
                 {
                     "package": "crm-platform-base",
-                    "versionNumber": "0.287.0.LATEST"
+                    "versionNumber": "0.297.0.LATEST"
                 },
                 {
                     "package": "crm-platform-email-scheduling",
@@ -57,7 +57,7 @@
                 },
                 {
                     "package": "crm-shared-timeline",
-                    "versionNumber": "1.35.0.LATEST"
+                    "versionNumber": "1.42.0.LATEST"
                 },
                 {
                     "package": "crm-platform-integration",
@@ -73,18 +73,18 @@
                 },
                 {
                     "package": "crm-arbeidsgiver-base",
-                    "versionNumber": "1.654.0.3"
+                    "versionNumber": "1.658.0.1"
                 },
                 {
                     "package": "crm-community-base",
-                    "versionNumber": "0.92.0.LATEST"
+                    "versionNumber": "0.139.0.LATEST"
                 }
             ]
         }
     ],
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "60.0",
+    "sourceApiVersion": "65.0",
     "packageAliases": {
         "crm-platform-base": "0Ho2o0000008ORmCAM",
         "crm-platform-email-scheduling": "0Ho2o000000fxWwCAI",
