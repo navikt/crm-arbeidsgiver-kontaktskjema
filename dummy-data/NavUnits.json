@@ -47,6 +47,30 @@
             "INT_Region__c": "Vest-Viken",
             "INT_UnitType__c": "LOKAL",
             "MarketRegion__c": "Viken"
+        },
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef5"
+            },
+            "Name": "NAV Arbeidslivssenter Oslo",
+            "INT_UnitNumber__c": "0391",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Oslo",
+            "INT_UnitType__c": "ALS",
+            "MarketRegion__c": "Markedsregion"
+        },
+        {
+            "attributes": {
+                "type": "NavUnit__c",
+                "referenceId": "NavUnit__cRef6"
+            },
+            "Name": "NAV Arbeidslivssenter Agder",
+            "INT_UnitNumber__c": "1091",
+            "CRM_DefaultPermissionSetGroup__c": "Arbeidsgiver",
+            "INT_Region__c": "Agder",
+            "INT_UnitType__c": "ALS",
+            "MarketRegion__c": "Markedsregion"
         }
     ]
 }
