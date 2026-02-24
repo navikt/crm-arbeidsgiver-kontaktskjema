@@ -13,6 +13,14 @@
  */
 
 public with sharing class TAG_ContactForm {
+    // Theme option labels
+    public static final String THEME_FOREBYGGE_SYKEFRAVAER_LABEL = 'Forebygge og redusere fravær';
+    public static final String THEME_REKRUTTERE_OG_INKLUDERE_LABEL = 'Rekruttere og inkludere';
+    public static final String THEME_UNGDOMSLOFTET_LABEL = 'Ungdomsløftet';
+
+    public static final String SOURCE = 'Kontaktskjema';
+    public static final String STAGE = 'Ny henvendelse';   
+
     public String organizationNumber;
     public String municipalityCode;
     public String organizationName;

@@ -17,12 +17,18 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
         .get('Employer')
         .getRecordTypeId();
 
-     
-     // label: 'Forebygge og redusere fravær', value: 'Forebygge sykefravær'
-     // label: 'Rekruttere og inkludere', value: 'Skal ansette',
-     private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
-     private static final String THEME_REKRUTTERE_OG_INKLUDERE = 'Skal ansette';
-     private static final String THEME_UNGDOMSLOFTET = 'Ungdomsløftet';
+
+     // Labels displayed in webform
+     private static final List<Map<String, Object>> THEME_OPTIONS = new List<Map<String, Object>>{
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'value' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'name' => 'theme', 'checked' => false, 'info' => true },
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'value' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false },
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'value' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false }
+     };
+
+     @AuraEnabled(cacheable=true)
+     public static List<Map<String, Object>> getThemeOptions() {
+         return THEME_OPTIONS;
+     }
     /**
      * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
      * which creates a new TAG Inquiry record
@@ -101,19 +107,19 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
                 newInquiry.OrganizationNameFromForm__c = contactFormList[0].organizationName;
                 newInquiry.WebFormTheme__c = contactFormList[0].theme;
                 newInquiry.RecordTypeId = EMPLOYER_RECORD_TYPE;
-                newInquiry.Stage__c = 'Ny henvendelse';
-                newInquiry.Source__c = 'Kontaktskjema';
-                newInquiry.Name = 'Kontaktskjema: ' + newInquiry.WebFormTheme__c;
+                newInquiry.Stage__c = TAG_ContactForm.STAGE;
+                newInquiry.Source__c = TAG_ContactForm.SOURCE;
+                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.WebFormTheme__c;
                 if(contactFormList[0].comesFromArticle == 'True') {
                     newInquiry.IsFromArticle__c = true;
                 }
                 
-                if(contactFormList[0].theme == THEME_REKRUTTERE_OG_INKLUDERE || contactFormList[0].theme == THEME_UNGDOMSLOFTET) {
+                if(contactFormList[0].theme == TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL || contactFormList[0].theme == TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL) {
                     newInquiry.MunicipalityNumber__c = contactFormList[0].municipalityCode;
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
                     newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
                     newInquiry.NavUnit__c = navUnit[0].Id;
-                } else if (contactFormList[0].theme == THEME_FOREBYGGE_SYKEFRAVAER) {
+                } else if (contactFormList[0].theme == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL) {
                     String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(null, getUnitName(region));
                     newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
@@ -178,7 +184,7 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
             wrapper.companyNumber = submission.organizationNumber;
             wrapper.phone = submission.phoneNumber;
             wrapper.email = submission.email;
-            wrapper.source = 'Kontaktskjema';
+            wrapper.source = SOURCE;
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
         }
@@ -213,7 +219,7 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
      * @since 2023-11-14 Created.
      *
      * @param navUnitId Contains the Nav Unit record Id
-     * @param navUnitName Contains the Nav Unit name. This is only not null if the custom opportunity is regarding Forebygge Sykefravær.
+     * @param navUnitName Contains the Nav Unit name. This is only not null if the custom opportunity is regarding sick leave.
      * Because then we need to return the Id of the Nav Unit Arbeidslivssenter.
      * @return navUnitQueue Contains the Nav Unit queue Id
      */

@@ -11,8 +11,7 @@
  *
  * @group TAG Contact Form
  */
-public with sharing class TAG_ContactFormSendEmail {
-    private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
+public with sharing class TAG_ContactFormSendEmail {    
     /**
      * @description The sendEmailReceipts method adds the email to the email queue
      *
@@ -45,7 +44,7 @@ public with sharing class TAG_ContactFormSendEmail {
      * @param inquiry The request/input parameter which is sent from the sendEmailReceipts method in this class.
      */
     public static EmailQueue__c generateDraftEmailReceipt(TAG_Inquiry__c inquiry) {
-        String templateName = inquiry.WebFormTheme__c == THEME_FOREBYGGE_SYKEFRAVAER
+        String templateName = inquiry.WebFormTheme__c == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL
             ? 'kontaktskjemaSykefravaerReceipt'
             : 'kontaktskjemaRekrutteringReceipt';
         EmailQueue__c email = new EmailQueue__c();
