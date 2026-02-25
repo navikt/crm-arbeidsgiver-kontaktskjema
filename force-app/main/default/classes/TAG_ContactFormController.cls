@@ -184,7 +184,7 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
             wrapper.companyNumber = submission.organizationNumber;
             wrapper.phone = submission.phoneNumber;
             wrapper.email = submission.email;
-            wrapper.source = SOURCE;
+            wrapper.source = TAG_ContactForm.SOURCE;
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
         }

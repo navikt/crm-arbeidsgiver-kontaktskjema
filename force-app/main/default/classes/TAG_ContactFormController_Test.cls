@@ -169,8 +169,8 @@ static void makeData(){
         System.assertEquals(contact[0].Id, inquiry[0].Contact__c, 'Contact Id not matching');
         System.assertEquals(TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, inquiry[0].WebFormTheme__c, 'WebFormTheme__c should be Prevent sick leave');
         System.assertEquals(EMPLOYER_RECORD_TYPE, inquiry[0].RecordTypeId, 'RecordTypeId not matching');
-        System.assertEquals('Ny henvendelse', inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
-        System.assertEquals('Kontaktskjema', inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
+        System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
+        System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
         System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
