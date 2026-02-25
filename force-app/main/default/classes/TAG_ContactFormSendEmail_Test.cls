@@ -12,10 +12,7 @@
  */
 @IsTest
 public with sharing class TAG_ContactFormSendEmail_Test {
- private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
-     private static final String THEME_REKRUTTERE_OG_INKLUDERE = 'Skal ansette';
-     private static final String THEME_UNGDOMSLOFTET = 'Ungdomsløftet';
-
+ 
 @TestSetup
 static void makeData() {
     Account acc = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631');
@@ -25,11 +22,11 @@ static void makeData() {
         insert con;
 
     TAG_Inquiry__c co = new TAG_Inquiry__c();
-        co.WebFormTheme__c = THEME_REKRUTTERE_OG_INKLUDERE;
+        co.WebFormTheme__c = TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL;
         co.Account__c = [SELECT Id FROM Account WHERE INT_OrganizationNumber__c = '973113631'].Id;
         co.Contact__c = [SELECT Id FROM Contact WHERE Email = 'test.testersen@email.com'].Id;
-        co.Stage__c = 'Ny henvendelse';
-        co.Source__c = 'Kontaktskjema';
+        co.Stage__c = TAG_ContactForm.STAGE;
+        co.Source__c = TAG_ContactForm.SOURCE;
         insert co;
     }
 
@@ -46,7 +43,7 @@ static void makeData() {
 
         TAG_Inquiry__c inquiry = [
             SELECT Id, Name, Account__c, Contact__c, Stage__c, Source__c, WebFormTheme__c
-            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :THEME_REKRUTTERE_OG_INKLUDERE LIMIT 1
+            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
         ];
 
         Test.startTest();
@@ -63,7 +60,7 @@ static void makeData() {
             FROM Contact WHERE Email = 'test.testersen@email.com' LIMIT 1
         ];
 
-        System.assertEquals('kontaktskjemaRekrutteringReceipt', queuedEmail[0].TemplateName__c, 'Template name should be Rekruttere og inkludere');
+        System.assertEquals('kontaktskjemaRekrutteringReceipt', queuedEmail[0].TemplateName__c, 'Template name should be kontaktskjemaRekrutteringReceipt for '+TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL+' theme');
         System.assertEquals(contact[0].Id, queuedEmail[0].TargetObjectId__c, 'Contact Id not matching TargetObjectId__c');
         System.assertEquals('Queued', queuedEmail[0].Status__c, 'Status should have value Queued');
         System.assertEquals(inquiry.Id, queuedEmail[0].WhatId__c, 'Inquiry Id not matching the WhatId__c');

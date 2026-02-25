@@ -15,9 +15,8 @@ public with sharing class TAG_ContactFormController_Test {
     private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c.getRecordTypeInfosByDeveloperName()
         .get('Employer')
         .getRecordTypeId();
-         private static final String THEME_FOREBYGGE_SYKEFRAVAER = 'Forebygge sykefravær';
-     private static final String THEME_REKRUTTERE_OG_INKLUDERE = 'Skal ansette';
-     private static final String THEME_UNGDOMSLOFTET = 'Ungdomsløftet';
+     
+    
 
 @TestSetup
 static void makeData(){
@@ -69,7 +68,7 @@ static void makeData(){
 
     /**
      * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme = Skal ansette
+     * Testing with value: `contactFormMap` with theme Skal ansette
      * Expected result: A new record in the TAG_Inquiry__c object
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -82,7 +81,7 @@ static void makeData(){
         contactFormMap.put('ContactName', 'Test Testersen');
         contactFormMap.put('ContactEmail', 'test.testersen@email.com');
         contactFormMap.put('ContactPhone', '90909090');
-        contactFormMap.put('ThemeSelected', THEME_REKRUTTERE_OG_INKLUDERE);
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL);
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
@@ -90,7 +89,7 @@ static void makeData(){
 
         List<TAG_Inquiry__c> inquiry = [
             SELECT Id, Account__c, OwnerId, Contact__c, WebFormTheme__c, RecordTypeId, Stage__c, Source__c, RegionNumber__c, MunicipalityNumber__c, NavUnit__c
-            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :THEME_REKRUTTERE_OG_INKLUDERE LIMIT 1
+            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
         ];
 
         List<Account> account = [
@@ -110,10 +109,10 @@ static void makeData(){
 
         System.assertEquals(account[0].Id, inquiry[0].Account__c, 'Account Id not matching');
         System.assertEquals(contact[0].Id, inquiry[0].Contact__c, 'Contact Id not matching');
-        System.assertEquals(THEME_REKRUTTERE_OG_INKLUDERE, inquiry[0].WebFormTheme__c, 'WebFormTheme__c should be Skal ansette');
+        System.assertEquals(TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, inquiry[0].WebFormTheme__c, 'WebFormTheme__c should be set');
         System.assertEquals(EMPLOYER_RECORD_TYPE, inquiry[0].RecordTypeId, 'RecordTypeId not matching');
-        System.assertEquals('Ny henvendelse', inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
-        System.assertEquals('Kontaktskjema', inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
+        System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
+        System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
         System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
@@ -127,7 +126,7 @@ static void makeData(){
 
     /**
      * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme = Forebygge sykefravær
+     * Testing with value: `contactFormMap` with theme prevent sickleave
      * Expected result: A new record in the TAG_Inquiry__c object
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -140,7 +139,7 @@ static void makeData(){
         contactFormMap.put('ContactName', 'Test Testersen');
         contactFormMap.put('ContactEmail', 'test.testersen@email.com');
         contactFormMap.put('ContactPhone', '90909090');
-        contactFormMap.put('ThemeSelected', THEME_FOREBYGGE_SYKEFRAVAER);
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL);
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
@@ -148,7 +147,7 @@ static void makeData(){
 
         List<TAG_Inquiry__c> inquiry = [
             SELECT Id, Account__c, OwnerId, Contact__c, WebFormTheme__c, RecordTypeId, Stage__c, Source__c, RegionNumber__c, MunicipalityNumber__c, NavUnit__c
-            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :THEME_FOREBYGGE_SYKEFRAVAER LIMIT 1
+            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL LIMIT 1
         ];
 
         List<Account> account = [
@@ -168,10 +167,10 @@ static void makeData(){
 
         System.assertEquals(account[0].Id, inquiry[0].Account__c, 'Account Id not matching');
         System.assertEquals(contact[0].Id, inquiry[0].Contact__c, 'Contact Id not matching');
-        System.assertEquals(THEME_FOREBYGGE_SYKEFRAVAER, inquiry[0].WebFormTheme__c, 'WebFormTheme__c should be Forebygge sykefravær');
+        System.assertEquals(TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, inquiry[0].WebFormTheme__c, 'WebFormTheme__c should be Prevent sick leave');
         System.assertEquals(EMPLOYER_RECORD_TYPE, inquiry[0].RecordTypeId, 'RecordTypeId not matching');
-        System.assertEquals('Ny henvendelse', inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
-        System.assertEquals('Kontaktskjema', inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
+        System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].Stage__c, 'Stage__c should be Ny henvendelse');
+        System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].Source__c, 'Source__c should be Kontaktskjema');
         System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
