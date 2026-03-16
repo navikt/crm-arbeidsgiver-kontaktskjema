@@ -13,7 +13,7 @@
  */
 
 public with sharing class TAG_ContactForm {
-    // Theme option labels
+    // Theme option labels displayed for end users in form.
     public static final String THEME_FOREBYGGE_SYKEFRAVAER_LABEL = 'Forebygge og redusere fravær';
     public static final String THEME_REKRUTTERE_OG_INKLUDERE_LABEL = 'Rekruttere og inkludere';
     public static final String THEME_UNGDOMSLOFTET_LABEL = 'Ungdomsløftet';

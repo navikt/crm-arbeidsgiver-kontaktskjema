@@ -13,9 +13,6 @@
  * @group TAG Contact Form
  */
 public with sharing class TAG_ContactFormController {
-private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c.getRecordTypeInfosByDeveloperName()
-        .get('Employer')
-        .getRecordTypeId();
 
 
      // Labels displayed in webform
@@ -101,29 +98,25 @@ private static final Id EMPLOYER_RECORD_TYPE = Schema.SObjectType.TAG_Inquiry__c
      */
     private static void insertInquiry(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
         try {
-            TAG_Inquiry__c newInquiry = new TAG_Inquiry__c();
-                newInquiry.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
-                newInquiry.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
-                newInquiry.OrganizationNameFromForm__c = contactFormList[0].organizationName;
-                newInquiry.WebFormTheme__c = contactFormList[0].theme;
-                newInquiry.RecordTypeId = EMPLOYER_RECORD_TYPE;
-                newInquiry.Stage__c = TAG_ContactForm.STAGE;
-                newInquiry.Source__c = TAG_ContactForm.SOURCE;
-                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.WebFormTheme__c;
-                if(contactFormList[0].comesFromArticle == 'True') {
-                    newInquiry.IsFromArticle__c = true;
-                }
+            EmployerInquiry__c newInquiry = new EmployerInquiry__c();
+                newInquiry.TAG_Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
+                newInquiry.TAG_Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
+                newInquiry.TAG_WebFormTheme__c = contactFormList[0].theme;               
+                newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
+                newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
+                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
+                
                 
                 if(contactFormList[0].theme == TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL || contactFormList[0].theme == TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL) {
-                    newInquiry.MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                    newInquiry.TAG_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
                     newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newInquiry.NavUnit__c = navUnit[0].Id;
+                    newInquiry.TAG_NavUnit__c = navUnit[0].Id;
                 } else if (contactFormList[0].theme == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL) {
                     String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(null, getUnitName(region));
                     newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newInquiry.NavUnit__c = navUnit[0].Id;
+                    newInquiry.TAG_NavUnit__c = navUnit[0].Id;
                 }
 
             insert newInquiry;

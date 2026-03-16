@@ -21,18 +21,18 @@ static void makeData() {
     Contact con = new Contact(FirstName = 'Test', LastName = 'Testersen', Email = 'test.testersen@email.com', Phone = '90909090');
         insert con;
 
-    TAG_Inquiry__c co = new TAG_Inquiry__c();
-        co.WebFormTheme__c = TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL;
-        co.Account__c = [SELECT Id FROM Account WHERE INT_OrganizationNumber__c = '973113631'].Id;
-        co.Contact__c = [SELECT Id FROM Contact WHERE Email = 'test.testersen@email.com'].Id;
-        co.Stage__c = TAG_ContactForm.STAGE;
-        co.Source__c = TAG_ContactForm.SOURCE;
+    EmployerInquiry__c co = new EmployerInquiry__c();
+        co.TAG_WebFormTheme__c = TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL;
+        co.TAG_Account__c = [SELECT Id FROM Account WHERE INT_OrganizationNumber__c = '973113631'].Id;
+        co.TAG_Contact__c = [SELECT Id FROM Contact WHERE Email = 'test.testersen@email.com'].Id;
+        co.TAG_Status__c = TAG_ContactForm.STAGE;
+        co.TAG_Source__c = TAG_ContactForm.SOURCE;
         insert co;
     }
 
     /**
      * @description Testing the `sendEmailReceipts` method with correct value.
-     * Testing with value: `TAG_Inquiry__c inquiry`
+     * Testing with value: `EmployerInquiry__c inquiry`
      * Expected result: A new record in the EmailQueue__c object with status = Queued
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -41,9 +41,9 @@ static void makeData() {
     @IsTest
     static void testProcessEmailPositive() {
 
-        TAG_Inquiry__c inquiry = [
-            SELECT Id, Name, Account__c, Contact__c, Stage__c, Source__c, WebFormTheme__c
-            FROM TAG_Inquiry__c WHERE WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
+        EmployerInquiry__c inquiry = [
+            SELECT Id, Name, TAG_Account__c, TAG_Contact__c, TAG_Status__c, TAG_Source__c, TAG_WebFormTheme__c
+            FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
         ];
 
         Test.startTest();

@@ -21,10 +21,10 @@ public with sharing class TAG_ContactFormSendEmail {
      * @param inquiry The request/input parameter which is sent from the insertInquiry method in TAG_ContactFormController
      * class.
      */
-    public static void sendEmailReceipts(TAG_Inquiry__c inquiry) {
+    public static void sendEmailReceipts(EmployerInquiry__c inquiry) {
         List<EmailQueue__c> emails = new List<EmailQueue__c>();
         try {
-                if (inquiry.Contact__c != null) {
+                if (inquiry.TAG_Contact__c != null) {
                     emails.add(generateDraftEmailReceipt(inquiry));
                 }
             insert emails;
@@ -43,13 +43,13 @@ public with sharing class TAG_ContactFormSendEmail {
      *
      * @param inquiry The request/input parameter which is sent from the sendEmailReceipts method in this class.
      */
-    public static EmailQueue__c generateDraftEmailReceipt(TAG_Inquiry__c inquiry) {
-        String templateName = inquiry.WebFormTheme__c == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL
+    public static EmailQueue__c generateDraftEmailReceipt(EmployerInquiry__c inquiry) {
+        String templateName = inquiry.TAG_WebFormTheme__c == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL
             ? 'kontaktskjemaSykefravaerReceipt'
             : 'kontaktskjemaRekrutteringReceipt';
         EmailQueue__c email = new EmailQueue__c();
         email.TemplateName__c = templateName;
-        email.TargetObjectId__c = inquiry.Contact__c;
+        email.TargetObjectId__c = inquiry.TAG_Contact__c;
         email.WhatId__c = inquiry.Id;
         email.Priority__c = '5';
         email.Status__c = 'Queued';
