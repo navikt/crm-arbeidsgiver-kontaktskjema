@@ -18,21 +18,9 @@
         "files": ["Contacts.json"]
     },
     {
-        "sobject": "Event",
+        "sobject": "EmployerInquiry__c",
         "saveRefs": false,
         "resolveRefs": true,
-        "files": ["Events.json"]
-    },
-    {
-        "sobject": "Task",
-        "saveRefs": false,
-        "resolveRefs": true,
-        "files": ["Tasks.json"]
-    },
-    {
-        "sobject": "CustomOpportunity__c",
-        "saveRefs": false,
-        "resolveRefs": true,
-        "files": ["CustomOpportunities.json"]
+        "files": ["Inquiries.json"]
     }
 ]
