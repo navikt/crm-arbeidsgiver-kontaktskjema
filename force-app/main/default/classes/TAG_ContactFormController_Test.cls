@@ -196,9 +196,9 @@ static void makeData(){
         Test.startTest();
         try {
             TAG_ContactFormController.createContactForm(contactFormMap);
-        } catch(Exception e) {
+        } catch(AuraHandledException e) {
             Assert.isNotNull(e);
-            System.assertEquals('List has no rows for assignment to SObject', e.getMessage());
+            System.assertEquals('Script-thrown exception', e.getMessage());
         }
         Test.stopTest();
     }
