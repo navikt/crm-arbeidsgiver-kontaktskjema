@@ -38,10 +38,10 @@ public with sharing class TAG_ContactFormController {
      */
     @AuraEnabled
     public static void createContactForm(Map<String, String> contactFormData) {
-        Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
-        List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
-
-        TAG_ContactForm newContactForm = new TAG_ContactForm();
+        try{
+            Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
+            List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
+            TAG_ContactForm newContactForm = new TAG_ContactForm();
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
@@ -57,6 +57,11 @@ public with sharing class TAG_ContactFormController {
             Map<String, Contact> contactMap = getContactMap(newContactFormList, accountMap);
 
             insertInquiry(newContactFormList, accountMap, contactMap);
+        } catch (Exception e) {
+           // System.debug(e.getStackTraceString());
+            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
+            throw new AuraHandledException('An unexpected error occurred.');
+        }        
     }
 
      /**
@@ -80,6 +85,7 @@ public with sharing class TAG_ContactFormController {
                 return accountName;
             }
         } catch (Exception e) {
+            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
     }
@@ -122,7 +128,7 @@ public with sharing class TAG_ContactFormController {
             insert newInquiry;
             TAG_ContactFormSendEmail.sendEmailReceipts(newInquiry);
         } catch (Exception e) {
-           System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
+           //System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
            throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
        }
     }
@@ -319,4 +325,20 @@ public with sharing class TAG_ContactFormController {
             }
         }
     }
+
+
+    private static void logAndPublishError(String message, Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+                logger.logMessage(
+                    LoggerUtility.LogLevel.Error,
+                    '',
+                    '',
+                    message,
+                    e.getStackTraceString(),
+                    null,
+                    CRM_ApplicationDomain.Domain.POAB
+                );
+                logger.publish();
+            }
+
 }
