@@ -68,16 +68,24 @@
                     "versionNumber": "0.65.0.LATEST"
                 },
                 {
+                    "package": "crm-shared-user-notification",
+                    "versionNumber": "0.27.0.LATEST"
+                },
+                {
+                    "package": "crm-community-base",
+                    "versionNumber": "0.140.0.LATEST"
+                },
+                {
+                    "package": "crm-henvendelse",
+                    "versionNumber": "0.201.0.LATEST"
+                },
+                {
                     "package": "crm-arbeidsgiver-base",
                     "versionNumber": "1.681.0.LATEST"
                 },
                 {
                     "package": "crm-platform-email-scheduling",
                     "versionNumber": "1.6.0.LATEST"
-                },
-                {
-                    "package": "crm-community-base",
-                    "versionNumber": "0.92.0.LATEST"
                 }
             ]
         }
@@ -86,25 +94,27 @@
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "65.0",
     "packageAliases": {
+        "crm-arbeidsgiver-kontaktskjema": "0Ho7U0000004CAkSAM",
         "crm-platform-base": "0Ho2o0000008ORmCAM",
-        "crm-platform-email-scheduling": "0Ho2o000000fxWwCAI",
         "crm-platform-access-control": "0Ho2o0000008OR3CAM",
+        "crm-platform-reporting": "0Ho2o0000008OSfCAM",
+        "crm-shared-timeline": "0Ho2o000000fxXBCAY",
+        "crm-shared-base": "0Ho2o000000fxXLCAY",
         "platform-data-model": "0HoKB00000000010AA",
         "custom-metadata-dao": "0HoKB000000000B0AQ",
         "custom-permission-helper": "0HoKB000000000f0AA",
         "feature-toggle": "0HoKB000000000V0AQ",
-        "crm-shared-timeline": "0Ho2o000000fxXBCAY",
-        "crm-shared-base": "0Ho2o000000fxXLCAY",
-        "crm-arbeidsgiver-base": "0Ho2o0000008OQtCAM",
         "crm-platform-integration": "0Ho2o0000008ORrCAM",
         "crm-shared-flowComponents": "0Ho2o000000fxYJCAY",
         "crm-journal-utilities": "0Ho2o000000fxXkCAI",
         "crm-thread-view": "0Ho7U000000000zSAA",
         "crm-platform-oppgave": "0Ho2o000000fxXzCAI",
-        "crm-arbeidsgiver-kontaktskjema": "0Ho7U0000004CAkSAM",
+        "crm-henvendelse-base": "0Ho7U000000000kSAA",
+        "crm-shared-user-notification": "0Ho2o000000fxY4CAI",
         "crm-community-base": "0Ho2o0000008OSzCAM",
-        "crm-platform-reporting": "0Ho2o0000008OSfCAM",
-        "crm-henvendelse-base": "0Ho7U000000000kSAA"
+        "crm-henvendelse": "0Ho2o000000fxXfCAI",
+        "crm-arbeidsgiver-base": "0Ho2o0000008OQtCAM",
+        "crm-platform-email-scheduling": "0Ho2o000000fxWwCAI"
     },
     "packageKeyConfig": {
         "platform-data-model": false,
