@@ -7,6 +7,7 @@ import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
+import getThemeOptions from '@salesforce/apex/TAG_ContactFormController.getThemeOptions';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
@@ -51,13 +52,16 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             accountNameRead.style.display = 'none';
         }
     }
-    // "Skal ansette" er label og API value i SF. "Rekruttere og inkludere" er begrepet vi bruker utad
-    // "Forebygge og redusere fravær" er label i SF, og "Forebygge sykefravær" er API value i SF
-    themeOptions = [
-        { label: 'Forebygge og redusere fravær', value: 'Forebygge sykefravær', name: 'theme', checked: false },
-        { label: 'Rekruttere og inkludere', value: 'Skal ansette', name: 'theme', checked: false },
-        { label: 'Ungdomsløftet', value: 'Ungdomsløftet', name: 'theme', checked: false }
-    ];
+    themeOptions = [];
+
+    @wire(getThemeOptions)
+    wiredThemeOptions({ data, error }) {
+        if (data) {
+            this.themeOptions = data.map((option) => ({ ...option, checked: false }));
+        } else if (error) {
+            console.error('Error loading theme options:', error);
+        }
+    }
 
     contactedEmployeeRepOptions = [
         { label: 'Ja', value: 'Ja', name: 'contactedEmpRep', checked: false },
@@ -72,8 +76,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
         if (selectedOption) {
             this.checkedTheme = selectedOption.value;
-
-            if (selectedOption.value === 'Forebygge sykefravær') {
+            if (selectedOption.info === true) {
                 this.checkedPreventSickLeave = true;
             } else {
                 this.checkedPreventSickLeave = false;

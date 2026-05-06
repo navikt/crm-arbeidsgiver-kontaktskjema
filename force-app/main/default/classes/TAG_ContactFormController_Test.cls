@@ -12,9 +12,7 @@
  */
 @IsTest
 public with sharing class TAG_ContactFormController_Test {
-    private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
-        .get('Inclusion')
-        .getRecordTypeId();
+    
 
 @TestSetup
 static void makeData(){
@@ -25,11 +23,11 @@ static void makeData(){
     Group groupVestViken = new Group(Name='NAV Test Arbeidslivssenter Vest-Viken', Type='Queue');
         insert groupVestViken;
 
-    QueuesObject qoAlna = new QueueSObject(QueueID = groupAlna.id, SObjectType = 'CustomOpportunity__c');
+    QueuesObject qoAlna = new QueueSObject(QueueID = groupAlna.id, SObjectType = 'EmployerInquiry__c');
         insert qoAlna;
-    QueuesObject qoBarum = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'CustomOpportunity__c');
+    QueuesObject qoBarum = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'EmployerInquiry__c');
         insert qoBarum;
-    QueuesObject qoVestViken = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'CustomOpportunity__c');
+    QueuesObject qoVestViken = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'EmployerInquiry__c');
         insert qoVestViken;
     
     createDataAsync();
@@ -66,8 +64,8 @@ static void makeData(){
 
     /**
      * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme = Skal ansette
-     * Expected result: A new record in the CustomOpportunity__c object
+     * Testing with value: `contactFormMap` with theme Skal ansette
+     * Expected result: A new record in the EmployerInquiry__c object
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
@@ -79,15 +77,15 @@ static void makeData(){
         contactFormMap.put('ContactName', 'Test Testersen');
         contactFormMap.put('ContactEmail', 'test.testersen@email.com');
         contactFormMap.put('ContactPhone', '90909090');
-        contactFormMap.put('ThemeSelected', 'Skal ansette');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL);
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
         Test.stopTest();
 
-        List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
-            FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Skal ansette' LIMIT 1
+        List<EmployerInquiry__c> inquiry = [
+            SELECT Id, TAG_Account__c, OwnerId, TAG_Contact__c, TAG_WebFormTheme__c,  TAG_Status__c, TAG_Source__c, TAG_RegionNumber__c, TAG_MunicipalityNumber__c, TAG_NavUnit__c
+            FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
         ];
 
         List<Account> account = [
@@ -105,27 +103,26 @@ static void makeData(){
             FROM NavUnit__c WHERE Name = 'Nav Alna' LIMIT 1
         ];
 
-        System.assertEquals(account[0].Id, opportunity[0].Account__c, 'Account Id not matching');
-        System.assertEquals(contact[0].Id, opportunity[0].Contact__c, 'Contact Id not matching');
-        System.assertEquals('Skal ansette', opportunity[0].InquiryCategory__c, 'InquiryCategory__c should be Skal ansette');
-        System.assertEquals(INCLUSION_RECORD_TYPE, opportunity[0].RecordTypeId, 'RecordTypeId not matching');
-        System.assertEquals('Ny henvendelse', opportunity[0].InclusionStage__c, 'InclusionStage__c should be Ny henvendelse');
-        System.assertEquals('Kontaktskjema', opportunity[0].Source__c, 'Source__c should be Kontaktskjema');
+        System.assertEquals(account[0].Id, inquiry[0].TAG_Account__c, 'Account Id not matching');
+        System.assertEquals(contact[0].Id, inquiry[0].TAG_Contact__c, 'Contact Id not matching');
+        System.assertEquals(TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, inquiry[0].TAG_WebFormTheme__c, 'WebFormTheme__c should be set');
+        System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].TAG_Status__c, 'TAG_Status__c should be Ny henvendelse');
+        System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].TAG_Source__c, 'Source__c should be Kontaktskjema');
         System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
         System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
-        System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Region Number should be null');
-        System.assertEquals('3001', opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be 3001');
-        System.assertEquals(navUnitAlna[0].CRM_QueueId__c, opportunity[0].OwnerId, 'OwnerId should match QueueId');
-        System.assertEquals(navUnitAlna[0].Id, opportunity[0].TAG_NavUnit__c, 'Nav Unit is not matching');
+        System.assertEquals(null, inquiry[0].TAG_RegionNumber__c, 'Region Number should be null');
+        System.assertEquals('3001', inquiry[0].TAG_MunicipalityNumber__c, 'Municipality Number should be 3001');
+        System.assertEquals(navUnitAlna[0].CRM_QueueId__c, inquiry[0].OwnerId, 'OwnerId should match QueueId');
+        System.assertEquals(navUnitAlna[0].Id, inquiry[0].TAG_NavUnit__c, 'Nav Unit is not matching');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
     /**
      * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme = Forebygge sykefravær
-     * Expected result: A new record in the CustomOpportunity__c object
+     * Testing with value: `contactFormMap` with theme prevent sickleave
+     * Expected result: A new record in the EmployerInquiry__c object
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
@@ -137,15 +134,15 @@ static void makeData(){
         contactFormMap.put('ContactName', 'Test Testersen');
         contactFormMap.put('ContactEmail', 'test.testersen@email.com');
         contactFormMap.put('ContactPhone', '90909090');
-        contactFormMap.put('ThemeSelected', 'Forebygge sykefravær');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL);
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
         Test.stopTest();
 
-        List<CustomOpportunity__c> opportunity = [
-            SELECT Id, Account__c, OwnerId, Contact__c, InquiryCategory__c, RecordTypeId, InclusionStage__c, Source__c, INT_RegionNumber__c, INT_MunicipalityNumber__c, TAG_NavUnit__c
-            FROM CustomOpportunity__c WHERE InquiryCategory__c = 'Forebygge sykefravær' LIMIT 1
+        List<EmployerInquiry__c> inquiry = [
+            SELECT Id, TAG_Account__c, OwnerId, TAG_Contact__c, TAG_WebFormTheme__c,  TAG_Status__c, TAG_Source__c, TAG_RegionNumber__c, TAG_MunicipalityNumber__c, TAG_NavUnit__c
+            FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL LIMIT 1
         ];
 
         List<Account> account = [
@@ -163,20 +160,19 @@ static void makeData(){
             FROM NavUnit__c WHERE Name = 'NAV Arbeidslivssenter Vest-Viken' LIMIT 1
         ];
 
-        System.assertEquals(account[0].Id, opportunity[0].Account__c, 'Account Id not matching');
-        System.assertEquals(contact[0].Id, opportunity[0].Contact__c, 'Contact Id not matching');
-        System.assertEquals('Forebygge sykefravær', opportunity[0].InquiryCategory__c, 'InquiryCategory__c should be Forebygge sykefravær');
-        System.assertEquals(INCLUSION_RECORD_TYPE, opportunity[0].RecordTypeId, 'RecordTypeId not matching');
-        System.assertEquals('Ny henvendelse', opportunity[0].InclusionStage__c, 'InclusionStage__c should be Ny henvendelse');
-        System.assertEquals('Kontaktskjema', opportunity[0].Source__c, 'Source__c should be Kontaktskjema');
+        System.assertEquals(account[0].Id, inquiry[0].TAG_Account__c, 'Account Id not matching');
+        System.assertEquals(contact[0].Id, inquiry[0].TAG_Contact__c, 'Contact Id not matching');
+        System.assertEquals(TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, inquiry[0].TAG_WebFormTheme__c, 'WebFormTheme__c should be Prevent sick leave');
+        System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].TAG_Status__c, 'TAG_Status__c should be Ny henvendelse');
+        System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].TAG_Source__c, 'Source__c should be Kontaktskjema');
         System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
         System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
         System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
         System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
-        System.assertEquals(null, opportunity[0].INT_RegionNumber__c, 'Region Number should be null');
-        System.assertEquals(null, opportunity[0].INT_MunicipalityNumber__c, 'Municipality Number should be null');
-        System.assertEquals(navUnitVestViken[0].CRM_QueueId__c, opportunity[0].OwnerId, 'OwnerId should match QueueId');
-        System.assertEquals(navUnitVestViken[0].Id, opportunity[0].TAG_NavUnit__c, 'Nav Unit is not matching');
+        System.assertEquals(null, inquiry[0].TAG_RegionNumber__c, 'Region Number should be null');
+        System.assertEquals(null, inquiry[0].TAG_MunicipalityNumber__c, 'Municipality Number should be null');
+        System.assertEquals(navUnitVestViken[0].CRM_QueueId__c, inquiry[0].OwnerId, 'OwnerId should match QueueId');
+        System.assertEquals(navUnitVestViken[0].Id, inquiry[0].TAG_NavUnit__c, 'Nav Unit is not matching');
         //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
     }
 
@@ -200,9 +196,9 @@ static void makeData(){
         Test.startTest();
         try {
             TAG_ContactFormController.createContactForm(contactFormMap);
-        } catch(Exception e) {
+        } catch(AuraHandledException e) {
             Assert.isNotNull(e);
-            System.assertEquals('List has no rows for assignment to SObject', e.getMessage());
+            System.assertEquals('Script-thrown exception', e.getMessage());
         }
         Test.stopTest();
     }

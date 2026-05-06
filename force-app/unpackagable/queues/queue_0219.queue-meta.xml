@@ -2,7 +2,10 @@
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>NAV Bærum</name>
-   <queueSobject>
+    <queueSobject>
         <sobjectType>CustomOpportunity__c</sobjectType>
-   </queueSobject>
-   </Queue>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>EmployerInquiry__c</sobjectType>
+    </queueSobject>
+</Queue>

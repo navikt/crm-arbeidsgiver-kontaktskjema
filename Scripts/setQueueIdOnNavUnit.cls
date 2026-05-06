@@ -1,23 +1,15 @@
-List<NavUnit__c> navUnits = [SELECT Id, Name, CRM_QueueId__c FROM NavUnit__c];
+List<String> testDataUnitNames = new List<String>{'NAV Alna', 'NAV Kristiansand', 'NAV Bærum', 'NAV Arbeidslivssenter Vest-Viken', 'NAV Arbeidslivssenter Oslo', 'NAV Arbeidslivssenter Agder'};
+List<QueueSobject> queues = [SELECT Queue.Name, Queue.Id FROM QueueSobject WHERE SobjectType = 'EmployerInquiry__c' AND Queue.Name IN :testDataUnitNames];
 
-Id queueIdNavAlna = [SELECT Id FROM Group WHERE Type = 'queue' AND Name = 'NAV Alna']?.Id;
-Id queueIdNavKristiansand = [SELECT Id FROM Group WHERE Type = 'queue' AND Name = 'NAV Kristiansand']?.Id;
-Id queueIdNavBarum = [SELECT Id FROM Group WHERE Type = 'queue' AND Name = 'NAV Bærum']?.Id;
-Id queueIdNavVestViken = [SELECT Id FROM Group WHERE Type = 'queue' AND Name = 'NAV Arbeidslivssenter Vest-Viken']?.Id;
+Map<String, Id> queueNameToIdMap = new Map<String, Id>();
+for(QueueSobject q : queues) {
+    queueNameToIdMap.put(q.Queue.Name, q.Queue.Id);
+}
 
 List<NavUnit__c> navUnitsWithQueueId = new List<NavUnit__c>();
 
-for (NavUnit__c nu : navUnits) {
-    if (nu.Name == 'NAV Alna') {
-        nu.CRM_QueueId__c = String.valueOf(queueIdNavAlna);
-    } else if (nu.Name == 'NAV Kristiansand'){
-        nu.CRM_QueueId__c = String.valueOf(queueIdNavKristiansand);
-    } else if (nu.Name == 'NAV Bærum'){
-        nu.CRM_QueueId__c = String.valueOf(queueIdNavBarum);
-    } else {
-        nu.CRM_QueueId__c = String.valueOf(queueIdNavVestViken);
-    }
-    
+for (NavUnit__c nu : [SELECT Id, Name, CRM_QueueId__c FROM NavUnit__c WHERE Name IN :testDataUnitNames]) {
+    nu.CRM_QueueId__c = queueNameToIdMap.get(nu.Name);    
     navUnitsWithQueueId.add(nu);
 }
 

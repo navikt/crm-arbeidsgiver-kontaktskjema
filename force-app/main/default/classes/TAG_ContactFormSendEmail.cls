@@ -11,22 +11,21 @@
  *
  * @group TAG Contact Form
  */
-public with sharing class TAG_ContactFormSendEmail {
-
+public with sharing class TAG_ContactFormSendEmail {    
     /**
      * @description The sendEmailReceipts method adds the email to the email queue
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
      *
-     * @param opportunity The request/input parameter which is sent from the insertCustomOpportunity method in TAG_ContactFormController
+     * @param inquiry The request/input parameter which is sent from the insertInquiry method in TAG_ContactFormController
      * class.
      */
-    public static void sendEmailReceipts(CustomOpportunity__c opportunity) {
+    public static void sendEmailReceipts(EmployerInquiry__c inquiry) {
         List<EmailQueue__c> emails = new List<EmailQueue__c>();
         try {
-                if (opportunity.Contact__c != null) {
-                    emails.add(generateDraftEmailReceipt(opportunity));
+                if (inquiry.TAG_Contact__c != null) {
+                    emails.add(generateDraftEmailReceipt(inquiry));
                 }
             insert emails;
         } catch (Exception e) {
@@ -42,16 +41,16 @@ public with sharing class TAG_ContactFormSendEmail {
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
      *
-     * @param opportunity The request/input parameter which is sent from the sendEmailReceipts method in this class.
+     * @param inquiry The request/input parameter which is sent from the sendEmailReceipts method in this class.
      */
-    public static EmailQueue__c generateDraftEmailReceipt(CustomOpportunity__c opportunity) {
-        String templateName = opportunity.InquiryCategory__c == 'Forebygge sykefravær'
+    public static EmailQueue__c generateDraftEmailReceipt(EmployerInquiry__c inquiry) {
+        String templateName = inquiry.TAG_WebFormTheme__c == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL
             ? 'kontaktskjemaSykefravaerReceipt'
             : 'kontaktskjemaRekrutteringReceipt';
         EmailQueue__c email = new EmailQueue__c();
         email.TemplateName__c = templateName;
-        email.TargetObjectId__c = opportunity.Contact__c;
-        email.WhatId__c = opportunity.Id;
+        email.TargetObjectId__c = inquiry.TAG_Contact__c;
+        email.WhatId__c = inquiry.Id;
         email.Priority__c = '5';
         email.Status__c = 'Queued';
         email.SaveAsActivity__c = true;

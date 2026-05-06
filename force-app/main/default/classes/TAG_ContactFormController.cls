@@ -13,13 +13,22 @@
  * @group TAG Contact Form
  */
 public with sharing class TAG_ContactFormController {
-    private static final Id INCLUSION_RECORD_TYPE = Schema.SObjectType.CustomOpportunity__c.getRecordTypeInfosByDeveloperName()
-        .get('Inclusion')
-        .getRecordTypeId();
 
+
+     // Labels displayed in webform
+     private static final List<Map<String, Object>> THEME_OPTIONS = new List<Map<String, Object>>{
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'value' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'name' => 'theme', 'checked' => false, 'info' => true },
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'value' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false },
+         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'value' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false }
+     };
+
+     @AuraEnabled(cacheable=true)
+     public static List<Map<String, Object>> getThemeOptions() {
+         return THEME_OPTIONS;
+     }
     /**
-     * @description The createContactForm method creates a Contact Form record and sends the record to the insertCustomOpportunity method
-     * which creates a new Custom Opportunity record
+     * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
+     * which creates a new TAG Inquiry record
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
@@ -29,10 +38,10 @@ public with sharing class TAG_ContactFormController {
      */
     @AuraEnabled
     public static void createContactForm(Map<String, String> contactFormData) {
-        Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
-        List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
-
-        TAG_ContactForm newContactForm = new TAG_ContactForm();
+        try{
+            Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
+            List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
+            TAG_ContactForm newContactForm = new TAG_ContactForm();
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
@@ -47,7 +56,12 @@ public with sharing class TAG_ContactFormController {
 
             Map<String, Contact> contactMap = getContactMap(newContactFormList, accountMap);
 
-            insertCustomOpportunity(newContactFormList, accountMap, contactMap);
+            insertInquiry(newContactFormList, accountMap, contactMap);
+        } catch (Exception e) {
+           // System.debug(e.getStackTraceString());
+            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
+            throw new AuraHandledException('An unexpected error occurred.');
+        }        
     }
 
      /**
@@ -71,12 +85,13 @@ public with sharing class TAG_ContactFormController {
                 return accountName;
             }
         } catch (Exception e) {
+            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
     }
 
     /**
-     * @description The insertCustomOpportunity method creates a new Custom Opportunity record and inserts it to the database. 
+     * @description The insertInquiry method creates a new TAG Inquiry record and inserts it to the database. 
      * It then calls the TAG_ContactFormSendEmail.sendEmailReceipts method so an email receipt can be sent to the user
      *
      * @author Andre Colle <andre.colle@nav.no>
@@ -87,38 +102,35 @@ public with sharing class TAG_ContactFormController {
      * which the user represents
      * @param contactMap The request/input parameter sent from createContactForm method, containing the contact record of the user
      */
-    private static void insertCustomOpportunity(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
+    private static void insertInquiry(List<TAG_ContactForm> contactFormList, Map<String, Account> accountMap, Map<String, Contact> contactMap) {
         try {
-            CustomOpportunity__c newCustomOpportunity = new CustomOpportunity__c();
-                newCustomOpportunity.Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
-                newCustomOpportunity.Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
-                newCustomOpportunity.TAG_OrganizationNameFromForm__c = contactFormList[0].organizationName;
-                newCustomOpportunity.InquiryCategory__c = contactFormList[0].theme;
-                newCustomOpportunity.RecordTypeId = INCLUSION_RECORD_TYPE;
-                newCustomOpportunity.InclusionStage__c = 'Ny henvendelse';
-                newCustomOpportunity.Source__c = 'Kontaktskjema';
-                if(contactFormList[0].comesFromArticle == 'True') {
-                    newCustomOpportunity.TAG_IsFromArticle__c = true;
-                }
+            EmployerInquiry__c newInquiry = new EmployerInquiry__c();
+                newInquiry.TAG_Account__c = accountMap.get(contactFormList[0].organizationNumber).Id;
+                newInquiry.TAG_Contact__c = contactMap.get(contactFormList[0].email.toLowerCase()).Id;
+                newInquiry.TAG_WebFormTheme__c = contactFormList[0].theme;               
+                newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
+                newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
+                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
                 
-                if(contactFormList[0].theme == 'Skal ansette' || contactFormList[0].theme == 'Ungdomsløftet') {
-                    newCustomOpportunity.INT_MunicipalityNumber__c = contactFormList[0].municipalityCode;
+                
+                if(contactFormList[0].theme == TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL || contactFormList[0].theme == TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL) {
+                    newInquiry.TAG_MunicipalityNumber__c = contactFormList[0].municipalityCode;
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c, null);
-                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
-                } else if (contactFormList[0].theme == 'Forebygge sykefravær') {
+                    newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newInquiry.TAG_NavUnit__c = navUnit[0].Id;
+                } else if (contactFormList[0].theme == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL) {
                     String region = getNavUnitRegion(accountMap.get(contactFormList[0].organizationNumber).TAG_NavUnit__c);
                     List<NavUnit__c> navUnit = getNavUnitQueueAndId(null, getUnitName(region));
-                    newCustomOpportunity.OwnerId = navUnit[0].CRM_QueueId__c;
-                    newCustomOpportunity.TAG_NavUnit__c = navUnit[0].Id;
+                    newInquiry.OwnerId = navUnit[0].CRM_QueueId__c;
+                    newInquiry.TAG_NavUnit__c = navUnit[0].Id;
                 }
 
-            insert newCustomOpportunity;
-            TAG_ContactFormSendEmail.sendEmailReceipts(newCustomOpportunity);
+            insert newInquiry;
+            TAG_ContactFormSendEmail.sendEmailReceipts(newInquiry);
         } catch (Exception e) {
-            System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
-            throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
-        }
+           //System.debug('An error occurred while inserting Custom Opportunity to the database: ' + e.getMessage());
+           throw new AuraHandledException('An error occurred while inserting Custom Opportunity to the database.');
+       }
     }
 
     /**
@@ -171,7 +183,7 @@ public with sharing class TAG_ContactFormController {
             wrapper.companyNumber = submission.organizationNumber;
             wrapper.phone = submission.phoneNumber;
             wrapper.email = submission.email;
-            wrapper.source = 'Kontaktskjema';
+            wrapper.source = TAG_ContactForm.SOURCE;
             setName(wrapper, submission);
             contactWrappers.add(wrapper);
         }
@@ -199,14 +211,14 @@ public with sharing class TAG_ContactFormController {
     }
 
     /**
-     * @description The getNavUnitQueueAndId method is called by the insertCustomOpportunity method. It receives the Nav Unit Id (or Nav Unit name) of the nav unit 
+     * @description The getNavUnitQueueAndId method is called by the insertInquiry method. It receives the Nav Unit Id (or Nav Unit name) of the nav unit 
      * which the company/account is related to. Then return the queueId and id of the nav unit
      *
      * @author Andre Colle <andre.colle@nav.no>
      * @since 2023-11-14 Created.
      *
      * @param navUnitId Contains the Nav Unit record Id
-     * @param navUnitName Contains the Nav Unit name. This is only not null if the custom opportunity is regarding Forebygge Sykefravær.
+     * @param navUnitName Contains the Nav Unit name. This is only not null if the custom opportunity is regarding sick leave.
      * Because then we need to return the Id of the Nav Unit Arbeidslivssenter.
      * @return navUnitQueue Contains the Nav Unit queue Id
      */
@@ -313,4 +325,20 @@ public with sharing class TAG_ContactFormController {
             }
         }
     }
+
+
+    private static void logAndPublishError(String message, Exception e) {
+        LoggerUtility logger = new LoggerUtility();
+                logger.logMessage(
+                    LoggerUtility.LogLevel.Error,
+                    '',
+                    '',
+                    message,
+                    e.getStackTraceString(),
+                    null,
+                    CRM_ApplicationDomain.Domain.POAB
+                );
+                logger.publish();
+            }
+
 }
