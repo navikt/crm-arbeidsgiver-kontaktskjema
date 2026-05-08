@@ -85,7 +85,7 @@ public with sharing class TAG_ContactFormController {
                 return accountName;
             }
         } catch (Exception e) {
-            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
+            //logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
     }
