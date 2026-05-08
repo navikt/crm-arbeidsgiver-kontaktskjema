@@ -38,10 +38,14 @@ public with sharing class TAG_ContactFormController {
      */
     @AuraEnabled
     public static void createContactForm(Map<String, String> contactFormData) {
+        Map<String, Account> accountMap;
+        List<TAG_ContactForm> newContactFormList;
+        Map<String, Contact> contactMap;
+        TAG_ContactForm newContactForm;
         try{
-            Map<String, Account> accountMap = getAccountMap(contactFormData.get('ContactOrg'));
-            List<TAG_ContactForm> newContactFormList = new List<TAG_ContactForm>();
-            TAG_ContactForm newContactForm = new TAG_ContactForm();
+            accountMap = getAccountMap(contactFormData.get('ContactOrg'));
+            newContactFormList = new List<TAG_ContactForm>();
+            newContactForm = new TAG_ContactForm();
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.municipalityCode = accountMap.get(contactFormData.get('ContactOrg')).INT_MunicipalityNumber__c;
             newContactForm.organizationName = accountMap.get(contactFormData.get('ContactOrg')).name;
@@ -54,12 +58,13 @@ public with sharing class TAG_ContactFormController {
 
             newContactFormList.add(newContactForm);
 
-            Map<String, Contact> contactMap = getContactMap(newContactFormList, accountMap);
+            contactMap = getContactMap(newContactFormList, accountMap);
 
             insertInquiry(newContactFormList, accountMap, contactMap);
         } catch (Exception e) {
-           // System.debug(e.getStackTraceString());
-            logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
+           String message = 'Feil i Kontaktskjema: '+e.getMessage();
+            message+='\nForm data: ' + contactFormData;
+            logAndPublishError(message , e);
             throw new AuraHandledException('An unexpected error occurred.');
         }        
     }
@@ -85,7 +90,6 @@ public with sharing class TAG_ContactFormController {
                 return accountName;
             }
         } catch (Exception e) {
-            //logAndPublishError('Kontaktskjema: ' + e.getMessage(), e);
             throw new AuraHandledException('An error occurred while retrieving the Account Name.');
         }
     }
@@ -333,8 +337,8 @@ public with sharing class TAG_ContactFormController {
                     LoggerUtility.LogLevel.Error,
                     '',
                     '',
-                    message,
-                    e.getStackTraceString(),
+                    message?.abbreviate(32768), // textarea (32768)
+                    e?.getStackTraceString()?.abbreviate(32768), // textarea (32768)
                     null,
                     CRM_ApplicationDomain.Domain.POAB
                 );
