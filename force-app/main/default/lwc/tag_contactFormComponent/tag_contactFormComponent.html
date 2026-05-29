@@ -1,5 +1,6 @@
 <template>
-    <div class="containerBreadcrumbs">
+    <p>Kontaktskjema er nede for vedlikehold fram til og med 1.juni.</p>
+    <!--     <div class="containerBreadcrumbs">
         <svg
             width="1.5em"
             class="homeicon"
@@ -82,10 +83,7 @@
             </ol>
         </nav>
     </div>
-
-    <!--============================Head Banner=========================================-->
-
-    <div class="banner">
+  <div class="banner">
         <div class="banner-inside">
             <h1 tabindex="0" class="title-contactform">Kontaktskjema for arbeidsgivere</h1>
             <img data-id="imageLogo" src={logoImage} alt="" />
@@ -94,10 +92,7 @@
     <div class="contactform-inside">
         <p tabindex="0" class="infoTextStandard">Alle felter må fylles ut.</p>
         <br />
-
-        <!--============================Radio button - Theme=========================================-->
-
-        <c-radiobuttons
+   <c-radiobuttons
             radiobuttons={themeOptions}
             onradiobuttonsclick={handleThemeOption}
             header="Hva gjelder det?"
@@ -109,8 +104,6 @@
             <p class="errorText">Du må velge et tema</p>
         </div>
 
-        <!--============================Info text - Other themes=========================================-->
-
         <div tabindex="0" class="containerInfo">
             <img class="infoIcon" src={infoImage} alt="informasjonsikon" />
             <p class="infoTextStandard">
@@ -118,8 +111,6 @@
                 <a href="tel:+4755553336" class="lenke">55&nbsp;55&nbsp;33&nbsp;36</a>
             </p>
         </div>
-
-        <!--============================Info box - Prevent sick leave=========================================-->
 
         <template if:true={checkedPreventSickLeave}>
             <div class="containerInfo info-popup" tabindex="0">
@@ -130,8 +121,6 @@
                     arbeidet.
                 </p>
             </div>
-
-            <!--============================Radio button - Contacted employee representant=========================================-->
 
             <div>
                 <label class="inputPanel"></label>
@@ -145,8 +134,6 @@
                 ></c-radiobuttons>
             </div>
         </template>
-
-        <!--============================Input fields=========================================-->
 
         <div class="input-fields">
             <c-input
@@ -201,8 +188,6 @@
             ></c-input>
         </div>
 
-        <!--============================Info text and send button=========================================-->
-
         <div class="containerInfo">
             <img class="infoIcon" src={infoImage} alt="informasjonsikon" />
             <p tabindex="0" class="infoTextStandard">
@@ -213,4 +198,6 @@
         </div>
         <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
     </div>
+
+    -->
 </template>
