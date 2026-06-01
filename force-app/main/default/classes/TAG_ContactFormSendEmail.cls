@@ -12,49 +12,4 @@
  * @group TAG Contact Form
  */
 public with sharing class TAG_ContactFormSendEmail {    
-    /**
-     * @description The sendEmailReceipts method adds the email to the email queue
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     *
-     * @param inquiry The request/input parameter which is sent from the insertInquiry method in TAG_ContactFormController
-     * class.
-     */
-    public static void sendEmailReceipts(EmployerInquiry__c inquiry) {
-        List<EmailQueue__c> emails = new List<EmailQueue__c>();
-        try {
-                if (inquiry.TAG_Contact__c != null) {
-                    emails.add(generateDraftEmailReceipt(inquiry));
-                }
-            insert emails;
-        } catch (Exception e) {
-            System.debug('An exception has occured: ' + e.getMessage());
-            /*LoggerUtility logger = new LoggerUtility();
-            logger.logError('Failed to create custom opportunity' + e.getMessage() + '/n' + e.getStackTraceString());*/
-        }
-    }
-
-    /**
-     * @description The generateDraftEmailReceipt method generates the email
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     *
-     * @param inquiry The request/input parameter which is sent from the sendEmailReceipts method in this class.
-     */
-    public static EmailQueue__c generateDraftEmailReceipt(EmployerInquiry__c inquiry) {
-        String templateName = inquiry.TAG_WebFormTheme__c == TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL
-            ? 'kontaktskjemaSykefravaerReceipt'
-            : 'kontaktskjemaRekrutteringReceipt';
-        EmailQueue__c email = new EmailQueue__c();
-        email.TemplateName__c = templateName;
-        email.TargetObjectId__c = inquiry.TAG_Contact__c;
-        email.WhatId__c = inquiry.Id;
-        email.Priority__c = '5';
-        email.Status__c = 'Queued';
-        email.SaveAsActivity__c = true;
-
-        return email;
-    }
 }
