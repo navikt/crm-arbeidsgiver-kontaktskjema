@@ -38,9 +38,7 @@ public with sharing class TAG_ContactFormController {
      * the user in the contact form.
      */    
      @AuraEnabled
-    public static void createContactForm(Map<String, String> contactFormData) {
-        System.debug(contactFormData);
-        
+    public static void createContactForm(Map<String, String> contactFormData) {        
         try{
             TAG_ContactForm newContactForm = new TAG_ContactForm();
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');            
