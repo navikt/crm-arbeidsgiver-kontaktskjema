@@ -14,6 +14,13 @@
                 <elementReference>Get_Arbeidslivsenter_Nav_enhet.CRM_QueueId__c</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.TAG_NavUnit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.Id</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Inquiry</targetReference>
         </connector>
@@ -116,7 +123,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Get_Arbeidslivsenter_Nav_enhet</targetReference>
+            <targetReference>Is_there_correct_Account</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -166,6 +173,13 @@
             <operator>Assign</operator>
             <value>
                 <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.CRM_QueueId__c</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.TAG_NavUnit__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -322,6 +336,31 @@
                 <targetReference>Assign_existing_contact_to_Employer_Inquiry</targetReference>
             </connector>
             <label>Yes</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_there_correct_Account</name>
+        <label>Is there correct Account?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Update_Inquiry</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes_there_is</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Account_from_WebForm</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Arbeidslivsenter_Nav_enhet</targetReference>
+            </connector>
+            <label>Yes there is</label>
         </rules>
     </decisions>
     <description>Når en henvendelse opprettes fra kontaktskjemaet (TAG_Source__c = &quot;Kontaktskjema&quot;), opprettes den først som en enkel post uten alle nødvendige data og koblinger.
@@ -623,26 +662,32 @@ NULL
                 <elementReference>errorMessageInsertInquiry</elementReference>
             </value>
         </inputAssignments>
+        <inputAssignments>
+            <name>ReferenceID</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
     </subflows>
     <textTemplates>
         <name>errorMessageInsertInquiry</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>Kunne ikke oppdatere henvendelse: {!$Record}</text>
+        <text>Kunneikke oppdatere henvendelse: {!$Record}</text>
     </textTemplates>
     <textTemplates>
         <name>webMessageInclude</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker hjelp til å rekruttere og inkludere arbeidstakere. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_Contact__r.MobilePhone}.</text>
+        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker hjelp til å rekruttere og inkludere arbeidstakere. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_WebFormContactPhone__c}.</text>
     </textTemplates>
     <textTemplates>
         <name>webMessageSickLeave</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker hjelp til å forebygge eller redusere fravær. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_Contact__r.MobilePhone}.</text>
+        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker hjelp til å forebygge eller redusere fravær. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_WebFormContactPhone__c}.</text>
     </textTemplates>
     <textTemplates>
         <name>webMessageYouth</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker å bidra til ungdomsløftet. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_Contact__r.MobilePhone}.</text>
+        <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker å bidra til ungdomsløftet. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_WebFormContactPhone__c}.</text>
     </textTemplates>
     <variables>
         <name>SelectedTheme</name>
