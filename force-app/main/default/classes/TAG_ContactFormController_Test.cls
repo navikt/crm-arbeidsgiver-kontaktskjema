@@ -13,63 +13,7 @@
 @IsTest
 public with sharing class TAG_ContactFormController_Test {
     
-
-@TestSetup
-static void makeData(){
-    Group groupAlna = new Group(Name='NAV Test Alna', Type='Queue');
-        insert groupAlna;
-    Group groupBarum = new Group(Name='NAV Test Bærum', Type='Queue');
-        insert groupBarum;
-    Group groupVestViken = new Group(Name='NAV Test Arbeidslivssenter Vest-Viken', Type='Queue');
-        insert groupVestViken;
-
-    QueuesObject qoAlna = new QueueSObject(QueueID = groupAlna.id, SObjectType = 'EmployerInquiry__c');
-        insert qoAlna;
-    QueuesObject qoBarum = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'EmployerInquiry__c');
-        insert qoBarum;
-    QueuesObject qoVestViken = new QueueSObject(QueueID = groupVestViken.id, SObjectType = 'EmployerInquiry__c');
-        insert qoVestViken;
-    
-    createDataAsync();
-    }
-    
-    //Future method createDataAsync is needed to avoid the below error after QueueSObject is created
-    //Error: MIXED_DML_OPERATION, DML operation on setup object is not permitted after you have updated a non-setup object 
-    @future
-    static void createDataAsync() {
-        Id queueAlna = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Alna'].Id;
-        Id queueBarum = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Bærum'].Id;
-        Id queueVestViken = [SELECT Id, Name FROM Group WHERE Type = 'queue' AND Name = 'NAV Test Arbeidslivssenter Vest-Viken'].Id;
-    
-        NavUnit__c navUnitAlna = new NavUnit__c(Name = 'Nav Alna', INT_UnitNumber__c = '4444', INT_Region__c = 'Oslo', 
-        CRM_QueueId__c = queueAlna, INT_UnitType__c = 'LOKAL');
-            insert navUnitAlna;
-    
-        NavUnit__c navUnitBarum = new NavUnit__c(Name = 'NAV Bærum', INT_UnitNumber__c = '4445', INT_Region__c = 'Vest-Viken', 
-            CRM_QueueId__c = queueBarum, INT_UnitType__c = 'LOKAL');
-            insert navUnitBarum;
-    
-        NavUnit__c navUnitVestViken = new NavUnit__c(Name = 'NAV Arbeidslivssenter Vest-Viken', INT_UnitNumber__c = '4446', INT_Region__c = 'Vest-Viken', 
-            CRM_QueueId__c = queueVestViken, INT_UnitType__c = 'LOKAL');
-            insert navUnitVestViken;
-    
-        Id idAlna = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Alna'].Id;
-        Id idBarum = [SELECT Id FROM NavUnit__c WHERE Name = 'Nav Bærum'].Id;
-    
-        Account acc1 = new Account(Name = 'Test Employer 1', INT_OrganizationNumber__c = '973113631', INT_RegionNumber__c = '30', INT_MunicipalityNumber__c = '3001', TAG_NavUnit__c = idAlna);
-            insert acc1;
-        Account acc2 = new Account(Name = 'Test Employer 2', INT_OrganizationNumber__c = '973113632', INT_RegionNumber__c = '03', INT_MunicipalityNumber__c = '3002', TAG_NavUnit__c = idBarum);
-            insert acc2;
-    }
-
-    /**
-     * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme Skal ansette
-     * Expected result: A new record in the EmployerInquiry__c object
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
+  
     @IsTest
     static void testProcessSingleContactFormRecruiteAndIncludePositive() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -84,49 +28,18 @@ static void makeData(){
         Test.stopTest();
 
         List<EmployerInquiry__c> inquiry = [
-            SELECT Id, TAG_Account__c, OwnerId, TAG_Contact__c, TAG_WebFormTheme__c,  TAG_Status__c, TAG_Source__c, TAG_RegionNumber__c, TAG_MunicipalityNumber__c, TAG_NavUnit__c
+            SELECT Id, TAG_WebFormAccountOrgNr__c, TAG_WebFormTheme__c, TAG_WebFormAccountName__c, TAG_WebFormContactEmail__c,TAG_WebFormContactName__c, TAG_WebFormContactPhone__c, TAG_Status__c, TAG_Source__c
             FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL LIMIT 1
         ];
 
-        List<Account> account = [
-            SELECT Id
-            FROM Account WHERE INT_OrganizationNumber__c = '973113631' LIMIT 1
-        ];
-
-        List<Contact> contact = [
-            SELECT Id, Name, FirstName, LastName, Email, Phone
-            FROM Contact WHERE Email = 'test.testersen@email.com' LIMIT 1
-        ];
-        
-        List<NavUnit__c> navUnitAlna = [
-            SELECT Id, Name, INT_Region__c, CRM_QueueId__c
-            FROM NavUnit__c WHERE Name = 'Nav Alna' LIMIT 1
-        ];
-
-        System.assertEquals(account[0].Id, inquiry[0].TAG_Account__c, 'Account Id not matching');
-        System.assertEquals(contact[0].Id, inquiry[0].TAG_Contact__c, 'Contact Id not matching');
-        System.assertEquals(TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, inquiry[0].TAG_WebFormTheme__c, 'WebFormTheme__c should be set');
+        System.assertEquals(TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, inquiry[0].TAG_WebFormTheme__c, 'WebFormTheme__c should be Recruit and Include');
         System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].TAG_Status__c, 'TAG_Status__c should be Ny henvendelse');
         System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].TAG_Source__c, 'Source__c should be Kontaktskjema');
-        System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
-        System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
-        System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
-        System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
-        System.assertEquals(null, inquiry[0].TAG_RegionNumber__c, 'Region Number should be null');
-        System.assertEquals('3001', inquiry[0].TAG_MunicipalityNumber__c, 'Municipality Number should be 3001');
-        System.assertEquals(navUnitAlna[0].CRM_QueueId__c, inquiry[0].OwnerId, 'OwnerId should match QueueId');
-        System.assertEquals(navUnitAlna[0].Id, inquiry[0].TAG_NavUnit__c, 'Nav Unit is not matching');
-        //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
+        System.assertEquals('Test Testersen', inquiry[0].TAG_WebFormContactName__c, 'Contact Name should be Test Testersen');
+        System.assertEquals('test.testersen@email.com', inquiry[0].TAG_WebFormContactEmail__c, 'Contact Email should be test.testersen@email.com');
+        System.assertEquals('90909090', inquiry[0].TAG_WebFormContactPhone__c, 'Contact Phone should be 90909090');
     }
 
-    /**
-     * @description Testing the `createContactForm` method with correct values.
-     * Testing with value: `contactFormMap` with theme prevent sickleave
-     * Expected result: A new record in the EmployerInquiry__c object
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
     @IsTest
     static void testProcessSingleContactFormPreventSickLeavePositive() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -141,49 +54,18 @@ static void makeData(){
         Test.stopTest();
 
         List<EmployerInquiry__c> inquiry = [
-            SELECT Id, TAG_Account__c, OwnerId, TAG_Contact__c, TAG_WebFormTheme__c,  TAG_Status__c, TAG_Source__c, TAG_RegionNumber__c, TAG_MunicipalityNumber__c, TAG_NavUnit__c
+            SELECT Id, TAG_WebFormAccountOrgNr__c, TAG_WebFormTheme__c, TAG_WebFormAccountName__c, TAG_WebFormContactEmail__c,TAG_WebFormContactName__c, TAG_WebFormContactPhone__c, TAG_Status__c, TAG_Source__c
             FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL LIMIT 1
         ];
 
-        List<Account> account = [
-            SELECT Id
-            FROM Account WHERE INT_OrganizationNumber__c = '973113632' LIMIT 1
-        ];
-
-        List<Contact> contact = [
-            SELECT Id, Name, FirstName, LastName, Email, Phone
-            FROM Contact WHERE Email = 'test.testersen@email.com' LIMIT 1
-        ];
-
-        List<NavUnit__c> navUnitVestViken = [
-            SELECT Id, Name, INT_Region__c, CRM_QueueId__c
-            FROM NavUnit__c WHERE Name = 'NAV Arbeidslivssenter Vest-Viken' LIMIT 1
-        ];
-
-        System.assertEquals(account[0].Id, inquiry[0].TAG_Account__c, 'Account Id not matching');
-        System.assertEquals(contact[0].Id, inquiry[0].TAG_Contact__c, 'Contact Id not matching');
         System.assertEquals(TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, inquiry[0].TAG_WebFormTheme__c, 'WebFormTheme__c should be Prevent sick leave');
         System.assertEquals(TAG_ContactForm.STAGE, inquiry[0].TAG_Status__c, 'TAG_Status__c should be Ny henvendelse');
         System.assertEquals(TAG_ContactForm.SOURCE, inquiry[0].TAG_Source__c, 'Source__c should be Kontaktskjema');
-        System.assertEquals('Test Testersen', contact[0].Name, 'Contact Name should be Test Testersen');
-        System.assertEquals('Test', contact[0].FirstName, 'Contact FirstName should be Test');
-        System.assertEquals('Testersen', contact[0].LastName, 'Contact LastName should be Testersen');
-        System.assertEquals('test.testersen@email.com', contact[0].Email, 'Contact Email should be test.testersen@email.com');
-        System.assertEquals(null, inquiry[0].TAG_RegionNumber__c, 'Region Number should be null');
-        System.assertEquals(null, inquiry[0].TAG_MunicipalityNumber__c, 'Municipality Number should be null');
-        System.assertEquals(navUnitVestViken[0].CRM_QueueId__c, inquiry[0].OwnerId, 'OwnerId should match QueueId');
-        System.assertEquals(navUnitVestViken[0].Id, inquiry[0].TAG_NavUnit__c, 'Nav Unit is not matching');
-        //System.assertEquals('90909090', contact[0].Phone, 'Contact Phone should be 90909090');
+        System.assertEquals('Test Testersen', inquiry[0].TAG_WebFormContactName__c, 'Contact Name should be Test Testersen');
+        System.assertEquals('test.testersen@email.com', inquiry[0].TAG_WebFormContactEmail__c, 'Contact Email should be test.testersen@email.com');
+        System.assertEquals('90909090', inquiry[0].TAG_WebFormContactPhone__c, 'Contact Phone should be 90909090');
     }
 
-    /**
-     * @description Testing the `createContactForm` method with null values.
-     * Testing with value: `contactFormMap`
-     * Expected result: Error message
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
     @IsTest
     static void testProcessSingleContactFormPreventSickLeaveNull() {
         Map<String, String> contactFormMap = new Map<String, String>();
@@ -203,99 +85,66 @@ static void makeData(){
         Test.stopTest();
     }
 
-    /**
-     * @description Testing the `getUnitName` method with correct values.
-     * Testing with value: `regionNames`
-     * Expected result: result should return the same values as unitNames list
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
     @IsTest
-    static void testGetUnitRegionNamePositive() {
-        List<String> regionNames = new List<String>{'ØstViken', 'Oslo', 'Innlandet', 'VestViken', 'Vestfold og Telemark', 'Agder', 'Rogaland', 'Vestland', 'Møre og Romsdal', 'Nordland', 'Troms og Finnmark', 'Trøndelag', 'WronRegionName'};
-        List<String> unitNames = new List<String>{'NAV Arbeidslivssenter Øst-Viken', 'NAV Arbeidslivssenter Oslo', 'NAV Arbeidslivssenter Innlandet', 'NAV Arbeidslivssenter Vest-Viken', 'NAV Arbeid og helse Vestfold og Telemark', 'NAV Arbeidslivssenter Agder', 'NAV Arbeidslivssenter Rogaland', 'NAV Arbeidslivssenter Vestland', 'NAV Arbeidslivssenter Møre og Romsdal', 'NAV Arbeidslivssenter Nordland', 'NAV Arbeidslivssenter Troms og Finnmark', 'NAV Arbeidslivssenter Trøndelag', null};
-
-        for (Integer i = 0; i < regionNames.size(); i++) {
-            String regionName = regionNames[i];
-            String unitName = unitNames[i];
-
-            String result = TAG_ContactFormController.getUnitName(regionName);
-            System.assertEquals(unitName, result, 'Incorrect result for region name ' + regionName);
-        }
-    }
-
-    /**
-     * @description Testing the `getAccountName` method with right values.
-     * Testing with value: `orgNr`
-     * Expected result: Name of the organization
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
-    @IsTest
-    static void testGetAccountNamePositive() {
-        String orgNr = '973113631';
-        String orgName = '';
+    static void testProcessSingleContactFormUngdomsloftetPositive() {
+        Map<String, String> contactFormMap = new Map<String, String>();
+        contactFormMap.put('ContactOrg', '973113633');
+        contactFormMap.put('AccountName', 'NAV Test AS');
+        contactFormMap.put('ContactName', 'Ung Testersen');
+        contactFormMap.put('ContactEmail', 'ung.testersen@email.com');
+        contactFormMap.put('ContactPhone', '91919191');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL);
+        contactFormMap.put('IsFromArticle', 'true');
 
         Test.startTest();
-        orgName = TAG_ContactFormController.getAccountName(orgNr);
+        TAG_ContactFormController.createContactForm(contactFormMap);
         Test.stopTest();
 
-        System.assertEquals('Test Employer 1', orgName, 'Org name should be Test Employer 1');
+        List<EmployerInquiry__c> inquiry = [
+            SELECT Id, TAG_WebFormAccountOrgNr__c, TAG_WebFormTheme__c, TAG_WebFormAccountName__c, TAG_WebFormContactEmail__c, TAG_WebFormContactName__c, TAG_WebFormContactPhone__c, TAG_Status__c, TAG_Source__c, Name
+            FROM EmployerInquiry__c WHERE TAG_WebFormTheme__c = :TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL LIMIT 1
+        ];
+
+        Assert.areEqual(1, inquiry.size(), 'One inquiry should be created');
+        Assert.areEqual('NAV Test AS', inquiry[0].TAG_WebFormAccountName__c, 'Account name should be persisted');
+        Assert.areEqual('973113633', inquiry[0].TAG_WebFormAccountOrgNr__c, 'Org number should be persisted');
     }
 
-    /**
-     * @description Testing the `getAccountName` method with wrong values.
-     * Testing with value: `orgNr`
-     * Expected result: error message
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
     @IsTest
-    static void testGetAccountNameNegative() {
-        String orgNr = '973113635';
-        String errorMessage = '';
-        String orgName = '';
+    static void testGetThemeOptions() {
+        Test.startTest();
+        List<Map<String, Object>> options = TAG_ContactFormController.getThemeOptions();
+        Test.stopTest();
 
+        Assert.areEqual(3, options.size(), 'Three theme options should be returned');
+        Assert.areEqual(TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, options[0].get('label'), 'First option should be Forebygge sykefravær');
+        Assert.areEqual(TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, options[1].get('label'), 'Second option should be Rekruttere og inkludere');
+        Assert.areEqual(TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, options[2].get('label'), 'Third option should be Ungdomsløftet');
+        for (Map<String, Object> option : options) {
+            Assert.areEqual('theme', option.get('name'), 'Name should be theme');
+            Assert.areEqual(false, option.get('checked'), 'Checked should be false by default');
+            Assert.isNotNull(option.get('value'), 'Value should be set');
+        }
+    }
+ @IsTest
+	static void createContactForm_nullMap_throwsAuraHandledException() {
+        Boolean caught = false;
+    
         Test.startTest();
         try {
-            orgName = TAG_ContactFormController.getAccountName(orgNr);
-        } catch(Exception e) {
-            Assert.isNotNull(e);
-            errorMessage = e.getMessage();
+            TAG_ContactFormController.createContactForm(null);
+        } catch (AuraHandledException e) {
+            caught = true;
+            // I testkontekst returnerer AuraHandledException.getMessage() alltid
+            // 'Script-thrown exception' – det er en plattformbegrensning.
+            Assert.areEqual('Script-thrown exception', e.getMessage(),
+                'AuraHandledException skal kastes fra catch-blokken');
         }
         Test.stopTest();
+    
+        Assert.isTrue(caught, 'createContactForm should throwe AuraHandledException on null input');
+        Assert.areEqual(0, [SELECT COUNT() FROM EmployerInquiry__c], 'Record should not be created on errors');
 
-        System.assertEquals('Script-thrown exception', errorMessage, 'Error message not matching');
-    }
-
-    /**
-     * @description Testing the `getAccountName` method with wrong values.
-     * Testing with value: `orgNr`
-     * Expected result: null
-     *
-     * @author Andre Colle <andre.colle@nav.no>
-     * @since 2023-11-14 Created.
-     */
-    @IsTest
-    static void testGetAccountNameNull() {
-        String orgNr = '';
-        String errorMessage = '';
-        String orgName = 'Test';
-
-        Test.startTest();
-        try {
-            orgName = TAG_ContactFormController.getAccountName(orgNr);
-        } catch(Exception e) {
-            Assert.isNotNull(e);
-            errorMessage = e.getMessage();
-        }
-        Test.stopTest();
-
-        System.assertEquals('', errorMessage, 'Error message should be empty');
-        System.assertEquals(null, orgName, 'Org name should be empty');
-    }
+	}
 }
 

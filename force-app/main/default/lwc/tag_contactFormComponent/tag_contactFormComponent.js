@@ -6,7 +6,6 @@ import logoImage from '@salesforce/resourceUrl/ContactFormLogo';
 import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
-import getAccountName from '@salesforce/apex/TAG_ContactFormController.getAccountName';
 import getThemeOptions from '@salesforce/apex/TAG_ContactFormController.getThemeOptions';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 
@@ -26,33 +25,13 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     @track showError = false;
     @track comesFromArticle = false;
     @track urlRoute = 'kontaktskjemabekreftelse';
+    themeOptions = [];
+
     isOrgValid = false;
+    isAccountNameValid = false;
     isNameValid = false;
     isEpostValid = false;
     isPhoneValid = false;
-
-    @wire(getAccountName, { orgNumber: '$contactOrg' })
-    wiredAccountName({ data, error }) {
-        if (data) {
-            this.accountName = data;
-            this.showError = false;
-            this.isOrgValid = true;
-            let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-            setTimeout(function () {
-                accountNameRead.style.display = 'block';
-                accountNameRead.focus();
-            }, 500); //delay is in milliseconds
-        } else if (error) {
-            this.accountName = '';
-            this.isOrgValid = false;
-            let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
-            inputOrgField.sendErrorMessage(inputOrgField.errorText);
-            inputOrgField.focus();
-            let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-            accountNameRead.style.display = 'none';
-        }
-    }
-    themeOptions = [];
 
     @wire(getThemeOptions)
     wiredThemeOptions({ data, error }) {
@@ -106,6 +85,30 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.handlePhoneField(event);
     }
 
+    handleAccountNameChange(event) {
+        this.accountName = event.detail;
+        const inputAccountName = event.target;
+        if (inputAccountName.value == '' || inputAccountName.value == null || inputAccountName.value.length < 1) {
+            inputAccountName.sendErrorMessage(inputAccountName.errorText);
+            this.isAccountNameValid = false;
+        } else {
+            this.isAccountNameValid = true;
+        }
+    }
+
+    handleOrgNumberChange(event) {
+        this.contactOrg = event.detail;
+        const inputFieldOrgNumber = event.target;
+        const orgValue = inputFieldOrgNumber.value ? inputFieldOrgNumber.value.replace(/\s/g, '') : '';
+        const isValidOrgNumber = /^\d{9}$/.test(orgValue);
+        if (!isValidOrgNumber || orgValue === '' || orgValue == null || orgValue.length < 1) {
+            inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
+            this.isOrgValid = false;
+        } else {
+            this.isOrgValid = true;
+        }
+    }
+
     validateSendForm() {
         if (this.isPhoneValid === false) {
             let inputPhoneField = this.template.querySelector('[data-id="inputPhone"]');
@@ -127,8 +130,13 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
         if (this.isOrgValid === false) {
             let inputOrgField = this.template.querySelector('[data-id="inputOrgNumber"]');
-            inputOrgField.validateOrgNumber(this.errorText);
+            inputOrgField.sendErrorMessage(inputOrgField.errorText);
             inputOrgField.focus();
+        }
+        if (this.isAccountNameValid === false) {
+            let inputAccountNameField = this.template.querySelector('[data-id="inputAccountName"]');
+            inputAccountNameField.sendErrorMessage(inputAccountNameField.errorText);
+            inputAccountNameField.focus();
         }
 
         if (this.checkedTheme === '') {
@@ -145,10 +153,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             this.isOrgValid === true &&
             this.isNameValid === true &&
             this.isPhoneValid === true &&
-            this.isEpostValid === true
+            this.isEpostValid === true &&
+            this.isAccountNameValid === true
         ) {
             const contactFormData = {
                 ContactOrg: this.contactOrg,
+                AccountName: this.accountName,
                 ContactName: this.contactName,
                 ContactEmail: this.contactEmail,
                 ContactPhone: this.contactPhone,
@@ -160,7 +170,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 .then((result) => {
                     const currentUrl = window.location.href;
                     let newUrl = currentUrl.replace('#k', '') + this.urlRoute;
-
                     // Clear input field values
                     this.contactOrg = '';
                     this.contactName = '';
@@ -172,6 +181,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                     this.isNameValid = false;
                     this.isEpostValid = false;
                     this.isPhoneValid = false;
+                    this.isAccountNameValid = false;
 
                     this[NavigationMixin.Navigate]({
                         type: 'standard__webPage',
@@ -211,18 +221,11 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         const docURL = document.URL;
         if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#k')) {
             this.comesFromArticle = true;
-            console.log('Comes from article:', this.comesFromArticle);
         }
     }
 
     disconnectedCallback() {
         window.removeEventListener('resize', this.handleResize.bind(this));
-    }
-
-    handleOrgNumberChange(event) {
-        this.contactOrg = event.detail;
-        const inputFieldOrgNumber = event.target;
-        const isOrgNumberValid = inputFieldOrgNumber.validateOrgNumber(this.errorText);
     }
 
     handleEmptyField(event) {
@@ -269,5 +272,10 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         } else {
             this.isPhoneValid = true;
         }
+    }
+
+    validateOrgNumberField() {
+        let regExp = RegExp('\\d{9}');
+        let orgNumber = this.template.querySelector('input').value.replaceAll(' ', '');
     }
 }
