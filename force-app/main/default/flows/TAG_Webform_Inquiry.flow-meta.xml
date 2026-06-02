@@ -620,16 +620,15 @@ NULL
         <inputAssignments>
             <name>Log_Message</name>
             <value>
-                <stringValue>Kunne ikke oppdatere henvendelse</stringValue>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <name>ReferenceID</name>
-            <value>
-                <elementReference>$Record.Id</elementReference>
+                <elementReference>errorMessageInsertInquiry</elementReference>
             </value>
         </inputAssignments>
     </subflows>
+    <textTemplates>
+        <name>errorMessageInsertInquiry</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Kunne ikke oppdatere henvendelse: {!$Record}</text>
+    </textTemplates>
     <textTemplates>
         <name>webMessageInclude</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
