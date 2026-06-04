@@ -18,7 +18,7 @@
             <assignToReference>$Record.TAG_NavUnit__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.Id</elementReference>
+                <elementReference>Get_Arbeidslivsenter_Nav_enhet.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
