@@ -12,6 +12,8 @@
         "test:unit:coverage": "sfdx-lwc-jest --coverage",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "analyze:security": "sf code-analyzer run --config-file ./code-analyzer.yml --workspace ./force-app/main/default/permissionsets/Arbeidsgiver_Kontaktskjema_Eksterne.permissionset-meta.xml --workspace ./force-app/main/default/classes --rule-selector GuestUserHardening --rule-selector sfge:ApexFlsViolation --rule-selector sfge:DatabaseOperationsMustUseWithSharing --severity-threshold 3 --output-file documentation/security-results.html",
+        "analyze:security:open": "npm run analyze:security; c=$?; open documentation/security-results.html; exit $c",
         "postinstall": "node bin/check-version.js",
         "mac:build": "bash bin/install-scratch.sh",
         "mac:build:pool": "bash bin/pool-scratch.sh"
