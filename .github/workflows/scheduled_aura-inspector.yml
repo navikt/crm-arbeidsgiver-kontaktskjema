@@ -31,7 +31,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p scans
+          mkdir -p scans/baseline scans/latest
           run_id=$(gh run list \
             --repo "$GITHUB_REPOSITORY" \
             --workflow "${{ github.workflow }}" \
@@ -50,7 +50,7 @@ jobs:
           if gh run download "$run_id" \
               --repo "$GITHUB_REPOSITORY" \
               --name "$BASELINE_ARTIFACT" \
-              --dir scans; then
+              --dir scans/baseline; then
             echo "has_baseline=true" >> "$GITHUB_OUTPUT"
           else
             echo "Baseline artifact not found in run $run_id."
@@ -59,9 +59,9 @@ jobs:
 
       - name: Run aura-inspector
         run: |
-          aura-inspector -u "$TARGET_URL" > scans/latest.txt 2>&1 || true
-          echo "--- scan output (first 40 lines) ---"
-          head -n 40 scans/latest.txt || true
+          aura-inspector -u "$TARGET_URL" --output-dir scans/latest
+          echo "--- files produced ---"
+          find scans/latest -type f | sort
 
       - name: Diff against baseline
         id: diff
@@ -72,7 +72,7 @@ jobs:
             exit 0
           fi
 
-          if diff -u scans/baseline.txt scans/latest.txt > scans/diff.txt; then
+          if diff -r -u scans/baseline scans/latest > scans/diff.txt; then
             echo "No changes detected."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -104,7 +104,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aura-inspector-baseline
-          path: scans/latest.txt
+          path: scans/latest
           retention-days: 90
           overwrite: true
 
