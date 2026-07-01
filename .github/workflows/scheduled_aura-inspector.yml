@@ -1,0 +1,122 @@
+name: Aura Inspector scheduled scan
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_URL: https://navdialog--preprod.sandbox.my.site.com/kontaktskjema
+      BASELINE_ARTIFACT: aura-inspector-baseline
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pipx and aura-inspector
+        run: |
+          python -m pip install --upgrade pip pipx
+          python -m pipx ensurepath
+          pipx install git+https://github.com/google/aura-inspector
+
+      - name: Download previous baseline
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p scans
+          run_id=$(gh run list \
+            --repo "$GITHUB_REPOSITORY" \
+            --workflow "${{ github.workflow }}" \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId' || true)
+
+          if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
+            echo "No previous successful run found."
+            echo "has_baseline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Trying to download baseline from run $run_id"
+          if gh run download "$run_id" \
+              --repo "$GITHUB_REPOSITORY" \
+              --name "$BASELINE_ARTIFACT" \
+              --dir scans; then
+            echo "has_baseline=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Baseline artifact not found in run $run_id."
+            echo "has_baseline=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run aura-inspector
+        run: |
+          aura-inspector -u "$TARGET_URL" > scans/latest.txt 2>&1 || true
+          echo "--- scan output (first 40 lines) ---"
+          head -n 40 scans/latest.txt || true
+
+      - name: Diff against baseline
+        id: diff
+        run: |
+          if [ "${{ steps.baseline.outputs.has_baseline }}" != "true" ]; then
+            echo "No baseline to compare against — establishing new baseline."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if diff -u scans/baseline.txt scans/latest.txt > scans/diff.txt; then
+            echo "No changes detected."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changes detected."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo "## Aura Inspector scan"
+            echo ""
+            echo "- Target: \`$TARGET_URL\`"
+            echo "- Baseline funnet: \`${{ steps.baseline.outputs.has_baseline }}\`"
+            echo "- Endringer: \`${{ steps.diff.outputs.changed }}\`"
+            echo ""
+            if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
+              echo "### Diff"
+              echo ''
+              echo '```diff'
+              head -c 60000 scans/diff.txt
+              echo ''
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload new baseline
+        uses: actions/upload-artifact@v4
+        with:
+          name: aura-inspector-baseline
+          path: scans/latest.txt
+          retention-days: 90
+          overwrite: true
+
+      - name: Upload full scan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aura-inspector-run-${{ github.run_id }}
+          path: scans/
+          retention-days: 90
+
+      - name: Fail on changes
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          echo "::error::Aura Inspector diff mot baseline oppdaget. Se job summary."
+          exit 1
