@@ -62,17 +62,19 @@ public with sharing class TAG_ContactFormController {
 
     private static void createInquiryFromContactForm(TAG_ContactForm contactForm){
         EmployerInquiry__c newInquiry = new EmployerInquiry__c();
-                newInquiry.TAG_WebFormAccountOrgNr__c = contactForm.organizationNumber;
-                newInquiry.TAG_WebFormAccountName__c = contactForm.organizationName;
-                newInquiry.TAG_WebFormContactEmail__c = contactForm.email;
-                newInquiry.TAG_WebFormContactName__c = contactForm.fullName;
-                newInquiry.TAG_WebFormContactPhone__c = contactForm.phoneNumber;
+        newInquiry.TAG_WebFormAccountOrgNr__c = contactForm.organizationNumber;
+        newInquiry.TAG_WebFormAccountName__c = contactForm.organizationName;
+        newInquiry.TAG_WebFormContactEmail__c = contactForm.email;
+        newInquiry.TAG_WebFormContactName__c = contactForm.fullName;
+        newInquiry.TAG_WebFormContactPhone__c = contactForm.phoneNumber;
 
-                newInquiry.TAG_WebFormTheme__c = contactForm.theme;               
-                newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
-                newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
-                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
-        insert newInquiry;
+        newInquiry.TAG_WebFormTheme__c = contactForm.theme;               
+        newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
+        newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
+        newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
+        
+        SObjectAccessDecision decision = Security.stripInaccessible(AccessType.CREATABLE, new List<EmployerInquiry__c>{ newInquiry });
+        insert decision.getRecords();
     }
 
 
