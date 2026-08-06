@@ -159,6 +159,8 @@
                 maxlength="9"
             ></c-input>
             <br />
+            <!--
+            
             <c-input
                 label="Bedriftens navn"
                 data-id="inputAccountName"
@@ -168,6 +170,18 @@
                 error-text="Du må fylle inn bedriftens navn"
                 maxlength="120"
             ></c-input>
+            -->
+            <c-input
+                class="navds-text-field__readonly"
+                tabindex="-1"
+                label="Bedriftens navn (vises automatisk)"
+                type="text"
+                value={accountName}
+            ></c-input>
+            <p tabindex="0" data-id="accountNameRead" class="pAccount">
+                {accountName} ble hentet automatisk som bedriftens navn
+            </p>
+
             <br />
             <c-input
                 label="Ditt navn"

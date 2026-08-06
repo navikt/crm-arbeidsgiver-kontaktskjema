@@ -7,6 +7,7 @@ import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getThemeOptions from '@salesforce/apex/TAG_ContactFormController.getThemeOptions';
+import validateOrganizationNumber from '@salesforce/apex/TAG_ContactFormController.validateOrganizationNumber';
 import navStyling from '@salesforce/resourceUrl/navStyling';
 
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
@@ -28,7 +29,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     themeOptions = [];
 
     isOrgValid = false;
-    isAccountNameValid = false;
+    // isAccountNameValid = false;
     isNameValid = false;
     isEpostValid = false;
     isPhoneValid = false;
@@ -85,6 +86,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.handlePhoneField(event);
     }
 
+    /*
     handleAccountNameChange(event) {
         this.accountName = event.detail;
         const inputAccountName = event.target;
@@ -94,7 +96,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         } else {
             this.isAccountNameValid = true;
         }
-    }
+    } */
 
     handleOrgNumberChange(event) {
         this.contactOrg = event.detail;
@@ -105,7 +107,31 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
             this.isOrgValid = false;
         } else {
-            this.isOrgValid = true;
+            console.log('Organization number is valid. Proceeding to validate against backend:', orgValue);
+            // Called when the organization number is valid, and we want to validate it against the backend
+            validateOrganizationNumber({ organizationNumber: orgValue })
+                .then((result) => {
+                    if (result && result.name) {
+                        this.isOrgValid = true;
+                        this.accountName = result.name;
+                        console.log('Organization number is valid. Account name set to:', this.accountName);
+                        console.log('TYPE:', result.type);
+                        let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
+                        setTimeout(function () {
+                            accountNameRead.style.display = 'block';
+                            accountNameRead.focus();
+                        }, 500); //delay is in milliseconds
+                    } else {
+                        inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
+                        this.accountName = '';
+                        this.isOrgValid = false;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error validating organization number:', error);
+                    inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
+                    this.isOrgValid = false;
+                });
         }
     }
 
@@ -133,11 +159,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             inputOrgField.sendErrorMessage(inputOrgField.errorText);
             inputOrgField.focus();
         }
+        /*
         if (this.isAccountNameValid === false) {
             let inputAccountNameField = this.template.querySelector('[data-id="inputAccountName"]');
             inputAccountNameField.sendErrorMessage(inputAccountNameField.errorText);
             inputAccountNameField.focus();
-        }
+        } */
 
         if (this.checkedTheme === '') {
             this.themeChecked = false;
@@ -153,8 +180,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             this.isOrgValid === true &&
             this.isNameValid === true &&
             this.isPhoneValid === true &&
-            this.isEpostValid === true &&
-            this.isAccountNameValid === true
+            this.isEpostValid === true
+            // this.isAccountNameValid === true
         ) {
             const contactFormData = {
                 ContactOrg: this.contactOrg,
@@ -181,7 +208,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                     this.isNameValid = false;
                     this.isEpostValid = false;
                     this.isPhoneValid = false;
-                    this.isAccountNameValid = false;
+                    // this.isAccountNameValid = false;
 
                     this[NavigationMixin.Navigate]({
                         type: 'standard__webPage',

@@ -27,6 +27,34 @@ public with sharing class TAG_ContactFormController {
          return THEME_OPTIONS;
      }
 
+     /**
+      * @description Validates organization number. If valid, returns name and entity type.
+      *
+      * @param organizationNumber The organization number of the organization.
+      * @return The name and type of the organization.
+      */
+     @AuraEnabled 
+     public static Map<String,String> validateOrganizationNumber(String organizationNumber) {
+        if(String.isBlank(organizationNumber)) {
+            throw new AuraHandledException('Organization number is required.');
+        }
+        Map<String, String> result = new Map<String, String>();
+        String subunitName = TAG_ErregLookupService.lookupOrganizationSubunit(organizationNumber);
+        if(subunitName != null) {
+            result.put('name', subunitName);
+            result.put('type', 'subunit');
+            return result;
+        }
+        String unitName = TAG_ErregLookupService.lookupOrganizationUnit(organizationNumber);
+            if(unitName != null) {
+                result.put('name', unitName);
+                result.put('type', 'unit');
+                return result;
+            }
+        
+        return null; // Return null if both callouts fail. It means the organization number is not found in either endpoint.
+     }
+
     /**
      * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
      * which creates a new TAG Inquiry record
