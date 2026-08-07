@@ -1,15 +1,34 @@
 public with sharing class TAG_ErregLookupServiceCalloutMock implements HttpCalloutMock {
      public HTTPResponse respond(HTTPRequest req) {
+        String endpoint = req.getEndpoint();
         HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody(RESPONSE_200_SUB_UNIT);
-        res.setStatusCode(200);
+        
+        if(endpoint.contains('/underenheter')){            
+            if(endpoint.contains('/900000001')){
+                res.setHeader('Content-Type', 'application/json');
+                res.setBody(MOCK_RESPONSE_SUB_UNIT);
+                res.setStatusCode(200);
+            } else{
+                res.setStatusCode(404);
+            }                       
+            return res;
+        } else if(endpoint.contains('/enheter')){            
+            if(endpoint.contains('/900000002')){
+                res.setHeader('Content-Type', 'application/json');
+                res.setBody(MOCK_RESPONSE_UNIT);
+                res.setStatusCode(200);
+            } else{
+                res.setStatusCode(404);
+            }
+            return res;
+        } 
+        res.setStatusCode(400);
         return res;
     }
 
-    private static final String RESPONSE_200_SUB_UNIT = '{'+
-    '"organisasjonsnummer": "912998827",'+
-    '"navn": "ARBEIDS- OG VELFERDSDIREKTORATET AVD FYRSTIKKALLÉEN",'+
+    private static final String MOCK_RESPONSE_SUB_UNIT = '{'+
+    '"organisasjonsnummer": "900000001",'+
+    '"navn": "TEST UNDERENHET",'+
     '"organisasjonsform": {'+
     '"kode": "BEDR",'+
     '"beskrivelse": "Underenhet til næringsdrivende og offentlig forvaltning",'+
@@ -21,7 +40,7 @@ public with sharing class TAG_ErregLookupServiceCalloutMock implements HttpCallo
 '},'+
     '"historiskeNavn": ['+
         '{'+
-            '"navn": "ARBEIDS- OG VELFERDSDIREKTORATET AVD ØKERNVEIEN",'+
+            '"navn": "TEST UNDERENHET",'+
             '"fraDato": "2013-12-23 20:45:00",'+
             '"tilDato": "2020-08-11 21:35:02"'+
         '}'+
@@ -29,13 +48,13 @@ public with sharing class TAG_ErregLookupServiceCalloutMock implements HttpCallo
     '"postadresse": {'+
         '"land": "Norge",'+
         '"landkode": "NO",'+
-        '"postnummer": "8601",'+
-        '"poststed": "MO I RANA",'+
+        '"postnummer": "0001",'+
+        '"poststed": "TESTSTED",'+
         '"adresse": ['+
-            '"Postboks 354"'+
+            '"Postboks 123"'+
         '],'+
-        '"kommune": "RANA",'+
-        '"kommunenummer": "1833"'+
+        '"kommune": "TEST KOMMUNE",'+
+        '"kommunenummer": "0001"'+
     '},'+
     '"registreringsdatoEnhetsregisteret": "2013-12-23",'+
     '"registrertIMvaregisteret": false,'+
@@ -45,30 +64,94 @@ public with sharing class TAG_ErregLookupServiceCalloutMock implements HttpCallo
     '},'+
     '"antallAnsatte": 1729,'+
     '"harRegistrertAntallAnsatte": true,'+
-    '"overordnetEnhet": "889640782",'+
+    '"overordnetEnhet": "900000002",'+
     '"registreringsdatoAntallAnsatteEnhetsregisteret": "2026-07-14",'+
     '"registreringsdatoAntallAnsatteNAVAaregisteret": "2026-07-10",'+
     '"oppstartsdato": "2013-12-01",'+
     '"beliggenhetsadresse": {'+
         '"land": "Norge",'+
         '"landkode": "NO",'+
-        '"postnummer": "0661",'+
-        '"poststed": "OSLO",'+
+        '"postnummer": "0001",'+
+        '"poststed": "TESTSTED",'+
         '"adresse": ['+
-            '"Fyrstikkalléen 1"'+
+            '"Testalléen 1"'+
         '],'+
-        '"kommune": "OSLO",'+
-        '"kommunenummer": "0301"'+
+        '"kommune": "TEST KOMMUNE",'+
+        '"kommunenummer": "0001"'+
     '},'+
     '"_links": {'+
         '"self": {'+
-            '"href": "https://data.brreg.no/enhetsregisteret/api/underenheter/912998827"'+
+            '"href": "https://data.brreg.no/enhetsregisteret/api/underenheter/900000001"'+
         '},'+
         '"overordnetEnhet": {'+
-            '"href": "https://data.brreg.no/enhetsregisteret/api/enheter/889640782"'+
+            '"href": "https://data.brreg.no/enhetsregisteret/api/enheter/900000002"'+
         '}'+
     '},'+
     '"respons_klasse": "Underenhet"'+
+'}';
+
+ private static final String MOCK_RESPONSE_UNIT = '{'+
+    '"organisasjonsnummer": "900000002",'+
+    '"navn": "TEST ENHET",'+
+    '"organisasjonsform": {'+
+    '"kode": "ORGL",'+
+    '"beskrivelse": "Enhet til næringsdrivende og offentlig forvaltning",'+
+    '"_links": {'+
+        '"self": {'+
+            '"href": "https://data.brreg.no/enhetsregisteret/api/organisasjonsformer/ORGL"'+
+        '}'+
+    '}'+
+'},'+
+    '"historiskeNavn": ['+
+        '{'+
+            '"navn": "TEST ENHET",'+
+            '"fraDato": "2013-12-23 20:45:00",'+
+            '"tilDato": "2020-08-11 21:35:02"'+
+        '}'+
+    '],'+
+    '"postadresse": {'+
+        '"land": "Norge",'+
+        '"landkode": "NO",'+
+        '"postnummer": "0001",'+
+        '"poststed": "TESTSTED",'+
+        '"adresse": ['+
+            '"Postboks 123"'+
+        '],'+
+        '"kommune": "TEST KOMMUNE",'+
+        '"kommunenummer": "0001"'+
+    '},'+
+    '"registreringsdatoEnhetsregisteret": "2013-12-23",'+
+    '"registrertIMvaregisteret": false,'+
+    '"naeringskode1": {'+
+        '"kode": "84.120",'+
+        '"beskrivelse": "Offentlig administrasjon tilknyttet helsestell, undervisning, kultur og annen sosial virksomhet"'+
+    '},'+
+    '"antallAnsatte": 1729,'+
+    '"harRegistrertAntallAnsatte": true,'+
+    '"overordnetEnhet": "900000003",'+
+    '"registreringsdatoAntallAnsatteEnhetsregisteret": "2026-07-14",'+
+    '"registreringsdatoAntallAnsatteNAVAaregisteret": "2026-07-10",'+
+    '"oppstartsdato": "2013-12-01",'+
+    '"beliggenhetsadresse": {'+
+        '"land": "Norge",'+
+        '"landkode": "NO",'+
+        '"postnummer": "0001",'+
+        '"poststed": "TESTSTED",'+
+        '"adresse": ['+
+            '"Testalléen 1"'+
+        '],'+
+        '"kommune": "TEST KOMMUNE",'+
+        '"kommunenummer": "0001"'+
+    '},'+
+    '"_links": {'+
+        '"self": {'+
+            '"href": "https://data.brreg.no/enhetsregisteret/api/enheter/900000002"'+
+        '},'+
+        '"overordnetEnhet": {'+
+            '"href": "https://data.brreg.no/enhetsregisteret/api/enheter/900000003"'+
+        '}'+
+    '},'+
+    '"respons_klasse": "Enhet"'+
 '}';
     
 }

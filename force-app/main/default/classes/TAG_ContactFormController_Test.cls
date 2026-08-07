@@ -146,5 +146,37 @@ public with sharing class TAG_ContactFormController_Test {
         Assert.areEqual(0, [SELECT COUNT() FROM EmployerInquiry__c], 'Record should not be created on errors');
 
 	}
+
+    @IsTest
+    static void testValidateSubUnitShouldReturnValue() {
+        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+        Test.startTest();
+        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('900000001');
+        Test.stopTest();
+
+        Assert.isNotNull(result, 'Result should not be null for valid organization number');
+        Assert.areEqual('TEST UNDERENHET', result.get('name'), 'Organization name should match mocked response');
+    }
+
+    @IsTest
+    static void testValidateUnitShouldReturnValue() {
+        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+        Test.startTest();
+        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('900000002');
+        Test.stopTest();
+
+        Assert.isNotNull(result, 'Result should not be null for valid organization number');
+        Assert.areEqual('TEST ENHET', result.get('name'), 'Organization name should match mocked response');
+    }
+
+    @IsTest
+    static void testValidateInvalidOrganizationNumberShouldReturnNull() {
+        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+        Test.startTest();
+        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('invalid');
+        Test.stopTest();
+
+        Assert.isNull(result, 'Result should be null for invalid organization number');
+    }
 }
 

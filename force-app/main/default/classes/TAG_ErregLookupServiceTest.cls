@@ -2,18 +2,15 @@
 @isTest
 private class TAG_ErregLookupServiceTest {
 
-    private static final String EXPECTED_NAME = 'ARBEIDS- OG VELFERDSDIREKTORATET AVD FYRSTIKKALLÉEN';
-    private static final String ORGNR = '912998827';
-
     @isTest
     static void lookupOrganizationSubunit_returnsName_whenCalloutSucceeds() {
         Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
 
         Test.startTest();
-        String result = TAG_ErregLookupService.lookupOrganizationSubunit(ORGNR);
+        String result = TAG_ErregLookupService.lookupOrganizationSubunit('900000001');
         Test.stopTest();
 
-        Assert.areEqual(EXPECTED_NAME, result, 'Should return organization name from callout response');
+        Assert.areEqual('TEST UNDERENHET', result, 'Should return organization name from callout response');
     }
 
     @isTest
@@ -21,9 +18,9 @@ private class TAG_ErregLookupServiceTest {
         Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
 
         Test.startTest();
-        String result = TAG_ErregLookupService.lookupOrganizationUnit(ORGNR);
+        String result = TAG_ErregLookupService.lookupOrganizationUnit('900000002');
         Test.stopTest();
 
-        Assert.areEqual(EXPECTED_NAME, result, 'Should return organization name from callout response');
+        Assert.areEqual('TEST ENHET', result, 'Should return organization name from callout response');
     }
 }
