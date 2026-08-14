@@ -149,34 +149,51 @@ public with sharing class TAG_ContactFormController_Test {
 
     @IsTest
     static void testValidateSubUnitShouldReturnValue() {
-        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
+        TAG_EregLookupService.EntityData  entityData;
         Test.startTest();
-        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('900000001');
+        entityData = TAG_ContactFormController.searchOrganization('900000001');
         Test.stopTest();
 
-        Assert.isNotNull(result, 'Result should not be null for valid organization number');
-        Assert.areEqual('TEST UNDERENHET', result.get('name'), 'Organization name should match mocked response');
+        Assert.isNotNull(entityData, 'Result should not be null for valid organization number');
+        Assert.areEqual('TEST UNDERENHET', entityData.name, 'Organization name should match mocked response');
     }
 
     @IsTest
     static void testValidateUnitShouldReturnValue() {
-        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
+        TAG_EregLookupService.EntityData  entityData;
         Test.startTest();
-        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('900000002');
+        entityData = TAG_ContactFormController.searchOrganization('900000002');
         Test.stopTest();
 
-        Assert.isNotNull(result, 'Result should not be null for valid organization number');
-        Assert.areEqual('TEST ENHET', result.get('name'), 'Organization name should match mocked response');
+        Assert.isNotNull(entityData, 'Result should not be null for valid organization number');
+        Assert.areEqual('TEST ENHET', entityData.name, 'Organization name should match mocked response');
     }
 
     @IsTest
-    static void testValidateInvalidOrganizationNumberShouldReturnNull() {
-        Test.setMock(HttpCalloutMock.class, new TAG_ErregLookupServiceCalloutMock());
+    static void testInvalidInputShouldReturnError() {
+        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
+        TAG_EregLookupService.EntityData  entityData;
         Test.startTest();
-        Map<String,String> result = TAG_ContactFormController.validateOrganizationNumber('invalid');
+        try {
+            entityData = TAG_ContactFormController.searchOrganization('9XXXXXXXX');
+            Assert.fail('searchOrganization should throw AuraHandledException on invalid input');
+        } catch (AuraHandledException e) {   
+            Assert.areEqual('INVALID_INPUT', e.getMessage());        
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void badOrganizationNumberShouldReturnNull() {
+        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
+        TAG_EregLookupService.EntityData  entityData;
+        Test.startTest();
+        entityData = TAG_ContactFormController.searchOrganization('123456789');
         Test.stopTest();
 
-        Assert.isNull(result, 'Result should be null for invalid organization number');
+        Assert.isNull(entityData, 'Result should be null for non-existent organization number');
     }
 }
 

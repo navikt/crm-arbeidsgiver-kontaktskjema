@@ -7,32 +7,56 @@ import infoImage from '@salesforce/resourceUrl/ContactFormInfo';
 import index from '@salesforce/resourceUrl/index';
 import createContactForm from '@salesforce/apex/TAG_ContactFormController.createContactForm';
 import getThemeOptions from '@salesforce/apex/TAG_ContactFormController.getThemeOptions';
-import validateOrganizationNumber from '@salesforce/apex/TAG_ContactFormController.validateOrganizationNumber';
+import { getEntityData, EregUnavailableError } from './tag_contactFormEregService';
+
 import navStyling from '@salesforce/resourceUrl/navStyling';
+const ERROR_MESSAGES = {
+    SERVICE_UNAVAILABLE:
+        'Kan ikke kontrollere organisasjonsnummeret. Tjenesten er midlertidig utilgjengelig. Prøv igjen om litt.',
+    TECHNICAL_ERROR:
+        'Kan ikke kontrollere organisasjonsnummeret. Det oppstod en teknisk feil. Kontakt oss hvis problemet fortsetter.',
+    INVALID_INPUT: 'Ugyldig organisasjonsnummer. Det skal være 9 sifre.'
+};
 
 export default class Kontaktskjema extends NavigationMixin(LightningElement) {
+    // Static resources
     logoImage = logoImage;
     infoImage = infoImage;
 
+    // Theme/topic selection
     @track checkedTheme = '';
     @track themeChecked = true;
     @track checkedPreventSickLeave = false;
     @track checkedYesOrNo = false;
+    themeOptions = [];
+
+    // Form field values
     @track contactOrg = '';
     @track contactName = '';
     @track contactEmail = '';
     @track contactPhone = '';
-    @track accountName = '';
-    @track showError = false;
-    @track comesFromArticle = false;
-    @track urlRoute = 'kontaktskjemabekreftelse';
-    themeOptions = [];
 
+    // Field validation state
     isOrgValid = false;
-    // isAccountNameValid = false;
     isNameValid = false;
     isEpostValid = false;
     isPhoneValid = false;
+
+    // Page/navigation state
+    @track showError = false;
+    @track comesFromArticle = false;
+    @track urlRoute = 'kontaktskjemabekreftelse';
+
+    // Organization number lookup (Ereg)
+    _eregEntityData = null; // result from org number lookup
+    @track offerSubUnitSelection = false;
+    @track selectedSubUnit = null;
+    _orgLookupTimer;
+    _lastLookedUpOrg;
+    ORG_LOOKUP_DEBOUNCE_MS = 100;
+
+    // Submission payload, independent of the individual form field properties above
+    _contactFormData = null;
 
     @wire(getThemeOptions)
     wiredThemeOptions({ data, error }) {
@@ -86,53 +110,110 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.handlePhoneField(event);
     }
 
-    /*
-    handleAccountNameChange(event) {
-        this.accountName = event.detail;
-        const inputAccountName = event.target;
-        if (inputAccountName.value == '' || inputAccountName.value == null || inputAccountName.value.length < 1) {
-            inputAccountName.sendErrorMessage(inputAccountName.errorText);
-            this.isAccountNameValid = false;
-        } else {
-            this.isAccountNameValid = true;
-        }
-    } */
-
     handleOrgNumberChange(event) {
-        this.contactOrg = event.detail;
         const inputFieldOrgNumber = event.target;
         const orgValue = inputFieldOrgNumber.value ? inputFieldOrgNumber.value.replace(/\s/g, '') : '';
         const isValidOrgNumber = /^\d{9}$/.test(orgValue);
+        this.contactOrg = orgValue;
+
+        clearTimeout(this._orgLookupTimer);
+
         if (!isValidOrgNumber || orgValue === '' || orgValue == null || orgValue.length < 1) {
             inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
             this.isOrgValid = false;
-        } else {
-            console.log('Organization number is valid. Proceeding to validate against backend:', orgValue);
-            // Called when the organization number is valid, and we want to validate it against the backend
-            validateOrganizationNumber({ organizationNumber: orgValue })
-                .then((result) => {
-                    if (result && result.name) {
-                        this.isOrgValid = true;
-                        this.accountName = result.name;
-                        console.log('Organization number is valid. Account name set to:', this.accountName);
-                        console.log('TYPE:', result.type);
-                        let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-                        setTimeout(function () {
-                            accountNameRead.style.display = 'block';
-                            accountNameRead.focus();
-                        }, 500); //delay is in milliseconds
-                    } else {
-                        inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
-                        this.accountName = '';
-                        this.isOrgValid = false;
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error validating organization number:', error);
-                    inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
-                    this.isOrgValid = false;
-                });
+            return;
         }
+
+        if (orgValue === this._lastLookedUpOrg && this.isOrgValid) {
+            return;
+        }
+
+        this._orgLookupTimer = setTimeout(() => {
+            this._lookupOrganization(orgValue, inputFieldOrgNumber);
+        }, this.ORG_LOOKUP_DEBOUNCE_MS);
+    }
+
+    _lookupOrganization(orgValue, inputFieldOrgNumber) {
+        this.clearLookupOrgData();
+        this._lastLookedUpOrg = orgValue;
+        getEntityData(orgValue)
+            .then((data) => {
+                console.log('Organization lookup result:', data);
+                if (data && data.name) {
+                    this._eregEntityData = data;
+                    this.isOrgValid = true;
+                    this.offerSubUnitSelection = this._eregEntityData && this._eregEntityData.totalSubUnitsCount > 1;
+
+                    let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
+                    setTimeout(function () {
+                        accountNameRead.style.display = 'block';
+                        accountNameRead.focus();
+                    }, 500);
+                } else {
+                    inputFieldOrgNumber.sendErrorMessage('Fant ingen bedrifter med dette organisasjonsnummeret.');
+                    this.clearLookupOrgData();
+                }
+            })
+            .catch((error) => {
+                console.error('Error validating organization number:', error);
+                const msg =
+                    error instanceof EregUnavailableError
+                        ? ERROR_MESSAGES.SERVICE_UNAVAILABLE
+                        : ERROR_MESSAGES.TECHNICAL_ERROR;
+                inputFieldOrgNumber.sendErrorMessage(msg);
+                this.clearLookupOrgData();
+                this._lastLookedUpOrg = null;
+            });
+    }
+
+    clearLookupOrgData() {
+        this._eregEntityData = null;
+        this.selectedSubUnit = null;
+        this.offerSubUnitSelection = false;
+        this.isOrgValid = false;
+    }
+
+    // Single source of truth for the resolved company, derived from the Ereg lookup and any subunit choice
+    get resolvedOrgNumber() {
+        if (this.selectedSubUnit && this.selectedSubUnit.name !== 'DEFAULT') {
+            return this.selectedSubUnit.name;
+        }
+        return this._eregEntityData ? this._eregEntityData.organizationNumber : '';
+    }
+
+    get resolvedAccountName() {
+        if (this.selectedSubUnit && this.selectedSubUnit.name !== 'DEFAULT') {
+            return this.selectedSubUnit.label;
+        }
+        return this._eregEntityData ? this._eregEntityData.name : '';
+    }
+
+    get accountName() {
+        if (this._eregEntityData && this._eregEntityData.name) {
+            return this._eregEntityData.name;
+        }
+        return null;
+    }
+
+    get subUnitChoices() {
+        const defaultChoice = [
+            {
+                label: 'Velg underenhet',
+                name: 'DEFAULT'
+            }
+        ];
+        const choices =
+            this._eregEntityData && this._eregEntityData.subUnits
+                ? this._eregEntityData.subUnits.map((subUnit) => ({
+                      label: subUnit.name,
+                      name: subUnit.organizationNumber
+                  }))
+                : [];
+        return defaultChoice.concat(choices);
+    }
+
+    handleSubUnitSelection(event) {
+        this.selectedSubUnit = this.subUnitChoices.find((choice) => choice.name === event.detail.name);
     }
 
     validateSendForm() {
@@ -159,13 +240,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             inputOrgField.sendErrorMessage(inputOrgField.errorText);
             inputOrgField.focus();
         }
-        /*
-        if (this.isAccountNameValid === false) {
-            let inputAccountNameField = this.template.querySelector('[data-id="inputAccountName"]');
-            inputAccountNameField.sendErrorMessage(inputAccountNameField.errorText);
-            inputAccountNameField.focus();
-        } */
-
         if (this.checkedTheme === '') {
             this.themeChecked = false;
             let radioTheme = this.template.querySelector('[data-id="radioTheme"]');
@@ -183,9 +257,9 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             this.isEpostValid === true
             // this.isAccountNameValid === true
         ) {
-            const contactFormData = {
-                ContactOrg: this.contactOrg,
-                AccountName: this.accountName,
+            this._contactFormData = {
+                ContactOrg: this.resolvedOrgNumber,
+                AccountName: this.resolvedAccountName,
                 ContactName: this.contactName,
                 ContactEmail: this.contactEmail,
                 ContactPhone: this.contactPhone,
@@ -193,7 +267,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 IsFromArticle: this.comesFromArticle
             };
 
-            createContactForm({ contactFormData })
+            createContactForm({ contactFormData: this._contactFormData })
                 .then((result) => {
                     const currentUrl = window.location.href;
                     let newUrl = currentUrl.replace('#k', '') + this.urlRoute;
@@ -203,7 +277,10 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                     this.contactEmail = '';
                     this.contactPhone = '';
                     this.checkedTheme = '';
-                    this.accountName = '';
+                    this._eregEntityData = null;
+                    this.selectedSubUnit = null;
+                    this.offerSubUnitSelection = false;
+                    this._contactFormData = null;
                     this.isOrgValid = false;
                     this.isNameValid = false;
                     this.isEpostValid = false;
@@ -305,4 +382,15 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         let regExp = RegExp('\\d{9}');
         let orgNumber = this.template.querySelector('input').value.replaceAll(' ', '');
     }
+
+    /*
+    const entity = {
+    name: 'NAV',
+    isSubunit: false,
+    organizationNumber: '889640782',
+    totalSubUnitsCount: 0,
+    subUnits: []
+};
+searchOrganizationJs(searchTerm) {}
+*/
 }

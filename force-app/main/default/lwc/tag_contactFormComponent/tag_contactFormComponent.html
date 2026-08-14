@@ -92,7 +92,8 @@
         </div>
     </div>
     <div class="contactform-inside">
-        <p tabindex="0" class="infoTextStandard">Alle felter må fylles ut.</p>
+        <div class="navds-body-long"><p tabindex="0" class="navds-body-long">Alle felter må fylles ut.</p></div>
+
         <br />
 
         <!--============================Radio button - Theme=========================================-->
@@ -157,6 +158,7 @@
                 onchange={handleOrgNumberChange}
                 error-text="Du må fylle inn et gyldig organisasjonsnummer"
                 maxlength="9"
+                helptext-content="test"
             ></c-input>
             <br />
             <!--
@@ -170,7 +172,7 @@
                 error-text="Du må fylle inn bedriftens navn"
                 maxlength="120"
             ></c-input>
-            -->
+            
             <c-input
                 class="navds-text-field__readonly"
                 tabindex="-1"
@@ -178,9 +180,21 @@
                 type="text"
                 value={accountName}
             ></c-input>
-            <p tabindex="0" data-id="accountNameRead" class="pAccount">
+            -->
+            <p tabindex="0" data-id="accountNameRead" class="pAccount navds-body-short">
                 {accountName} ble hentet automatisk som bedriftens navn
             </p>
+
+            <template if:true={offerSubUnitSelection}>
+                <br />
+                <c-picklist
+                    master-label="Om mulig, spesifiser avdeling"
+                    data-id="inputSubUnit"
+                    choices={subUnitChoices}
+                    onpicklistvaluechange={handleSubUnitSelection}
+                    helptext-content="Bedriften har flere avdelinger. Dersom henvendelsen gjelder en konkret avdeling eller kontor kan du velge den fra listen."
+                ></c-picklist>
+            </template>
 
             <br />
             <c-input

@@ -34,26 +34,21 @@ public with sharing class TAG_ContactFormController {
       * @return The name and type of the organization.
       */
      @AuraEnabled 
-     public static Map<String,String> validateOrganizationNumber(String organizationNumber) {
-        if(String.isBlank(organizationNumber)) {
-            throw new AuraHandledException('Organization number is required.');
-        }
-        Map<String, String> result = new Map<String, String>();
-        String subunitName = TAG_ErregLookupService.lookupOrganizationSubunit(organizationNumber);
-        if(subunitName != null) {
-            result.put('name', subunitName);
-            result.put('type', 'subunit');
-            return result;
-        }
-        String unitName = TAG_ErregLookupService.lookupOrganizationUnit(organizationNumber);
-            if(unitName != null) {
-                result.put('name', unitName);
-                result.put('type', 'unit');
-                return result;
-            }
+     public static TAG_EregLookupService.EntityData searchOrganization(String organizationNumber) {
         
-        return null; // Return null if both callouts fail. It means the organization number is not found in either endpoint.
-     }
+        if(String.isBlank(organizationNumber) || !Pattern.matches('^[0-9]{9}$', organizationNumber)) {
+            throw new AuraHandledException('INVALID_INPUT');
+        }      
+        try {
+            TAG_EregLookupService.EntityData data = TAG_EregLookupService.getEntityData(organizationNumber);
+            return data;
+        }  catch (TAG_EregLookupService.EregUnavailableException e) {
+            throw new AuraHandledException('SERVICE_UNAVAILABLE');
+        } catch (Exception e) {
+            // Catch-all: System exceptions, DML, parsing, etc.
+            throw new AuraHandledException('TECHNICAL_ERROR');
+        }
+    }
 
     /**
      * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
@@ -117,5 +112,11 @@ public with sharing class TAG_ContactFormController {
                 );
                 logger.publish();
             }
+
+            private static AuraHandledException buildAuraException(String code) {
+    AuraHandledException ex = new AuraHandledException(code);
+    ex.setMessage(code); // uten dette blir meldingen "Script-thrown exception" i klienten
+    return ex;
+}
 
 }

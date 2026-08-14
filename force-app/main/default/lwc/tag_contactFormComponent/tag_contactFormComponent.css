@@ -129,7 +129,7 @@
 
 .input-fields {
     max-width: 500px;
-    padding: 0.5rem;
+    /* padding: 0.5rem; */
 }
 
 .info-popup {
@@ -180,12 +180,10 @@
 }
 .pAccount {
     display: none;
+    /* Erstattet med navds-body-short
     font-family: 'Source Sans Pro', Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    max-width: 600px;
-    padding: 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1.5rem; */
 }
 
 span {
@@ -194,3 +192,8 @@ span {
     line-height: 1.333;
     color: #262626;
 }
+
+/*
+navds-body-short: BodyShort brukes til tekster som ikke er brødtekst. Ofte brukt i komponenter, for eksempel beskrivelse i skjemafelt.
+navds-guide-panel, navds-guide-panel__content 
+*/

@@ -1,4 +1,4 @@
-public with sharing class TAG_ErregLookupServiceCalloutMock implements HttpCalloutMock {
+public with sharing class TAG_EregLookupServiceCalloutMock implements HttpCalloutMock {
      public HTTPResponse respond(HTTPRequest req) {
         String endpoint = req.getEndpoint();
         HttpResponse res = new HttpResponse();
