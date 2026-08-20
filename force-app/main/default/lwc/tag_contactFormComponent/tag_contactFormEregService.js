@@ -8,7 +8,6 @@ export class EregTechnicalError extends Error {} // 400, uventet status, parsefe
 // throws Unavailable → network failure, timeout, 500
 // throws Technical   → 400, uventet status, parsefeil
 export async function getEntityData(organizationNumber) {
-    console.log('Organization lookup input:', organizationNumber);
     const subUnitResponse = await doCallout(`${UNDERENHETER_ENDPOINT}?organisasjonsnummer=${organizationNumber}`);
     if (subUnitResponse.status !== 200) {
         throwForStatus(subUnitResponse.status);

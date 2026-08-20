@@ -8,7 +8,7 @@
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             focusable="false"
-            role="img"
+            aria-hidden="true"
         >
             <path
                 fill-rule="evenodd"
@@ -28,7 +28,7 @@
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         focusable="false"
-                        role="img"
+                        aria-hidden="true"
                     >
                         <path
                             fill-rule="evenodd"
@@ -47,7 +47,7 @@
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         focusable="false"
-                        role="img"
+                        aria-hidden="true"
                     >
                         <path
                             fill-rule="evenodd"
@@ -66,7 +66,7 @@
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         focusable="false"
-                        role="img"
+                        aria-hidden="true"
                     >
                         <path
                             fill-rule="evenodd"
@@ -77,7 +77,7 @@
                     </svg>
                 </li>
                 <li>
-                    <span tabindex="0">Kontaktskjema</span>
+                    <span aria-current="page">Kontaktskjema</span>
                 </li>
             </ol>
         </nav>
@@ -87,12 +87,12 @@
 
     <div class="banner">
         <div class="banner-inside">
-            <h1 tabindex="0" class="title-contactform">Kontaktskjema for arbeidsgivere</h1>
+            <h1 class="title-contactform">Kontaktskjema for arbeidsgivere</h1>
             <img data-id="imageLogo" src={logoImage} alt="" />
         </div>
     </div>
     <div class="contactform-inside">
-        <div class="navds-body-long"><p tabindex="0" class="navds-body-long">Alle felter må fylles ut.</p></div>
+        <div class="navds-body-long"><p class="navds-body-long">Alle felter må fylles ut.</p></div>
 
         <br />
 
@@ -102,21 +102,26 @@
             radiobuttons={themeOptions}
             onradiobuttonsclick={handleThemeOption}
             header="Hva gjelder det?"
+            description="Sample text"
+            helptext-content="Sample text"
             group-name="radioGroupThemeOptions"
             flex-direction="column"
             type="radio"
             data-id="radioTheme"
+            aria-required="true"
+            error-text="XXXXDu må velge et temaXXX"
         ></c-radiobuttons>
         <div if:false={themeChecked}>
-            <p class="errorText">Du må velge et tema</p>
+            <p class="errorText" role="alert">Du må velge et tema</p>
         </div>
 
         <!--============================Info text - Other themes=========================================-->
 
-        <div tabindex="0" class="containerInfo">
+        <div class="containerInfo">
             <img class="infoIcon" src={infoImage} alt="informasjonsikon" />
             <p class="infoTextStandard">
-                For andre temaer, ring arbeidsgivertelefonen på&nbsp;
+                Velg tema som best beskriver henvendelsen din. Dersom du ikke finner et tema som passer, ring
+                arbeidsgivertelefonen på tlf.&nbsp;
                 <a href="tel:+4755553336" class="lenke">55&nbsp;55&nbsp;33&nbsp;36</a>
             </p>
         </div>
@@ -124,7 +129,8 @@
         <!--============================Info box - Prevent sick leave=========================================-->
 
         <template if:true={checkedPreventSickLeave}>
-            <div class="containerInfo info-popup" tabindex="0">
+            <!--
+            <div class="containerInfo info-popup">
                 <img class="infoIcon" src={infoImage} alt="informasjonsikon" />
                 <p class="infoTextStandard">
                     Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom
@@ -132,15 +138,17 @@
                     arbeidet.
                 </p>
             </div>
-
+            -->
             <!--============================Radio button - Contacted employee representant=========================================-->
 
             <div>
-                <label class="inputPanel"></label>
                 <c-radiobuttons
                     radiobuttons={contactedEmployeeRepOptions}
                     onradiobuttonsclick={handleContactedEmployeeRep}
                     header="Har du snakket med en ansattrepresentant om forebygging av sykefravær?"
+                    helptext-content="Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles mellom
+                    arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). Nav Arbeidslivssenter kan bistå i dette
+                    arbeidet."
                     group-name="radioGroup"
                     flex-direction="row"
                     type="radio"
@@ -153,12 +161,14 @@
         <div class="input-fields">
             <c-input
                 label="Organisasjonsnummer"
+                description="Eksempel: 509100675"
                 data-id="inputOrgNumber"
                 type="text"
                 value={contactOrg}
                 onchange={handleOrgNumberChange}
                 error-text="Du må fylle inn et gyldig organisasjonsnummer"
                 maxlength="9"
+                aria-required="true"
             ></c-input>
             <br />
             <!--
@@ -181,50 +191,59 @@
                 value={accountName}
             ></c-input>
             -->
-            <p tabindex="0" data-id="accountNameRead" class="pAccount navds-body-short">
-                {accountName} ble hentet automatisk som bedriftens navn
-            </p>
+            <template if:true={isOrgValid}>
+                <InlineMessage tabindex="0" data-id="accountNameRead" class="navds-body-short" status="success"
+                    >{accountName} ble hentet automatisk som bedriftens navn
+                </InlineMessage>
+            </template>
 
             <template if:true={offerSubUnitSelection}>
                 <br />
                 <c-picklist
                     master-label="Om mulig, spesifiser avdeling"
+                    description="Dersom henvendelsen gjelder en konkret avdeling eller kontor kan du velge den fra listen."
                     data-id="inputSubUnit"
                     choices={subUnitChoices}
                     onpicklistvaluechange={handleSubUnitSelection}
-                    helptext-content="Bedriften har flere avdelinger. Dersom henvendelsen gjelder en konkret avdeling eller kontor kan du velge den fra listen."
+                    aria-required="false"
                 ></c-picklist>
             </template>
 
             <br />
             <c-input
                 label="Ditt navn"
+                description="Eksempel: Kari Nordmann"
                 data-id="inputName"
                 type="text"
                 value={contactName}
                 onchange={handleNameChange}
                 error-text="Du må fylle inn navnet ditt"
                 maxlength="80"
+                aria-required="true"
             ></c-input>
             <br />
             <c-input
-                label="Epost"
+                label="E-post"
+                description="Eksempel: kari.nordmann@nav.no"
                 data-id="inputEpost"
                 type="text"
                 value={contactEmail}
                 onchange={handleEmailChange}
                 error-text="Du må fylle inn en gyldig e-post adresse"
                 maxlength="80"
+                aria-required="true"
             ></c-input>
             <br />
             <c-input
-                label="Telefonnummer (kun tall)"
+                label="Telefonnummer"
+                description="Eksempel: 12345678"
                 data-id="inputPhone"
                 type="text"
                 value={contactPhone}
                 onchange={handlePhoneChange}
                 error-text="Du må fylle inn et gyldig telefonnummer"
-                maxlength="14"
+                maxlength="8"
+                aria-required="true"
             ></c-input>
         </div>
 
@@ -232,7 +251,7 @@
 
         <div class="containerInfo">
             <img class="infoIcon" src={infoImage} alt="informasjonsikon" />
-            <p tabindex="0" class="infoTextStandard">
+            <p class="infoTextStandard">
                 Nav bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik at vi
                 kan kontakte deg angående temaet du velger i dette skjemaet. Opplysningene blir ikke delt eller brukt
                 til andre formål.

@@ -54,15 +54,22 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     _lastLookedUpOrg;
     ORG_LOOKUP_DEBOUNCE_MS = 100;
 
+    // Guards renderedCallback so focus is moved to the revealed company name exactly once per lookup
+    _shouldFocusAccountName = false;
+
     // Submission payload, independent of the individual form field properties above
     _contactFormData = null;
 
     @wire(getThemeOptions)
     wiredThemeOptions({ data, error }) {
         if (data) {
-            this.themeOptions = data.map((option) => ({ ...option, checked: false }));
+            this.themeOptions = data.map((option) => ({
+                ...option,
+                checked: false,
+                description: option.description
+            }));
         } else if (error) {
-            console.error('Error loading theme options:', error);
+            // console.error('Error loading theme options:', error); Todo: log to server
         }
     }
 
@@ -120,6 +127,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         if (!isValidOrgNumber || orgValue === '' || orgValue == null || orgValue.length < 1) {
             inputFieldOrgNumber.sendErrorMessage(inputFieldOrgNumber.errorText);
             this.isOrgValid = false;
+            this._shouldFocusAccountName = false;
             return;
         }
 
@@ -137,24 +145,18 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this._lastLookedUpOrg = orgValue;
         getEntityData(orgValue)
             .then((data) => {
-                console.log('Organization lookup result:', data);
                 if (data && data.name) {
                     this._eregEntityData = data;
                     this.isOrgValid = true;
                     this.offerSubUnitSelection = this._eregEntityData && this._eregEntityData.totalSubUnitsCount > 1;
-
-                    let accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
-                    setTimeout(function () {
-                        accountNameRead.style.display = 'block';
-                        accountNameRead.focus();
-                    }, 500);
+                    this._shouldFocusAccountName = true;
                 } else {
                     inputFieldOrgNumber.sendErrorMessage('Fant ingen bedrifter med dette organisasjonsnummeret.');
                     this.clearLookupOrgData();
                 }
             })
             .catch((error) => {
-                console.error('Error validating organization number:', error);
+                // console.error('Error validating organization number:', error); Todo: log to server
                 const msg =
                     error instanceof EregUnavailableError
                         ? ERROR_MESSAGES.SERVICE_UNAVAILABLE
@@ -170,6 +172,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.selectedSubUnit = null;
         this.offerSubUnitSelection = false;
         this.isOrgValid = false;
+        this._shouldFocusAccountName = false;
     }
 
     // Single source of truth for the resolved company, derived from the Ereg lookup and any subunit choice
@@ -215,6 +218,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         this.selectedSubUnit = this.subUnitChoices.find((choice) => choice.name === event.detail.name);
     }
 
+    // Checks run bottom-to-top of the visual field order so the last (unconditional) .focus() call
+    // lands on the topmost invalid field; reordering fields in the template requires reordering this too
     validateSendForm() {
         if (this.isPhoneValid === false) {
             let inputPhoneField = this.template.querySelector('[data-id="inputPhone"]');
@@ -299,7 +304,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                         variant: 'error'
                     });
                     this.dispatchEvent(toastEvent);
-                    console.error('Navigation error:', error);
+                    // console.error('Navigation error:', error); Todo: log to server
                 });
         }
     }
@@ -313,17 +318,28 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         }
     }
 
+    // Same bound reference must be used for add/removeEventListener, otherwise removeEventListener is a no-op
+    _boundHandleResize = this.handleResize.bind(this);
+
     renderedCallback() {
         loadStyle(this, index);
         loadStyle(this, navStyling);
+
+        if (this._shouldFocusAccountName) {
+            const accountNameRead = this.template.querySelector('[data-id="accountNameRead"]');
+            if (accountNameRead) {
+                accountNameRead.focus();
+                this._shouldFocusAccountName = false;
+            }
+        }
     }
 
     connectedCallback() {
-        window.addEventListener('resize', this.handleResize.bind(this));
+        window.addEventListener('resize', this._boundHandleResize);
     }
 
     disconnectedCallback() {
-        window.removeEventListener('resize', this.handleResize.bind(this));
+        window.removeEventListener('resize', this._boundHandleResize);
     }
 
     handleEmptyField(event) {
@@ -371,20 +387,4 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             this.isPhoneValid = true;
         }
     }
-
-    validateOrgNumberField() {
-        let regExp = RegExp('\\d{9}');
-        let orgNumber = this.template.querySelector('input').value.replaceAll(' ', '');
-    }
-
-    /*
-    const entity = {
-    name: 'NAV',
-    isSubunit: false,
-    organizationNumber: '889640782',
-    totalSubUnitsCount: 0,
-    subUnits: []
-};
-searchOrganizationJs(searchTerm) {}
-*/
 }
