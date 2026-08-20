@@ -28,9 +28,9 @@ public with sharing class TAG_ContactFormController {
      }
 
      // Validated server-side since the AuraEnabled method can be called directly, bypassing client-side validation
-     private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$');
-     private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
-     private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$');
+     private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$'); // Norwegian organization number: exactly 9 digits
+     private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'); // basic local@domain.tld shape, not full RFC 5322
+     private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$'); // digits only, no spaces or country code prefix
 
      private static void validateContactFormData(Map<String, String> contactFormData) {
          if (contactFormData == null) {
@@ -101,7 +101,15 @@ public with sharing class TAG_ContactFormController {
                 newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
                 newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
                 newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
-        insert newInquiry;
+        new InquiryInserter().insertInquiry(newInquiry);
+    }
+
+    // Guest user has no object permissions on EmployerInquiry__c; isolating the DML in its own
+    // without-sharing class lets the create succeed per Salesforce's guest user security guidance.
+    private without sharing class InquiryInserter {
+        private void insertInquiry(EmployerInquiry__c newInquiry) {
+            insert newInquiry;
+        }
     }
 
 
