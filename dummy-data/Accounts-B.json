@@ -47,35 +47,6 @@
         {
             "attributes": {
                 "type": "Account",
-                "referenceId": "AccountRef13"
-            },
-            "Name": "SKI KOMMUNE BESTILLERKONTORET",
-            "INT_Industry__c": "88.101 Hjemmehjelp; 87.101; Somatiske spesialsykehjem; 86.904 Annen forebyggende helsetjeneste",
-            "INT_OrganizationNumber__c": "960507882",
-            "INT_OrganizationalStructure__c": "BEDR",
-            "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef7",
-            "CRM_AccountType__c": "B",
-            "INT_RegionNumber__c": "30"
-        },
-        {
-            "attributes": {
-                "type": "Account",
-                "referenceId": "AccountRef14"
-            },
-            "Name": "SKI KOMMUNE SAMFUNN",
-            "INT_Industry__c": "Offentlig administrasjon tilknyttet næringsvirksomhet og arbeidsmarked",
-            "INT_IndustryCode__c": "84.130",
-            "INT_OrganizationNumber__c": "960507883",
-            "INT_OrganizationalStructure__c": "BEDR",
-            "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef15",
-            "CRM_AccountType__c": "B",
-            "INT_RegionNumber__c": "30"
-        },
-        {
-            "attributes": {
-                "type": "Account",
                 "referenceId": "AccountRef17"
             },
             "Name": "FINSTADTUNET",
@@ -96,15 +67,15 @@
         {
             "attributes": {
                 "type": "Account",
-                "referenceId": "AccountRef18"
+                "referenceId": "AccountRef19"
             },
-            "Name": "SKI KOMMUNESKOGER",
-            "INT_Industry__c": "Avvirkning",
-            "INT_IndustryCode__c": "02.200",
-            "INT_OrganizationNumber__c": "960507885",
+            "Name": "MODERNE DINGSER & DUPPEDITTER AS",
+            "INT_Industry__c": "Detaljhandel med bredt vareutvalg ellers",
+            "INT_IndustryCode__c": "47.120",
+            "INT_OrganizationNumber__c": "960507886",
             "INT_OrganizationalStructure__c": "BEDR",
             "INT_MunicipalityNumber__c": "3003",
-            "ParentId": "@AccountRef9",
+            "ParentId": "@AccountRef16",
             "CRM_AccountType__c": "B",
             "INT_RegionNumber__c": "30"
         }

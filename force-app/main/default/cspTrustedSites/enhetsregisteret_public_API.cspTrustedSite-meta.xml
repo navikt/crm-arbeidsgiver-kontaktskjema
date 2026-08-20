@@ -2,8 +2,9 @@
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
     <canAccessCamera>false</canAccessCamera>
     <canAccessMicrophone>false</canAccessMicrophone>
-    <context>All</context>
-    <description>https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html</description>
+    <context>Communities</context>
+    <description>Brukes i Kontaktskjema for å validere organisasjonsnr.
+API dokumentasjon: https://data.brreg.no/enhetsregisteret/api/dokumentasjon/no/index.html</description>
     <endpointUrl>https://data.brreg.no</endpointUrl>
     <isActive>true</isActive>
     <isApplicableToConnectSrc>true</isApplicableToConnectSrc>

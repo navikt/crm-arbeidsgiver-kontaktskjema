@@ -19,12 +19,6 @@
     "trustedSiteName" : "connect-src",
     "trustedSiteUrl" : "https://api.uxsignals.com",
     "type" : "trustedSitesForScripts"
-  }, {
-    "id" : "d20ec900-b7c8-4982-8eda-dbb12ece1185",
-    "isActive" : true,
-    "trustedSiteName" : "Enhetsregisteret Åpne Data API",
-    "trustedSiteUrl" : "https://data.brreg.no/enhetsregisteret/api",
-    "type" : "trustedSitesForScripts"
   } ],
   "type" : "site"
 }

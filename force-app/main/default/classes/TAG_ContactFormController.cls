@@ -27,28 +27,33 @@ public with sharing class TAG_ContactFormController {
          return THEME_OPTIONS;
      }
 
-     /**
-      * @description Validates organization number. If valid, returns name and entity type.
-      *
-      * @param organizationNumber The organization number of the organization.
-      * @return The name and type of the organization.
-      */
-     @AuraEnabled 
-     public static TAG_EregLookupService.EntityData searchOrganization(String organizationNumber) {
-        
-        if(String.isBlank(organizationNumber) || !Pattern.matches('^[0-9]{9}$', organizationNumber)) {
-            throw new AuraHandledException('INVALID_INPUT');
-        }      
-        try {
-            TAG_EregLookupService.EntityData data = TAG_EregLookupService.getEntityData(organizationNumber);
-            return data;
-        }  catch (TAG_EregLookupService.EregUnavailableException e) {
-            throw new AuraHandledException('SERVICE_UNAVAILABLE');
-        } catch (Exception e) {
-            // Catch-all: System exceptions, DML, parsing, etc.
-            throw new AuraHandledException('TECHNICAL_ERROR');
-        }
-    }
+     // Validated server-side since the AuraEnabled method can be called directly, bypassing client-side validation
+     private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$');
+     private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
+     private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$');
+
+     private static void validateContactFormData(Map<String, String> contactFormData) {
+         if (contactFormData == null) {
+             throw new IllegalArgumentException('Kontaktskjemaets data mangler.');
+         }
+         if (!matchesPattern(ORG_NUMBER_PATTERN, contactFormData.get('ContactOrg'))) {
+             throw new IllegalArgumentException('Ugyldig organisasjonsnummer.');
+         }
+         if (String.isBlank(contactFormData.get('ContactName'))) {
+             throw new IllegalArgumentException('Navn mangler.');
+         }
+         if (!matchesPattern(EMAIL_PATTERN, contactFormData.get('ContactEmail'))) {
+             throw new IllegalArgumentException('Ugyldig e-postadresse.');
+         }
+         if (!matchesPattern(PHONE_PATTERN, contactFormData.get('ContactPhone'))) {
+             throw new IllegalArgumentException('Ugyldig telefonnummer.');
+         }
+     }
+
+     private static Boolean matchesPattern(Pattern p, String value) {
+         return value != null && p.matcher(value).matches();
+     }
+
 
     /**
      * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
@@ -63,6 +68,8 @@ public with sharing class TAG_ContactFormController {
      @AuraEnabled
     public static void createContactForm(Map<String, String> contactFormData) {        
         try{
+            validateContactFormData(contactFormData);
+
             TAG_ContactForm newContactForm = new TAG_ContactForm();
             newContactForm.organizationNumber = contactFormData.get('ContactOrg');            
             newContactForm.organizationName = contactFormData.get('AccountName');
@@ -70,7 +77,6 @@ public with sharing class TAG_ContactFormController {
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
             newContactForm.theme = contactFormData.get('ThemeSelected');
-            newContactForm.comesFromArticle = contactFormData.get('IsFromArticle');
 
             createInquiryFromContactForm(newContactForm);
             

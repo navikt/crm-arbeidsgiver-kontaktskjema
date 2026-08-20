@@ -44,7 +44,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     // Page/navigation state
     @track showError = false;
-    @track comesFromArticle = false;
     @track urlRoute = 'kontaktskjemabekreftelse';
 
     // Organization number lookup (Ereg)
@@ -263,8 +262,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 ContactName: this.contactName,
                 ContactEmail: this.contactEmail,
                 ContactPhone: this.contactPhone,
-                ThemeSelected: this.checkedTheme,
-                IsFromArticle: this.comesFromArticle
+                ThemeSelected: this.checkedTheme
             };
 
             createContactForm({ contactFormData: this._contactFormData })
@@ -322,10 +320,6 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     connectedCallback() {
         window.addEventListener('resize', this.handleResize.bind(this));
-        const docURL = document.URL;
-        if (docURL.includes('kontaktskjema.arbeidsgiver.nav.no/s/#k')) {
-            this.comesFromArticle = true;
-        }
     }
 
     disconnectedCallback() {

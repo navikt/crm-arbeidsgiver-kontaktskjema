@@ -172,27 +172,103 @@
             <assignToReference>$Record.TAG_Account__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Account_from_WebForm.Id</elementReference>
+                <elementReference>accountRecord.Id</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>$Record.OwnerId</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.CRM_QueueId__c</elementReference>
+                <elementReference>accountRecord.TAG_NavUnit__r.CRM_QueueId__c</elementReference>
             </value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>$Record.TAG_NavUnit__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_Account_from_WebForm.TAG_NavUnit__r.Id</elementReference>
+                <elementReference>accountRecord.TAG_NavUnit__r.Id</elementReference>
             </value>
         </assignmentItems>
         <connector>
             <targetReference>Get_Duplicate_Contacts</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Store_account_record</name>
+        <label>Store account record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>accountRecord</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Account_from_WebForm</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Set_Account_and_NavUnit_to_Employer_Iniquiry</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_child_account_record</name>
+        <label>Store child account record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>accountRecord</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>loop_B_account</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>loop_B_account</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Store_child_accounts_count</name>
+        <label>Store child accounts count</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>retrievedChildAccounts</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>Get_child_accounts</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>countOfBAccounts</assignToReference>
+            <operator>AssignCount</operator>
+            <value>
+                <elementReference>B_accounts</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Use_child_account</targetReference>
+        </connector>
+    </assignments>
+    <collectionProcessors>
+        <name>B_accounts</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>B accounts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNextValueToReference>currentItem_B_accounts</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>Get_child_accounts</collectionReference>
+        <conditionLogic>and</conditionLogic>
+        <conditions>
+            <leftValueReference>currentItem_B_accounts.CRM_AccountType__c</leftValueReference>
+            <operator>EqualTo</operator>
+            <rightValue>
+                <stringValue>B</stringValue>
+            </rightValue>
+        </conditions>
+        <connector>
+            <targetReference>Store_child_accounts_count</targetReference>
+        </connector>
+    </collectionProcessors>
     <decisions>
         <name>Can_send_e_mail_reciept</name>
         <label>Can send e-mail reciept?</label>
@@ -220,6 +296,31 @@
                 <targetReference>Draft_email_and_add_to_send_queue</targetReference>
             </connector>
             <label>Has Contact e-mail</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_account_type</name>
+        <label>Check account type</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Store_account_record</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Account_is_J</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Account_from_WebForm.CRM_AccountType__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>J</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_child_accounts</targetReference>
+            </connector>
+            <label>Account is J</label>
         </rules>
     </decisions>
     <decisions>
@@ -315,7 +416,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Set_Account_and_NavUnit_to_Employer_Iniquiry</targetReference>
+                <targetReference>Check_account_type</targetReference>
             </connector>
             <label>Yes</label>
         </rules>
@@ -358,7 +459,7 @@
             <name>Yes_there_is</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Account_from_WebForm</leftValueReference>
+                <leftValueReference>accountRecord</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
@@ -368,6 +469,39 @@
                 <targetReference>Get_Arbeidslivsenter_Nav_enhet</targetReference>
             </connector>
             <label>Yes there is</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Use_child_account</name>
+        <label>Use child account?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Store_account_record</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Have more or none</defaultConnectorLabel>
+        <rules>
+            <name>Have_1</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>retrievedChildAccounts</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>1.0</numberValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>countOfBAccounts</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>1.0</numberValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>loop_B_account</targetReference>
+            </connector>
+            <label>Have 1</label>
         </rules>
     </decisions>
     <description>Når en henvendelse opprettes fra kontaktskjemaet (TAG_Source__c = &quot;Kontaktskjema&quot;), opprettes den først som en enkel post uten alle nødvendige data og koblinger.
@@ -407,23 +541,38 @@ Oppretter e-postbekreftelse og legger den i kø for sending</description>
     <formulas>
         <name>navUnitArbeidslivsenterName</name>
         <dataType>String</dataType>
-        <expression>IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Øst-Viken&quot;, &quot;NAV Arbeidslivssenter Øst-Viken&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Oslo&quot;, &quot;NAV Arbeidslivssenter Oslo&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Innlandet&quot;, &quot;NAV Arbeidslivssenter Innlandet&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Vest-Viken&quot;, &quot;NAV Arbeidslivssenter Vest-Viken&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Vestfold og Telemark&quot;, &quot;NAV Arbeid og helse Vestfold og Telemark&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Agder&quot;, &quot;NAV Arbeidslivssenter Agder&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Rogaland&quot;, &quot;NAV Arbeidslivssenter Rogaland&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Vestland&quot;, &quot;NAV Arbeidslivssenter Vestland&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Møre og Romsdal&quot;, &quot;NAV Arbeidslivssenter Møre og Romsdal&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Nordland&quot;, &quot;NAV Arbeidslivssenter Nordland&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Troms og Finnmark&quot;, &quot;NAV Arbeidslivssenter Troms og Finnmark&quot;,
-IF({!Get_Account_from_WebForm.NAV_Region__c} = &quot;Trøndelag&quot;, &quot;NAV Arbeidslivssenter Trøndelag&quot;,
+        <expression>IF({!accountRecord.NAV_Region__c} = &quot;Øst-Viken&quot;, &quot;NAV Arbeidslivssenter Øst-Viken&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Oslo&quot;, &quot;NAV Arbeidslivssenter Oslo&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Innlandet&quot;, &quot;NAV Arbeidslivssenter Innlandet&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Vest-Viken&quot;, &quot;NAV Arbeidslivssenter Vest-Viken&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Vestfold og Telemark&quot;, &quot;NAV Arbeid og helse Vestfold og Telemark&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Agder&quot;, &quot;NAV Arbeidslivssenter Agder&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Rogaland&quot;, &quot;NAV Arbeidslivssenter Rogaland&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Vestland&quot;, &quot;NAV Arbeidslivssenter Vestland&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Møre og Romsdal&quot;, &quot;NAV Arbeidslivssenter Møre og Romsdal&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Nordland&quot;, &quot;NAV Arbeidslivssenter Nordland&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Troms og Finnmark&quot;, &quot;NAV Arbeidslivssenter Troms og Finnmark&quot;,
+IF({!accountRecord.NAV_Region__c} = &quot;Trøndelag&quot;, &quot;NAV Arbeidslivssenter Trøndelag&quot;,
 NULL
 ))))))))))))</expression>
     </formulas>
     <interviewLabel>TAG Webform Inquiry {!$Flow.CurrentDateTime}</interviewLabel>
     <label>TAG Webform Inquiry</label>
+    <loops>
+        <description>Hadde vært kjekt å kunne hente ut det ene recordet fra collection uten å bruke loop, men sånn er livet. Loop collection med eksakt 1 record intill videre.</description>
+        <name>loop_B_account</name>
+        <label>loop B account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>B_accounts</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Store_child_account_record</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Set_Account_and_NavUnit_to_Employer_Iniquiry</targetReference>
+        </noMoreValuesConnector>
+    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -451,10 +600,13 @@ NULL
         <connector>
             <targetReference>Assign_new_contact_to_Employer_inquiry</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Create_application_log_for_failed_contact_insert</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>AccountId</field>
             <value>
-                <elementReference>Get_Account_from_WebForm.Id</elementReference>
+                <elementReference>accountRecord.Id</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -533,6 +685,45 @@ NULL
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <description>Child account should only be used when legal entity have exactly one sub entity.</description>
+        <name>Get_child_accounts</name>
+        <label>Get child accounts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>B_accounts</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CRM_UltimateParentAccount__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Account_from_WebForm.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>Get_Account_from_WebForm.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsDeletedEmployer__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <limit>
+            <numberValue>2.0</numberValue>
+        </limit>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Duplicate_Contacts</name>
         <label>Get Duplicate Contacts</label>
         <locationX>0</locationX>
@@ -585,6 +776,43 @@ NULL
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <subflows>
+        <name>Create_application_log_for_failed_contact_insert</name>
+        <label>Create application log for failed contact insert</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <flowName>Flow_Create_Application_Log</flowName>
+        <inputAssignments>
+            <name>Application_Domain</name>
+            <value>
+                <stringValue>POAB</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Error_Payload</name>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Level</name>
+            <value>
+                <stringValue>ERROR</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>Log_Message</name>
+            <value>
+                <stringValue>Create new Contact feilet (kontaktskjema flow)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>ReferenceID</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+    </subflows>
     <subflows>
         <name>Create_Application_Log_for_wrong_org_nr</name>
         <label>Create Application Log for wrong OrgNr</label>
@@ -696,6 +924,38 @@ NULL
         <isViewedAsPlainText>true</isViewedAsPlainText>
         <text>Henvendelse via kontaktskjema: Arbeidsgiver ønsker å bidra til ungdomsløftet. Vennligst kontakt arbeidsgiver på telefonnummer {!$Record.TAG_WebFormContactPhone__c}.</text>
     </textTemplates>
+    <variables>
+        <name>accountRecord</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+    <variables>
+        <name>countOfBAccounts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>currentItem_B_accounts</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Account</objectType>
+    </variables>
+    <variables>
+        <name>retrievedChildAccounts</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
     <variables>
         <name>SelectedTheme</name>
         <dataType>String</dataType>

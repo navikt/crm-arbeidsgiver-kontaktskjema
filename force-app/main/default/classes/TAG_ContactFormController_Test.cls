@@ -94,7 +94,6 @@ public with sharing class TAG_ContactFormController_Test {
         contactFormMap.put('ContactEmail', 'ung.testersen@email.com');
         contactFormMap.put('ContactPhone', '91919191');
         contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL);
-        contactFormMap.put('IsFromArticle', 'true');
 
         Test.startTest();
         TAG_ContactFormController.createContactForm(contactFormMap);
@@ -148,52 +147,69 @@ public with sharing class TAG_ContactFormController_Test {
 	}
 
     @IsTest
-    static void testValidateSubUnitShouldReturnValue() {
-        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
-        TAG_EregLookupService.EntityData  entityData;
-        Test.startTest();
-        entityData = TAG_ContactFormController.searchOrganization('900000001');
-        Test.stopTest();
+    static void createContactForm_invalidOrgNumber_throwsAuraHandledException() {
+        Map<String, String> contactFormMap = new Map<String, String>();
+        contactFormMap.put('ContactOrg', '123');
+        contactFormMap.put('ContactName', 'Test Testersen');
+        contactFormMap.put('ContactEmail', 'test.testersen@email.com');
+        contactFormMap.put('ContactPhone', '90909090');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL);
 
-        Assert.isNotNull(entityData, 'Result should not be null for valid organization number');
-        Assert.areEqual('TEST UNDERENHET', entityData.name, 'Organization name should match mocked response');
-    }
-
-    @IsTest
-    static void testValidateUnitShouldReturnValue() {
-        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
-        TAG_EregLookupService.EntityData  entityData;
-        Test.startTest();
-        entityData = TAG_ContactFormController.searchOrganization('900000002');
-        Test.stopTest();
-
-        Assert.isNotNull(entityData, 'Result should not be null for valid organization number');
-        Assert.areEqual('TEST ENHET', entityData.name, 'Organization name should match mocked response');
-    }
-
-    @IsTest
-    static void testInvalidInputShouldReturnError() {
-        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
-        TAG_EregLookupService.EntityData  entityData;
+        Boolean caught = false;
         Test.startTest();
         try {
-            entityData = TAG_ContactFormController.searchOrganization('9XXXXXXXX');
-            Assert.fail('searchOrganization should throw AuraHandledException on invalid input');
-        } catch (AuraHandledException e) {   
-            Assert.areEqual('INVALID_INPUT', e.getMessage());        
+            TAG_ContactFormController.createContactForm(contactFormMap);
+        } catch (AuraHandledException e) {
+            caught = true;
         }
         Test.stopTest();
+
+        Assert.isTrue(caught, 'createContactForm should throw AuraHandledException on invalid org number');
+        Assert.areEqual(0, [SELECT COUNT() FROM EmployerInquiry__c], 'Record should not be created on invalid org number');
     }
 
     @IsTest
-    static void badOrganizationNumberShouldReturnNull() {
-        Test.setMock(HttpCalloutMock.class, new TAG_EregLookupServiceCalloutMock());
-        TAG_EregLookupService.EntityData  entityData;
+    static void createContactForm_invalidEmail_throwsAuraHandledException() {
+        Map<String, String> contactFormMap = new Map<String, String>();
+        contactFormMap.put('ContactOrg', '973113631');
+        contactFormMap.put('ContactName', 'Test Testersen');
+        contactFormMap.put('ContactEmail', 'not-an-email');
+        contactFormMap.put('ContactPhone', '90909090');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL);
+
+        Boolean caught = false;
         Test.startTest();
-        entityData = TAG_ContactFormController.searchOrganization('123456789');
+        try {
+            TAG_ContactFormController.createContactForm(contactFormMap);
+        } catch (AuraHandledException e) {
+            caught = true;
+        }
         Test.stopTest();
 
-        Assert.isNull(entityData, 'Result should be null for non-existent organization number');
+        Assert.isTrue(caught, 'createContactForm should throw AuraHandledException on invalid email');
+        Assert.areEqual(0, [SELECT COUNT() FROM EmployerInquiry__c], 'Record should not be created on invalid email');
+    }
+
+    @IsTest
+    static void createContactForm_invalidPhone_throwsAuraHandledException() {
+        Map<String, String> contactFormMap = new Map<String, String>();
+        contactFormMap.put('ContactOrg', '973113631');
+        contactFormMap.put('ContactName', 'Test Testersen');
+        contactFormMap.put('ContactEmail', 'test.testersen@email.com');
+        contactFormMap.put('ContactPhone', 'abc');
+        contactFormMap.put('ThemeSelected', TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL);
+
+        Boolean caught = false;
+        Test.startTest();
+        try {
+            TAG_ContactFormController.createContactForm(contactFormMap);
+        } catch (AuraHandledException e) {
+            caught = true;
+        }
+        Test.stopTest();
+
+        Assert.isTrue(caught, 'createContactForm should throw AuraHandledException on invalid phone number');
+        Assert.areEqual(0, [SELECT COUNT() FROM EmployerInquiry__c], 'Record should not be created on invalid phone number');
     }
 }
 

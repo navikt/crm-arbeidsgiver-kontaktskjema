@@ -9,7 +9,22 @@
             "INT_Industry__c": "Generell offentlig administrasjon",
             "INT_IndustryCode__c": "84.110",
             "INT_OrganizationNumber__c": "960507878",
+            "INT_OrganizationalStructure__c": "KOMM",
+            "INT_OrganizationalStructureDesc__c": "Kommune",
             "CRM_AccountType__c": "J",
+            "INT_RegionNumber__c": "30"
+        },
+        {
+            "attributes": {
+                "type": "Account",
+                "referenceId": "AccountRef16"
+            },
+            "Name": "MODERNE DINGSER & DUPPEDITTER AS",
+            "INT_Industry__c": "Detaljhandel med bredt vareutvalg ellers",
+            "INT_IndustryCode__c": "47.120",
+            "INT_OrganizationNumber__c": "912345678",
+            "CRM_AccountType__c": "J",
+            "INT_OrganizationalStructure__c": "AS",
             "INT_RegionNumber__c": "30"
         }
     ]
