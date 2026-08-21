@@ -53,7 +53,7 @@
 
 .containerInfo {
     display: flex;
-    margin-top: 1.5rem;
+    /*margin-top: 1.5rem;*/
     margin-bottom: 3rem;
 }
 
@@ -74,7 +74,7 @@
     padding: 1.5rem 1.25rem;
     background-color: #fff;
     min-height: 50rem;
-    max-width: 400rem;
+    max-width: 400rem; /* Why 6400px??? */
 }
 
 @media (min-width: 768px) {
@@ -129,7 +129,7 @@
 
 .input-fields {
     max-width: 500px;
-    /* padding: 0.5rem; */
+    padding: 0.5rem;
 }
 
 .info-popup {
@@ -178,14 +178,3 @@
     background-color: rgba(0, 52, 125, 1);
     box-shadow: 0 0 0 2px rgba(0, 52, 125, 1);
 }
-span {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
-    font-size: 1.125rem;
-    line-height: 1.333;
-    color: #262626;
-}
-
-/*
-navds-body-short: BodyShort brukes til tekster som ikke er brødtekst. Ofte brukt i komponenter, for eksempel beskrivelse i skjemafelt.
-navds-guide-panel, navds-guide-panel__content 
-*/

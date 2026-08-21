@@ -3,9 +3,6 @@
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
     <name>NAV Arbeidslivssenter Oslo</name>
     <queueSobject>
-        <sobjectType>CustomOpportunity__c</sobjectType>
-    </queueSobject>
-    <queueSobject>
         <sobjectType>EmployerInquiry__c</sobjectType>
     </queueSobject>
 </Queue>

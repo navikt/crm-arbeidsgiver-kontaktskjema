@@ -37,20 +37,15 @@
 # ----------------------------------------------------------------------------------------
 **/translations/en_US.translation-meta.xml
 **/objectTranslations/*-en_US
-!**/objectTranslations/Opportunity-en_US
-!**/objectTranslations/CustomOpportunity__c-en_US
 
 
 # Other packages
 # # ----------------------------------------------------------------------------------------
-**/CustomOpportunity__c.object-meta.xml
 **/AsyncRequest__c*
 **/listViews/NAV_Ansatte_*
 **/listViews/queue_*
 **/INT_*
-**/workflows/CustomOpportunity__c*
 **/workflows/Contract__c*
-**/layouts/CustomOpportunity__c-Custom Opportunity Layout.layout-meta.xml
 
 # VS Code
 # ----------------------------------------------------------------------------------------
