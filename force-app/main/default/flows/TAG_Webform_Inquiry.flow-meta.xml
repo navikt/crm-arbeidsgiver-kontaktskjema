@@ -90,6 +90,13 @@
                 <elementReference>webMessageYouth</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.TAG_YouthPledge__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Ønsker å bidra</stringValue>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Update_Inquiry</targetReference>
         </connector>
