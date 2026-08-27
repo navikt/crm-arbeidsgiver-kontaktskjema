@@ -13,14 +13,34 @@
  * @group TAG Contact Form
  */
 public with sharing class TAG_ContactFormController {
+    // Labels displayed in webform
+    private static final List<Map<String, Object>> THEME_OPTIONS = new List<Map<String, Object>>{
+        new Map<String, Object>{
+            'label' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL,
+            'value' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL,
+            'name' => 'theme',
+            'checked' => false,
+            'info' => true,
+            'description' => TAG_ContactForm.DESCRIPTION_FOREBYGGE_SYKEFRAVAER
+        },
+        new Map<String, Object>{
+            'label' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL,
+            'value' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL,
+            'name' => 'theme',
+            'checked' => false,
+            'info' => false,
+            'description' => TAG_ContactForm.DESCRIPTION_REKRUTTERE_OG_INKLUDERE
+        },
+        new Map<String, Object>{
+            'label' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL,
+            'value' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL,
+            'name' => 'theme',
+            'checked' => false,
+            'info' => false,
+            'description' => TAG_ContactForm.DESCRIPTION_UNGDOMSLOFTET
+        }
+    };
 
-
-     // Labels displayed in webform
-     private static final List<Map<String, Object>> THEME_OPTIONS = new List<Map<String, Object>>{
-         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'value' => TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL, 'name' => 'theme', 'checked' => false, 'info' => true, 'description' => 'Sample text'},
-         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'value' => TAG_ContactForm.THEME_REKRUTTERE_OG_INKLUDERE_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false, 'description' => 'Sample text' },
-         new Map<String, Object>{ 'label' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'value' => TAG_ContactForm.THEME_UNGDOMSLOFTET_LABEL, 'name' => 'theme', 'checked' => false, 'info' => false, 'description' => 'Sample text' }
-     };
 
      @AuraEnabled(cacheable=true)
      public static List<Map<String, Object>> getThemeOptions() {

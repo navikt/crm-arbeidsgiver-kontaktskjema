@@ -110,7 +110,8 @@ insertingTestData() {
 runPostInstallScripts() {
     sf apex run --file ./scripts/assignRecordTypes.apex || { error $? '"sf apex run" command failed for Apex class: "assignRecordTypes".'; }
     sf apex run --file ./scripts/relateNavUnitToAccount.apex || { error $? '"sf apex run" command failed for Apex class: "relateNavUnitToAccount".'; }
-    sf apex run --file ./scripts/setQueueIdOnNavUnit.apex || { error $? '"sf apex run" command failed for Apex class: "relateNavUnitToAccount".'; }
+    sf apex run --file ./scripts/setQueueIdOnNavUnit.apex || { error $? '"sf apex run" command failed for Apex class: "setQueueIdOnNavUnit".'; }
+    sf apex run --file ./scripts/assignGuestUserPermission.apex || { error $? '"sf apex run" command failed for Apex class: "assignGuestUserPermission".'; }
 }
 
 publishCommunity() {

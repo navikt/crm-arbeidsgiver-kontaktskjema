@@ -92,8 +92,24 @@
             </div>
         </div>
         <div class="contactform-inside">
+            <!--============================Info text =========================================-->
+
+            <div class="containerInfo">
+                <div class="navds-alert navds-alert--small navds-alert--info navds-body-long--small">
+                    <img class="navds-alert__icon" src={infoImage} alt="informasjonsikon" />
+                    <span>
+                        Velg overordnet tema for henvendelsen. Dersom det gjelder andre tema enn disse eller en sak om
+                        en konkret person, ring heller arbeidsgivertelefonen på tlf.&nbsp;
+                        <a href="tel:+4755553336" class="lenke">55&nbsp;55&nbsp;33&nbsp;36</a>
+                    </span>
+                </div>
+            </div>
             <form name="Kontaktskjema for arbeidsgivere">
-                <div class="navds-body-long"><p>Alle felter må fylles ut.</p></div>
+                <div
+                    class="navds-alert navds-alert--inline navds-alert--small navds-alert--info navds-body-long--small"
+                >
+                    <p>Alle felter må fylles ut.</p>
+                </div>
                 <!--============================Radio button - Theme=========================================-->
 
                 <c-radiobuttons
@@ -109,18 +125,6 @@
 
                 <div if:false={themeChecked}>
                     <div role="alert" class="errorText">Du må velge et tema</div>
-                </div>
-
-                <!--============================Info text - Other themes=========================================-->
-                <div class="containerInfo">
-                    <div class="navds-alert navds-alert--small navds-alert--info navds-body-long--small">
-                        <img class="navds-alert__icon" src={infoImage} alt="informasjonsikon" />
-                        <span
-                            >Velg tema som best beskriver henvendelsen din. Dersom du ikke finner et tema som passer,
-                            ring arbeidsgivertelefonen på tlf.&nbsp;
-                            <a href="tel:+4755553336" class="lenke">55&nbsp;55&nbsp;33&nbsp;36</a></span
-                        >
-                    </div>
                 </div>
 
                 <template if:true={checkedPreventSickLeave}>
@@ -218,18 +222,18 @@
                     ></c-input>
                 </div>
 
-                <!--============================Info text and send button=========================================-->
-
                 <div class="containerInfo">
                     <div class="navds-alert navds-alert--small navds-alert--info navds-body-long--small">
                         <img class="navds-alert__icon" src={infoImage} alt="informasjonsikon" />
-                        <span
-                            >Nav bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg,
+
+                        <span>
+                            Nav bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg,
                             slik at vi kan kontakte deg angående temaet du velger i dette skjemaet. Opplysningene blir
-                            ikke delt eller brukt til andre formål.</span
-                        >
+                            ikke delt eller brukt til andre formål.
+                        </span>
                     </div>
                 </div>
+                <!--============================ send button=========================================-->
                 <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
             </form>
         </div>
