@@ -41,39 +41,47 @@ public with sharing class TAG_ContactFormController {
         }
     };
 
+    @AuraEnabled(cacheable=true)
+    public static List<Map<String, Object>> getThemeOptions() {
+        return THEME_OPTIONS;
+    }
 
-     @AuraEnabled(cacheable=true)
-     public static List<Map<String, Object>> getThemeOptions() {
-         return THEME_OPTIONS;
-     }
+    // Validated server-side since the AuraEnabled method can be called directly, bypassing client-side validation
+    private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$'); // Norwegian organization number: exactly 9 digits
+    private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'); // basic local@domain.tld shape, not full RFC 5322
+    private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$'); // digits only, no spaces or country code prefix
 
-     // Validated server-side since the AuraEnabled method can be called directly, bypassing client-side validation
-     private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$'); // Norwegian organization number: exactly 9 digits
-     private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'); // basic local@domain.tld shape, not full RFC 5322
-     private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$'); // digits only, no spaces or country code prefix
+    private static void validateContactFormData(Map<String, String> contactFormData) {
+        if (contactFormData == null) {
+            throw new IllegalArgumentException('Kontaktskjemaets data mangler.');
+        }
+        if (!matchesPattern(ORG_NUMBER_PATTERN, contactFormData.get('ContactOrg'))) {
+            throw new IllegalArgumentException('Ugyldig organisasjonsnummer.');
+        }
+        if (String.isBlank(contactFormData.get('ContactName'))) {
+            throw new IllegalArgumentException('Navn mangler.');
+        }
+        if (!matchesPattern(EMAIL_PATTERN, contactFormData.get('ContactEmail'))) {
+            throw new IllegalArgumentException('Ugyldig e-postadresse.');
+        }
+        if (!matchesPattern(PHONE_PATTERN, contactFormData.get('ContactPhone'))) {
+            throw new IllegalArgumentException('Ugyldig telefonnummer.');
+        }
+        if (
+            TAG_ContactForm.THEME_FOREBYGGE_SYKEFRAVAER_LABEL.equals(contactFormData.get('ThemeSelected')) &&
+            !isYesNoValue(contactFormData.get('ContactedEmployeeRep'))
+        ) {
+            throw new IllegalArgumentException('Du må svare på om du har snakket med en ansattrepresentant.');
+        }
+    }
 
-     private static void validateContactFormData(Map<String, String> contactFormData) {
-         if (contactFormData == null) {
-             throw new IllegalArgumentException('Kontaktskjemaets data mangler.');
-         }
-         if (!matchesPattern(ORG_NUMBER_PATTERN, contactFormData.get('ContactOrg'))) {
-             throw new IllegalArgumentException('Ugyldig organisasjonsnummer.');
-         }
-         if (String.isBlank(contactFormData.get('ContactName'))) {
-             throw new IllegalArgumentException('Navn mangler.');
-         }
-         if (!matchesPattern(EMAIL_PATTERN, contactFormData.get('ContactEmail'))) {
-             throw new IllegalArgumentException('Ugyldig e-postadresse.');
-         }
-         if (!matchesPattern(PHONE_PATTERN, contactFormData.get('ContactPhone'))) {
-             throw new IllegalArgumentException('Ugyldig telefonnummer.');
-         }
-     }
+    private static Boolean isYesNoValue(String value) {
+        return 'Ja'.equalsIgnoreCase(value) || 'Nei'.equalsIgnoreCase(value);
+    }
 
-     private static Boolean matchesPattern(Pattern p, String value) {
-         return value != null && p.matcher(value).matches();
-     }
-
+    private static Boolean matchesPattern(Pattern p, String value) {
+        return value != null && p.matcher(value).matches();
+    }
 
     /**
      * @description The createContactForm method creates a Contact Form record and sends the record to the insertInquiry method
@@ -84,43 +92,45 @@ public with sharing class TAG_ContactFormController {
      *
      * @param contactFormData The request/input parameter which is sent from the kontaktskjema lwc. Includes all the values submitted by
      * the user in the contact form.
-     */    
-     @AuraEnabled
-    public static void createContactForm(Map<String, String> contactFormData) {        
-        try{
+     */
+    @AuraEnabled
+    public static void createContactForm(Map<String, String> contactFormData) {
+        try {
             validateContactFormData(contactFormData);
 
             TAG_ContactForm newContactForm = new TAG_ContactForm();
-            newContactForm.organizationNumber = contactFormData.get('ContactOrg');            
+            newContactForm.organizationNumber = contactFormData.get('ContactOrg');
             newContactForm.organizationName = contactFormData.get('AccountName');
             newContactForm.fullName = contactFormData.get('ContactName');
             newContactForm.email = contactFormData.get('ContactEmail');
             newContactForm.phoneNumber = contactFormData.get('ContactPhone');
             newContactForm.theme = contactFormData.get('ThemeSelected');
+            newContactForm.contactedEmployeeRep = contactFormData.get('ContactedEmployeeRep');
 
             createInquiryFromContactForm(newContactForm);
-            
         } catch (Exception e) {
-           String message = 'Feil i Kontaktskjema: '+e.getMessage();
-            message+='\nForm data: ' + contactFormData;
-            logAndPublishError(message , e);
+            String message = 'Feil i Kontaktskjema: ' + e.getMessage();
+            message += '\nForm data: ' + contactFormData;
+            logAndPublishError(message, e);
             throw new AuraHandledException('An unexpected error occurred.');
-        }        
+        }
     }
 
-
-    private static void createInquiryFromContactForm(TAG_ContactForm contactForm){
+    private static void createInquiryFromContactForm(TAG_ContactForm contactForm) {
         EmployerInquiry__c newInquiry = new EmployerInquiry__c();
-                newInquiry.TAG_WebFormAccountOrgNr__c = contactForm.organizationNumber;
-                newInquiry.TAG_WebFormAccountName__c = contactForm.organizationName;
-                newInquiry.TAG_WebFormContactEmail__c = contactForm.email;
-                newInquiry.TAG_WebFormContactName__c = contactForm.fullName;
-                newInquiry.TAG_WebFormContactPhone__c = contactForm.phoneNumber;
+        newInquiry.TAG_WebFormAccountOrgNr__c = contactForm.organizationNumber;
+        newInquiry.TAG_WebFormAccountName__c = contactForm.organizationName;
+        newInquiry.TAG_WebFormContactEmail__c = contactForm.email;
+        newInquiry.TAG_WebFormContactName__c = contactForm.fullName;
+        newInquiry.TAG_WebFormContactPhone__c = contactForm.phoneNumber;
 
-                newInquiry.TAG_WebFormTheme__c = contactForm.theme;               
-                newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
-                newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
-                newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
+        newInquiry.TAG_WebFormTheme__c = contactForm.theme;
+        newInquiry.TAG_WebFormContactedEmployeeRep__c = 'Ja'.equalsIgnoreCase(contactForm.contactedEmployeeRep)
+            ? true
+            : false;
+        newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
+        newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
+        newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
         new InquiryInserter().insertInquiry(newInquiry);
     }
 
@@ -132,19 +142,17 @@ public with sharing class TAG_ContactFormController {
         }
     }
 
-
     private static void logAndPublishError(String message, Exception e) {
         LoggerUtility logger = new LoggerUtility();
-                logger.logMessage(
-                    LoggerUtility.LogLevel.Error,
-                    '',
-                    '',
-                    message?.abbreviate(32768), // textarea (32768)
-                    e?.getStackTraceString()?.abbreviate(32768), // textarea (32768)
-                    null,
-                    CRM_ApplicationDomain.Domain.POAB
-                );
-                logger.publish();
-            }
-
+        logger.logMessage(
+            LoggerUtility.LogLevel.Error,
+            '',
+            '',
+            message?.abbreviate(32768), // textarea (32768)
+            e?.getStackTraceString()?.abbreviate(32768), // textarea (32768)
+            null,
+            CRM_ApplicationDomain.Domain.POAB
+        );
+        logger.publish();
+    }
 }

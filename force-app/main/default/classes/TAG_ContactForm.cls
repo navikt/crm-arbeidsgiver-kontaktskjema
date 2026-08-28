@@ -23,7 +23,7 @@ public with sharing class TAG_ContactForm {
     public static final String DESCRIPTION_UNGDOMSLOFTET = 'Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample Sample';
 
     public static final String SOURCE = 'Kontaktskjema';
-    public static final String STAGE = 'Ny henvendelse';   
+    public static final String STAGE = 'Ny henvendelse';
 
     public String organizationNumber;
     public String municipalityCode;
@@ -33,4 +33,5 @@ public with sharing class TAG_ContactForm {
     public String fullName;
     public String email;
     public String theme;
+    public String contactedEmployeeRep;
 }

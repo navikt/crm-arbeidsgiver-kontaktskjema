@@ -27,7 +27,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     @track checkedTheme = '';
     @track themeChecked = true;
     @track checkedPreventSickLeave = false;
-    @track checkedYesOrNo = false;
+    @track checkedContactedEmployeeRep = '';
+    @track contactedEmployeeRepChecked = true;
     themeOptions = [];
 
     // Form field values
@@ -95,9 +96,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     }
 
     handleContactedEmployeeRep(event) {
-        const selectedContactedEmployeeRep = event.detail;
-        if (selectedContactedEmployeeRep && selectedContactedEmployeeRep.length > 0) {
-            this.checkedYesOrNo = selectedContactedEmployeeRep[0].checked ? true : false;
+        const selectedOptions = event.detail;
+        this.contactedEmployeeRepChecked = true;
+        const selectedOption = selectedOptions.find((option) => option.checked === true);
+
+        if (selectedOption) {
+            this.checkedContactedEmployeeRep = selectedOption.value;
         }
     }
 
@@ -249,6 +253,12 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             let radioTheme = this.template.querySelector('[data-id="radioTheme"]');
             radioTheme.focus();
         }
+
+        if (this.checkedPreventSickLeave && this.checkedContactedEmployeeRep === '') {
+            this.contactedEmployeeRepChecked = false;
+            let radioContactedEmployeeRep = this.template.querySelector('[data-id="radioContactedEmployeeRep"]');
+            radioContactedEmployeeRep.focus();
+        }
     }
 
     saveContactForm() {
@@ -258,7 +268,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             this.isOrgValid === true &&
             this.isNameValid === true &&
             this.isPhoneValid === true &&
-            this.isEpostValid === true
+            this.isEpostValid === true &&
+            (!this.checkedPreventSickLeave || this.checkedContactedEmployeeRep !== '')
             // this.isAccountNameValid === true
         ) {
             this._contactFormData = {
@@ -267,7 +278,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                 ContactName: this.contactName,
                 ContactEmail: this.contactEmail,
                 ContactPhone: this.contactPhone,
-                ThemeSelected: this.checkedTheme
+                ThemeSelected: this.checkedTheme,
+                ContactedEmployeeRep: this.checkedContactedEmployeeRep
             };
 
             createContactForm({ contactFormData: this._contactFormData })
@@ -280,6 +292,8 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
                     this.contactEmail = '';
                     this.contactPhone = '';
                     this.checkedTheme = '';
+                    this.checkedContactedEmployeeRep = '';
+                    this.contactedEmployeeRepChecked = true;
                     this._eregEntityData = null;
                     this.selectedSubUnit = null;
                     this.offerSubUnitSelection = false;

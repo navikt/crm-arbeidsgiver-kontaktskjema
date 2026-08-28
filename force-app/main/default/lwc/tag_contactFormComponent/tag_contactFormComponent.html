@@ -104,138 +104,141 @@
                     </span>
                 </div>
             </div>
-            <form name="Kontaktskjema for arbeidsgivere">
-                <div
-                    class="navds-alert navds-alert--inline navds-alert--small navds-alert--info navds-body-long--small"
-                >
-                    <p>Alle felter må fylles ut.</p>
-                </div>
-                <!--============================Radio button - Theme=========================================-->
 
+            <div class="navds-alert navds-alert--inline navds-alert--small navds-alert--info navds-body-long--small">
+                <p>Alle felter må fylles ut.</p>
+            </div>
+            <!--============================Radio button - Theme=========================================-->
+
+            <c-radiobuttons
+                radiobuttons={themeOptions}
+                onradiobuttonsclick={handleThemeOption}
+                header="Hva gjelder det?"
+                group-name="radioGroupThemeOptions"
+                flex-direction="column"
+                type="radio"
+                data-id="radioTheme"
+                aria-required="true"
+            ></c-radiobuttons>
+
+            <div if:false={themeChecked}>
+                <div role="alert" class="errorText">Du må velge et tema</div>
+            </div>
+
+            <template if:true={checkedPreventSickLeave}>
+                <!--============================Radio button - Contacted employee representant=========================================-->
                 <c-radiobuttons
-                    radiobuttons={themeOptions}
-                    onradiobuttonsclick={handleThemeOption}
-                    header="Hva gjelder det?"
-                    group-name="radioGroupThemeOptions"
-                    flex-direction="column"
+                    radiobuttons={contactedEmployeeRepOptions}
+                    onradiobuttonsclick={handleContactedEmployeeRep}
+                    header="Har du snakket med en ansattrepresentant om forebygging av sykefravær?"
+                    group-name="radioGroup"
+                    flex-direction="row"
                     type="radio"
-                    data-id="radioTheme"
+                    data-id="radioContactedEmployeeRep"
                     aria-required="true"
-                ></c-radiobuttons>
-
-                <div if:false={themeChecked}>
-                    <div role="alert" class="errorText">Du må velge et tema</div>
-                </div>
-
-                <template if:true={checkedPreventSickLeave}>
-                    <!--============================Radio button - Contacted employee representant=========================================-->
-                    <c-radiobuttons
-                        radiobuttons={contactedEmployeeRepOptions}
-                        onradiobuttonsclick={handleContactedEmployeeRep}
-                        header="Har du snakket med en ansattrepresentant om forebygging av sykefravær?"
-                        group-name="radioGroup"
-                        flex-direction="row"
-                        type="radio"
-                        helptext-content="Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles
+                    helptext-content="Arbeidet med å forebygge sykefravær og sikre godt arbeidsmiljø, er et ansvar som deles
                             mellom arbeidsgiver og tillitsvalgte (eller ansattrepresentanter). Nav Arbeidslivssenter kan
                             bistå i dette arbeidet."
-                    ></c-radiobuttons>
-                </template>
+                ></c-radiobuttons>
 
-                <!--============================Input fields=========================================-->
-
-                <div class="input-fields">
-                    <c-input
-                        name="inputOrgNumber"
-                        label="Organisasjonsnummer"
-                        description="Eksempel: 509100675"
-                        data-id="inputOrgNumber"
-                        type="organization"
-                        value={contactOrg}
-                        onchange={handleOrgNumberChange}
-                        error-text="Du må fylle inn et gyldig organisasjonsnummer"
-                        maxlength="9"
-                        aria-required="true"
-                    ></c-input>
-
-                    <template if:true={isOrgValid}>
-                        <div
-                            tabindex="0"
-                            data-id="accountNameRead"
-                            class="navds-alert navds-alert--inline navds-alert--success navds-alert--small navds-body-long--small"
-                            role="alert"
-                        >
-                            <span class="navds-sr-only">Suksess: </span>
-                            <span>{accountName} ble hentet automatisk som bedriftens navn</span>
-                        </div>
-                    </template>
+                <div if:false={contactedEmployeeRepChecked}>
+                    <div role="alert" class="errorText">Du må svare på om du har snakket med en ansattrepresentant</div>
                 </div>
-                <template if:true={offerSubUnitSelection}>
-                    <div class="input-fields">
-                        <c-picklist
-                            master-label="Om mulig, spesifiser avdeling"
-                            helptext-content="Dersom henvendelsen gjelder en konkret avdeling eller kontor kan du velge den fra listen."
-                            data-id="inputSubUnit"
-                            choices={subUnitChoices}
-                            onpicklistvaluechange={handleSubUnitSelection}
-                            aria-required="false"
-                        ></c-picklist>
+            </template>
+
+            <!--============================Input fields=========================================-->
+
+            <div class="input-fields">
+                <c-input
+                    name="inputOrgNumber"
+                    label="Organisasjonsnummer"
+                    description="Eksempel: 509100675"
+                    data-id="inputOrgNumber"
+                    type="organization"
+                    value={contactOrg}
+                    onchange={handleOrgNumberChange}
+                    error-text="Du må fylle inn et gyldig organisasjonsnummer"
+                    maxlength="9"
+                    aria-required="true"
+                ></c-input>
+
+                <template if:true={isOrgValid}>
+                    <div
+                        tabindex="0"
+                        data-id="accountNameRead"
+                        class="navds-alert navds-alert--inline navds-alert--success navds-alert--small navds-body-long--small"
+                        role="alert"
+                    >
+                        <span class="navds-sr-only">Suksess: </span>
+                        <span>{accountName} ble hentet automatisk som bedriftens navn</span>
                     </div>
                 </template>
+            </div>
+            <template if:true={offerSubUnitSelection}>
                 <div class="input-fields">
-                    <c-input
-                        label="Ditt navn"
-                        description="Eksempel: Kari Nordmann"
-                        data-id="inputName"
-                        type="name"
-                        value={contactName}
-                        onchange={handleNameChange}
-                        error-text="Du må fylle inn navnet ditt"
-                        maxlength="80"
-                        aria-required="true"
-                    ></c-input>
+                    <c-picklist
+                        master-label="Om mulig, spesifiser avdeling"
+                        helptext-content="Dersom henvendelsen gjelder en konkret avdeling eller kontor kan du velge den fra listen."
+                        data-id="inputSubUnit"
+                        choices={subUnitChoices}
+                        onpicklistvaluechange={handleSubUnitSelection}
+                        aria-required="false"
+                    ></c-picklist>
                 </div>
-                <div class="input-fields">
-                    <c-input
-                        label="E-post"
-                        description="Eksempel: kari.nordmann@nav.no"
-                        data-id="inputEpost"
-                        type="email"
-                        value={contactEmail}
-                        onchange={handleEmailChange}
-                        error-text="Du må fylle inn en gyldig e-post adresse"
-                        maxlength="80"
-                        aria-required="true"
-                    ></c-input>
-                </div>
-                <div class="input-fields">
-                    <c-input
-                        label="Telefonnummer"
-                        description="Eksempel: 12345678"
-                        data-id="inputPhone"
-                        type="tel-national"
-                        value={contactPhone}
-                        onchange={handlePhoneChange}
-                        error-text="Du må fylle inn et gyldig telefonnummer"
-                        maxlength="8"
-                        aria-required="true"
-                    ></c-input>
-                </div>
+            </template>
+            <div class="input-fields">
+                <c-input
+                    label="Ditt navn"
+                    description="Eksempel: Kari Nordmann"
+                    data-id="inputName"
+                    type="name"
+                    value={contactName}
+                    onchange={handleNameChange}
+                    error-text="Du må fylle inn navnet ditt"
+                    maxlength="80"
+                    aria-required="true"
+                ></c-input>
+            </div>
+            <div class="input-fields">
+                <c-input
+                    label="E-post"
+                    description="Eksempel: kari.nordmann@nav.no"
+                    data-id="inputEpost"
+                    type="email"
+                    value={contactEmail}
+                    onchange={handleEmailChange}
+                    error-text="Du må fylle inn en gyldig e-post adresse"
+                    maxlength="80"
+                    aria-required="true"
+                ></c-input>
+            </div>
+            <div class="input-fields">
+                <c-input
+                    label="Telefonnummer"
+                    description="Eksempel: 12345678"
+                    data-id="inputPhone"
+                    type="tel-national"
+                    value={contactPhone}
+                    onchange={handlePhoneChange}
+                    error-text="Du må fylle inn et gyldig telefonnummer"
+                    maxlength="8"
+                    aria-required="true"
+                ></c-input>
+            </div>
 
-                <div class="containerInfo">
-                    <div class="navds-alert navds-alert--small navds-alert--info navds-body-long--small">
-                        <img class="navds-alert__icon" src={infoImage} alt="informasjonsikon" />
+            <div class="containerInfo">
+                <div class="navds-alert navds-alert--small navds-alert--info navds-body-long--small">
+                    <img class="navds-alert__icon" src={infoImage} alt="informasjonsikon" />
 
-                        <span>
-                            Nav bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg,
-                            slik at vi kan kontakte deg angående temaet du velger i dette skjemaet. Opplysningene blir
-                            ikke delt eller brukt til andre formål.
-                        </span>
-                    </div>
+                    <span>
+                        Nav bruker disse opplysningene når vi kontakter deg. Vi lagrer disse opplysningene om deg, slik
+                        at vi kan kontakte deg angående temaet du velger i dette skjemaet. Opplysningene blir ikke delt
+                        eller brukt til andre formål.
+                    </span>
                 </div>
-                <!--============================ send button=========================================-->
-                <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
-            </form>
+            </div>
+            <!--============================ send button=========================================-->
+            <c-ds-Button variant="primary" size="medium" text="Send inn" onclick={saveContactForm}></c-ds-Button>
         </div>
     </main>
 </template>
