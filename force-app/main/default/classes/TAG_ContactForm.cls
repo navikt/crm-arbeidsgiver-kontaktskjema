@@ -18,8 +18,12 @@ public with sharing class TAG_ContactForm {
     public static final String THEME_REKRUTTERE_OG_INKLUDERE_LABEL = 'Rekruttere og inkludere';
     public static final String THEME_UNGDOMSLOFTET_LABEL = 'Ungdomsløftet';
 
+    public static final String DESCRIPTION_FOREBYGGE_SYKEFRAVAER = 'Hvis virksomheten din sliter med høyt sykefravær, kan den kvalifisere for oppfølging fra Nav arbeidslivssenter.';
+    public static final String DESCRIPTION_REKRUTTERE_OG_INKLUDERE = 'Hvis du ønsker et samarbeid med Nav fordi du har et behov for arbeidskraft eller fordi du lurer på noe knyttet til inkludering og tilrettelegging av ansatte.';
+    public static final String DESCRIPTION_UNGDOMSLOFTET = 'Hvis du ønsker å bidra inn i ungdomsløftet med rekruttering og inkludering av unge arbeidssøkere!';
+
     public static final String SOURCE = 'Kontaktskjema';
-    public static final String STAGE = 'Ny henvendelse';   
+    public static final String STAGE = 'Ny henvendelse';
 
     public String organizationNumber;
     public String municipalityCode;
@@ -29,5 +33,5 @@ public with sharing class TAG_ContactForm {
     public String fullName;
     public String email;
     public String theme;
-    public String comesFromArticle;
+    public String contactedEmployeeRep;
 }

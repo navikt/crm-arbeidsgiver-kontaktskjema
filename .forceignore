@@ -34,8 +34,6 @@
 # ----------------------------------------------------------------------------------------
 **/translations/en_US.translation-meta.xml
 **/objectTranslations/*-en_US
-!**/objectTranslations/Opportunity-en_US
-!**/objectTranslations/CustomOpportunity__c-en_US
 
 
 # bugs (cannot be pushed)
@@ -64,10 +62,6 @@
 # -
 # -
 # -
-**/workflows/CustomOpportunity__c*
-**/workflows/Contract__c*
-**/layouts/CustomOpportunity__c-Custom Opportunity Layout.layout-meta.xml
-
 
 # # community classes
 # ----------------------------------------------------------------------------------------
