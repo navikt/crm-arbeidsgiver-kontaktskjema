@@ -81,7 +81,7 @@
                 },
                 {
                     "package": "crm-arbeidsgiver-base",
-                    "versionNumber": "1.712.0.2"
+                    "versionNumber": "1.712.0.LATEST"
                 },
                 {
                     "package": "crm-platform-email-scheduling",
