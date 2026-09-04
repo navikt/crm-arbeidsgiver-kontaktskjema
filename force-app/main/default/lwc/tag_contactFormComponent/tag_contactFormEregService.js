@@ -4,9 +4,10 @@ const UNDERENHETER_ENDPOINT = 'https://data.brreg.no/enhetsregisteret/api/undere
 export class EregUnavailableError extends Error {} // network failure, timeout, 500
 export class EregTechnicalError extends Error {} // 400, uventet status, parsefeil
 
-// returns null       → no match found (search endpoint returns 200 with empty result, not 404)
-// throws Unavailable → network failure, timeout, 500
-// throws Technical   → 400, uventet status, parsefeil
+/**
+ * Looks up an organization or subunit and returns a normalized entity object.
+ * Returns null for a valid request with no match; transport and API errors are thrown.
+ */
 export async function getEntityData(organizationNumber) {
     const subUnitResponse = await doCallout(`${UNDERENHETER_ENDPOINT}?organisasjonsnummer=${organizationNumber}`);
     if (subUnitResponse.status !== 200) {
@@ -34,6 +35,7 @@ function firstMatch(json, embeddedKey) {
     return json?._embedded?.[embeddedKey]?.[0] ?? null;
 }
 
+// Subunit lookup is optional. A failure here must not prevent a valid main entity from being used.
 async function addSubUnits(entityData) {
     try {
         const response = await doCallout(
@@ -52,6 +54,7 @@ async function addSubUnits(entityData) {
     }
 }
 
+// Create a subunit object from the JSON response
 function toSubUnit(json) {
     return {
         name: json.navn,
@@ -60,6 +63,7 @@ function toSubUnit(json) {
     };
 }
 
+// Create a main unit object from the JSON response
 function toUnit(json) {
     return {
         name: json.navn,
@@ -77,6 +81,7 @@ function throwForStatus(status) {
     throw new EregTechnicalError(`Unexpected status ${status}`);
 }
 
+// Perform an HTTP GET callout and handle network errors
 async function doCallout(url) {
     try {
         return await fetch(url);
