@@ -41,12 +41,17 @@ public with sharing class TAG_ContactFormController {
         }
     };
 
+    /**
+     * Returns the theme choices displayed by the contact form.
+     *
+     * @return Theme labels, values, descriptions and conditional-question metadata.
+     */
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getThemeOptions() {
         return THEME_OPTIONS;
     }
 
-    // Validated server-side since the AuraEnabled method can be called directly, bypassing client-side validation
+    // The AuraEnabled method can be called directly, so client-side validation is not sufficient.
     private static final Pattern ORG_NUMBER_PATTERN = Pattern.compile('^\\d{9}$'); // Norwegian organization number: exactly 9 digits
     private static final Pattern EMAIL_PATTERN = Pattern.compile('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'); // basic local@domain.tld shape, not full RFC 5322
     private static final Pattern PHONE_PATTERN = Pattern.compile('^\\d{8,14}$'); // digits only, no spaces or country code prefix
@@ -116,6 +121,7 @@ public with sharing class TAG_ContactFormController {
         }
     }
 
+    // Maps the form model to the Salesforce inquiry record before performing DML.
     private static void createInquiryFromContactForm(TAG_ContactForm contactForm) {
         EmployerInquiry__c newInquiry = new EmployerInquiry__c();
         newInquiry.TAG_WebFormAccountOrgNr__c = contactForm.organizationNumber;
@@ -134,8 +140,7 @@ public with sharing class TAG_ContactFormController {
         new InquiryInserter().insertInquiry(newInquiry);
     }
 
-    // Guest user has no object permissions on EmployerInquiry__c; isolating the DML in its own
-    // without-sharing class lets the create succeed per Salesforce's guest user security guidance.
+    // Guest users lack object permissions on EmployerInquiry__c; this boundary permits the required insert.
     private without sharing class InquiryInserter {
         private void insertInquiry(EmployerInquiry__c newInquiry) {
             insert newInquiry;

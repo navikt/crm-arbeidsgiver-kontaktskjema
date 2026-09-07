@@ -74,6 +74,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
         }
     }
 
+    // This question is only required for the sick-leave prevention theme.
     contactedEmployeeRepOptions = [
         { label: 'Ja', value: 'Ja', name: 'contactedEmpRep', checked: false },
         { label: 'Nei', value: 'Nei', name: 'contactedEmpRep', checked: false }
@@ -139,12 +140,14 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
             return;
         }
 
+        // Wait for the user to finish typing before calling the external registry.
         this._orgLookupTimer = setTimeout(() => {
             this._lookupOrganization(orgValue, inputFieldOrgNumber);
         }, this.ORG_LOOKUP_DEBOUNCE_MS);
     }
 
     _lookupOrganization(orgValue, inputFieldOrgNumber) {
+        // Clear the previous result immediately so stale company data cannot be submitted.
         this.clearLookupOrgData();
         this._lastLookedUpOrg = orgValue;
         getEntityData(orgValue)
@@ -336,6 +339,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
     _boundHandleResize = this.handleResize.bind(this);
 
     renderedCallback() {
+        // These resources provide the shared NAV styling used by the form and its child components.
         loadStyle(this, index);
         loadStyle(this, navStyling);
 
@@ -368,6 +372,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     handleEmailField(event) {
         const inputEmailField = event.target;
+        // Keep the client-side rule aligned with the basic server-side email validation.
         let regExp = RegExp(
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
@@ -387,6 +392,7 @@ export default class Kontaktskjema extends NavigationMixin(LightningElement) {
 
     handlePhoneField(event) {
         const inputPhoneField = event.target;
+        // Accept national numbers and longer digit-only numbers used by the server contract.
         let regExp = RegExp(/^\d{8,14}$/);
         let isValidPhoneNr = regExp.test(inputPhoneField.value) ? true : false;
         if (
