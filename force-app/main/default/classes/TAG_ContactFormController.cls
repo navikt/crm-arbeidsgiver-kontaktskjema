@@ -136,6 +136,7 @@ public with sharing class TAG_ContactFormController {
             : false;
         newInquiry.TAG_Status__c = TAG_ContactForm.STAGE;
         newInquiry.TAG_Source__c = TAG_ContactForm.SOURCE;
+        newInquiry.TAG_IsCreatedBySystem__c = true;
         newInquiry.Name = TAG_ContactForm.SOURCE + ': ' + newInquiry.TAG_WebFormTheme__c;
         new InquiryInserter().insertInquiry(newInquiry);
     }
