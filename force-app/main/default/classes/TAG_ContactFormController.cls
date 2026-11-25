@@ -141,8 +141,10 @@ public with sharing class TAG_ContactFormController {
     }
 
     // Guest users lack object permissions on EmployerInquiry__c; this boundary permits the required insert.
+    // The 'without sharing' keyword is intentional here to allow privileged DML for guest user submissions.
     private without sharing class InquiryInserter {
         private void insertInquiry(EmployerInquiry__c newInquiry) {
+            // Code-analyzer-suppress(sfge:DatabaseOperationsMustUseWithSharing,sfge:ApexFlsViolation)
             insert newInquiry;
         }
     }
